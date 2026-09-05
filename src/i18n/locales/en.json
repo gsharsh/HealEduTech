@@ -1,0 +1,59 @@
+{
+  "app": { "name": "EVG Learning", "homeLabel": "EVG Learning home" },
+  "a11y": { "skipToContent": "Skip to main content" },
+  "nav": {
+    "primaryLabel": "Main navigation",
+    "learning": "My Learning",
+    "explore": "Explore",
+    "community": "Community",
+    "staff": "Staff"
+  },
+  "status": {
+    "preview": "Preview",
+    "nextPhase": "Coming next",
+    "educatorPick": "Educator pick",
+    "example": "Example suggestion",
+    "moderated": "Moderated"
+  },
+  "learning": {
+    "eyebrow": "Your space",
+    "title": "What would you like to learn today?",
+    "description": "Keep track of your books, interests, weekly goals, and achievements.",
+    "addBook": "Add a book",
+    "books": { "title": "My books", "description": "Record what you are reading and revisit your reading history." },
+    "goals": { "title": "My weekly goal", "description": "Choose something small to read, try, make, or discover." },
+    "badges": { "title": "My badges", "description": "See the milestones and helpful actions recognised by your facilitator." }
+  },
+  "explore": {
+    "eyebrow": "Find an idea",
+    "title": "Explore your interests",
+    "description": "Browse resources selected by EVG educators.",
+    "editorialNotice": "These are sample educator selections. They are not personalised or AI-generated.",
+    "nature": { "title": "Plants around us", "description": "Notice, sketch, and identify plants in your community." },
+    "science": { "title": "Look at the night sky", "description": "Start with a simple guide to stars, planets, and the Moon." }
+  },
+  "community": {
+    "eyebrow": "Learn together",
+    "title": "Community showcase",
+    "description": "See approved work from your cohort and ask encouraging questions.",
+    "projects": { "title": "Student discoveries", "description": "Published projects and presentations will appear here after staff review." },
+    "questions": { "title": "Questions and comments", "description": "Comments will be visible only after a facilitator approves them." }
+  },
+  "admin": {
+    "eyebrow": "Staff workspace",
+    "title": "Support learners and manage content",
+    "description": "Routine programme tools will live here in Vietnamese and English.",
+    "learners": { "title": "Learners", "description": "Review assigned learners, interests, and reading histories." },
+    "catalogue": { "title": "Book catalogue", "description": "Add and correct the books learners can select." },
+    "moderation": { "title": "Review queue", "description": "Review showcases, questions, comments, and reward evidence." }
+  },
+  "auth": {
+    "title": "Sign in",
+    "description": "Use the email address from your EVG invitation.",
+    "email": "Email address",
+    "password": "Password",
+    "submit": "Sign in",
+    "scaffoldNote": "Account access will be enabled when Supabase authentication is connected.",
+    "switchLanguage": "Tiếng Việt"
+  }
+}

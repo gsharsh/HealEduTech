@@ -1,0 +1,59 @@
+{
+  "app": { "name": "Học tập cùng EVG", "homeLabel": "Trang chủ Học tập cùng EVG" },
+  "a11y": { "skipToContent": "Chuyển đến nội dung chính" },
+  "nav": {
+    "primaryLabel": "Điều hướng chính",
+    "learning": "Việc học của em",
+    "explore": "Khám phá",
+    "community": "Cộng đồng",
+    "staff": "Dành cho giáo viên"
+  },
+  "status": {
+    "preview": "Xem trước",
+    "nextPhase": "Sắp ra mắt",
+    "educatorPick": "Giáo viên chọn",
+    "example": "Gợi ý mẫu",
+    "moderated": "Có kiểm duyệt"
+  },
+  "learning": {
+    "eyebrow": "Không gian của em",
+    "title": "Hôm nay em muốn học điều gì?",
+    "description": "Theo dõi sách, sở thích, mục tiêu hằng tuần và thành tích của em.",
+    "addBook": "Thêm sách",
+    "books": { "title": "Sách của em", "description": "Ghi lại sách em đang đọc và xem lại lịch sử đọc sách." },
+    "goals": { "title": "Mục tiêu tuần này", "description": "Chọn một điều nhỏ để đọc, thử làm, sáng tạo hoặc khám phá." },
+    "badges": { "title": "Huy hiệu của em", "description": "Xem các cột mốc và việc làm tích cực được người hướng dẫn ghi nhận." }
+  },
+  "explore": {
+    "eyebrow": "Tìm một ý tưởng",
+    "title": "Khám phá sở thích của em",
+    "description": "Xem các tài liệu do giáo viên EVG lựa chọn.",
+    "editorialNotice": "Đây là các lựa chọn mẫu của giáo viên. Nội dung chưa được cá nhân hóa và không do AI tạo ra.",
+    "nature": { "title": "Cây cối quanh em", "description": "Quan sát, vẽ và tìm hiểu các loài cây trong cộng đồng." },
+    "science": { "title": "Ngắm bầu trời đêm", "description": "Bắt đầu với hướng dẫn đơn giản về các vì sao, hành tinh và Mặt Trăng." }
+  },
+  "community": {
+    "eyebrow": "Cùng nhau học hỏi",
+    "title": "Góc chia sẻ cộng đồng",
+    "description": "Xem bài đã được duyệt của các bạn và đặt câu hỏi khích lệ nhau.",
+    "projects": { "title": "Khám phá của học sinh", "description": "Dự án và bài trình bày sẽ xuất hiện ở đây sau khi được giáo viên duyệt." },
+    "questions": { "title": "Câu hỏi và bình luận", "description": "Bình luận chỉ hiển thị sau khi được người hướng dẫn phê duyệt." }
+  },
+  "admin": {
+    "eyebrow": "Không gian nhân viên",
+    "title": "Hỗ trợ học sinh và quản lý nội dung",
+    "description": "Các công cụ vận hành chương trình sẽ có bằng tiếng Việt và tiếng Anh.",
+    "learners": { "title": "Học sinh", "description": "Xem học sinh phụ trách, sở thích và lịch sử đọc sách." },
+    "catalogue": { "title": "Danh mục sách", "description": "Thêm và chỉnh sửa các cuốn sách để học sinh lựa chọn." },
+    "moderation": { "title": "Hàng chờ kiểm duyệt", "description": "Duyệt bài chia sẻ, câu hỏi, bình luận và bằng chứng nhận thưởng." }
+  },
+  "auth": {
+    "title": "Đăng nhập",
+    "description": "Sử dụng địa chỉ email trong lời mời từ EVG.",
+    "email": "Địa chỉ email",
+    "password": "Mật khẩu",
+    "submit": "Đăng nhập",
+    "scaffoldNote": "Tài khoản sẽ được kích hoạt sau khi kết nối xác thực Supabase.",
+    "switchLanguage": "English"
+  }
+}
