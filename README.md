@@ -142,6 +142,8 @@ supabase/
   migrations/     reviewed database schema and row-level security changes
 ```
 
-For Cloudflare Pages, use `npm run build` and publish the `dist` directory. The included `_redirects` file preserves client-side routes.
+For Vercel, select the Vite framework preset, use `npm run build`, and publish `dist`. Set the project root to the folder containing this README, `package.json`, and `vercel.json`. The rewrite in `vercel.json` sends direct requests such as `/learning` and `/library` to the React entry point, so opening or refreshing those URLs works. Redeploy after changing this configuration. See [Vercel's Vite SPA guidance](https://vercel.com/docs/frameworks/frontend/vite#using-vite-to-make-spas).
+
+For Cloudflare Pages, use the same build command and output directory. Its equivalent routing rule is `public/_redirects`; Vercel uses `vercel.json` instead.
 
 Current feature folders are `auth`, `learning`, `library`, `explore`, `community`, and `admin`. The demo state boundary is shared across routes; a production circulation service is still deferred. Student and staff library screens should use the same catalogue and lending logic. S12 provides staff access to feature operations rather than duplicating their business rules.
