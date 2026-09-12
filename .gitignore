@@ -10,3 +10,8 @@ coverage
 .wrangler
 .supabase
 
+.vercel
+.env*
+
+# Supabase CLI machine-local metadata
+supabase/.temp/

@@ -11,4 +11,4 @@ Each feature owns its pages, components, validation, data access, and tests. Sha
 
 Keep privileged account and administrative operations in Supabase Edge Functions or another server-side boundary. Never place service-role credentials in Vite environment variables.
 
-The current frontend uses fictional catalogue data and in-memory state in `src/demo`. This is a prototype boundary, not a persistence or authorisation layer. Community publication and account entry remain placeholders.
+The current frontend uses fictional catalogue data and in-memory state in `src/demo`. This is a prototype boundary, not a persistence or authorisation layer. Community publication remains a placeholder. Account entry uses Supabase Auth, and the configured library/admin routes use the real catalogue. See docs/SUPABASE_PILOT.md for hosted setup and release gates.

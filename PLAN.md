@@ -2,7 +2,9 @@
 
 **Version:** 0.3 · **Status:** working requirements baseline · **Updated:** 10 September 2026
 
-**Delivery policy:** frontend first; real accounts, database, backend, and recommendation services later.
+**Delivery policy:** frontend first, followed by the authorised Supabase accounts/catalogue pilot. Lending, reading persistence and recommendations remain later increments.
+
+**11 September 2026 scope update:** implement real email/password registration with hosted email-link confirmation, optional magic-link sign-in, and staff-only book/copy creation. See [pilot implementation and release gates](docs/SUPABASE_PILOT.md). The initial database migration is applied; email delivery, staff bootstrap and end-to-end release checks must pass before claiming these flows are operational.
 
 **Approval owners:** EVG programme owner and team technical lead — names to be assigned.
 

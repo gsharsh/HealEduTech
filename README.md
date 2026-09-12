@@ -14,7 +14,7 @@ System IDs are shared with the plan. Use them in tasks and pull requests, for ex
 
 ## Systems we will build
 
-Production systems below are **planned**. The frontend currently demonstrates selected workflows using fictional, in-memory data; this does not implement authentication or backend persistence.
+The table below describes the full roadmap. The first Supabase increment adds accounts and catalogue persistence; remaining systems are planned or demonstrated with fictional data. See [Supabase pilot setup and release gates](docs/SUPABASE_PILOT.md) for configuration, permissions and verification status.
 
 | ID | System | Main functions | First working phase |
 |---|---|---|---|
@@ -83,9 +83,9 @@ An original community-library interface informed by Khan Academy, Duolingo and K
 - One example weekly goal and editable topic interests.
 - Three expandable sample activities; no personalised ranking or AI calls.
 - One reversible staff checkout/return demo that updates sample availability independently of reading history.
-- Community and account entry previews that explain their remaining limitations.
+- Community previews; account entry now has registration, email verification and sign-in forms when Supabase is configured.
 
-**All demo records reset on refresh.** Only interface language is stored locally. The staff route is open, the examples are fictional, and no ebook files are provided. Authentication, database permissions, real lending, due dates, rewards, project submission, comments, moderation, and recommendations remain future work. Never enter real student data into this preview.
+**Demo learning records reset on refresh.** With Supabase configured, `/library` reads the live catalogue and `/admin` requires a database-authorised staff account to add books and copies. `/sign-in` provides real Auth integration, subject to the email setup and end-to-end checks in the [pilot guide](docs/SUPABASE_PILOT.md). Real lending, reading-history persistence, rewards, submissions, moderation and recommendations remain future work. Use test data until the pilot release gates pass.
 
 See PLAN Section 7 for the route-by-route boundary and next frontend increments. The existing optional backend configuration remains untouched.
 
@@ -114,7 +114,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-The app can run without Supabase credentials while developing the interface. Add a project URL and public anonymous key to `.env.local` when the Phase 2 backend is ready. Never place a Supabase service-role key in a Vite environment variable.
+The app can run without Supabase credentials while developing the interface. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in `.env.local` for the pilot backend. Never place a Supabase service-role key in a Vite environment variable.
 
 ## Commands
 
