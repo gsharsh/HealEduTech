@@ -1,0 +1,4 @@
+export const libraryTranslations = {
+  en: { availability: 'available', of: 'of', copies: 'copies', availabilityError: 'Availability is temporarily unavailable. Ask the library desk.', clear: 'Clear filters', loans: 'My loans', desk: 'Borrowing and returns', book: 'Add a book', account: 'Account', signIn: 'Sign in', pilot: 'Pilot · Your reading is private. Borrowing opens after EVG approves its lending rules.' },
+  vi: { availability: 'có sẵn', of: 'trên', copies: 'bản', availabilityError: 'Tạm thời không xem được tình trạng sách. Vui lòng hỏi bàn thư viện.', clear: 'Xóa bộ lọc', loans: 'Sách tôi đang mượn', desk: 'Mượn và trả sách', book: 'Thêm sách', account: 'Tài khoản', signIn: 'Đăng nhập', pilot: 'Thử nghiệm · Lịch sử đọc của bạn là riêng tư. Việc mượn sách sẽ mở sau khi EVG duyệt quy định.' },
+};

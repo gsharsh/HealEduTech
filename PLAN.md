@@ -24,6 +24,19 @@ Use [README](README.md) for setup and the system map, and [design research](docs
 
 This structure follows common software requirements specification (SRS) practice: scope, actors, observable requirements, constraints, traceability, and acceptance. It is informed by the public overview of [ISO/IEC/IEEE 29148:2018](https://www.iso.org/standard/72089.html); it does not claim formal compliance with the complete paid standard. Diagrams use Mermaid's UML class, sequence, and state notation, informed by [OMG UML 2.5.1](https://www.omg.org/spec/UML/2.5.1/About-UML). They describe proposed behaviour, not implemented infrastructure.
 
+## Implementation update — September 2026
+
+The current local increment implements S01 account UX/recovery, S03 staff circulation, and the learner-owned part of S04 reading/interests. This supersedes the historical prototype-only route descriptions in Section 7 for configured deployments after migrations. It does not mark the full phases production-verified.
+
+| Requirements | Implemented surface | Remaining release evidence |
+|---|---|---|
+| FR01, FR23 | Default login; registration/confirmation; resend; magic link; password recovery and safe return navigation | Real hosted email receipt, expiry and recovery walkthrough; invitation/account-management remains deferred |
+| FR06–09, BR01–06 | Staff circulation, own loans, derived availability; database gate disabled by default | EVG lending rules, hosted migration, operator walkthrough, paper reconciliation |
+| FR10–11 | Private persisted reading/reflections and editable interests | Hosted migration and actual refresh/cross-account walkthrough; assigned-facilitator access remains deferred |
+| FR03, FR23 | EN/VI loading, save, validation and retry states | Representative learner/staff language and accessibility review |
+
+No goals, rewards, AI, recommendations, or peer publication are represented as complete. See README and `docs/SUPABASE_PILOT.md` for setup and verification limits.
+
 ## 1. Purpose, scope, and constraints
 
 Help EVG students find books, record reading, discover interests, create and share work, and receive support through a simple bilingual website. Help local staff operate a small physical library and maintain approved learning resources.

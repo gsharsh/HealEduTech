@@ -1,0 +1,6 @@
+.auth-links { display:flex; flex-wrap:wrap; gap:16px; margin-top:16px; }
+.auth-links .text-link { padding:0; background:transparent; text-align:left; }
+.form-success { color:#265c4b; background:#eaf1e9; border-radius:8px; padding:10px 12px; }
+.account-tabs button { min-width:120px; }
+.data-form input:focus-visible { outline-offset:2px; }
+.auth-subtitle { margin-top:-4px; }

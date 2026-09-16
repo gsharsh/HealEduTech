@@ -7,6 +7,22 @@ export function validPassword(value: string): boolean {
   return value.length >= 12 && value.length <= 128;
 }
 
+const appPaths = new Set(['/learning', '/library', '/explore', '/community', '/admin']);
+export function safeNextPath(value: string | null): string {
+  if (!value || !value.startsWith('/') || value.startsWith('//')) return '/learning';
+  const hasUnsafeCharacter = value.split('').some(character => {
+    const code = character.charCodeAt(0);
+    return character === '\\' || code < 32 || code === 127;
+  });
+  if (hasUnsafeCharacter || /%(?:2f|5c|0[0-9a-f]|1[0-9a-f]|7f)/i.test(value)) return '/learning';
+  try {
+    const url = new URL(value, 'https://evg.local');
+    return appPaths.has(url.pathname) ? `${url.pathname}${url.search}${url.hash}` : '/learning';
+  } catch {
+    return '/learning';
+  }
+}
+
 export function authErrorKey(error: { code?: string; status?: number }): string {
   if (error.status === 429 || error.code === 'over_email_send_rate_limit' || error.code === 'over_request_rate_limit') return 'auth.rateLimit';
   if (error.code === 'email_address_not_authorized' || error.code === 'email_address_not_authorized_for_project') return 'auth.emailDelivery';

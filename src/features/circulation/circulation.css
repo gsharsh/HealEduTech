@@ -1,0 +1,12 @@
+.circulation-grid { display: grid; gap: 1rem; }
+.circulation-card { padding: 1.25rem; border: 1px solid var(--line, #d8d3c6); border-radius: 1rem; background: var(--paper, #fffdf7); }
+.circulation-card h2 { margin-top: 0; }
+.circulation-form { display: grid; gap: .75rem; }
+.circulation-form label { display: grid; gap: .35rem; font-weight: 600; }
+.circulation-form input, .circulation-form select { min-height: 2.75rem; padding: .55rem .7rem; border: 1px solid var(--line, #d8d3c6); border-radius: .5rem; font: inherit; }
+.circulation-form button { justify-self: start; }
+.circulation-table { width: 100%; border-collapse: collapse; }
+.circulation-table th, .circulation-table td { padding: .7rem .4rem; border-bottom: 1px solid var(--line, #d8d3c6); text-align: left; vertical-align: top; }
+.circulation-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.circulation-muted { color: var(--muted, #716d64); }
+@media (min-width: 760px) { .circulation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .circulation-wide { grid-column: 1 / -1; } }

@@ -14,7 +14,7 @@ System IDs are shared with the plan. Use them in tasks and pull requests, for ex
 
 ## Systems we will build
 
-The table below describes the full roadmap. The first Supabase increment adds accounts and catalogue persistence; remaining systems are planned or demonstrated with fictional data. See [Supabase pilot setup and release gates](docs/SUPABASE_PILOT.md) for configuration, permissions and verification status.
+The table below describes the full roadmap. The current implementation includes accounts, catalogue persistence, private reading/interests, and a staff circulation workflow gated by an approved lending policy. The new circulation and reading migrations are not yet applied to the hosted project; remaining systems are planned or demonstrated with fictional data. See [Supabase pilot setup and release gates](docs/SUPABASE_PILOT.md) for configuration, permissions and verification status.
 
 | ID | System | Main functions | First working phase |
 |---|---|---|---|
@@ -85,7 +85,15 @@ An original community-library interface informed by Khan Academy, Duolingo and K
 - One reversible staff checkout/return demo that updates sample availability independently of reading history.
 - Community previews; account entry now has registration, email verification and sign-in forms when Supabase is configured.
 
-**Demo learning records reset on refresh.** With Supabase configured, `/library` reads the live catalogue and `/admin` requires a database-authorised staff account to add books and copies. `/sign-in` provides real Auth integration, subject to the email setup and end-to-end checks in the [pilot guide](docs/SUPABASE_PILOT.md). Real lending, reading-history persistence, rewards, submissions, moderation and recommendations remain future work. Use test data until the pilot release gates pass.
+**Without Supabase, demo learning records reset on refresh.** With Supabase configured and the relevant migrations applied:
+
+- `/sign-in` opens on login, with separate registration, email confirmation/resend, optional magic links, and password recovery. `/reset-password` accepts a valid recovery session.
+- `/library` shows catalogue records, derived copy availability, private reading actions, and the signed-in learner's loans.
+- `/learning` saves reading status and optional reflections; `/explore` saves editable interests. Reading is independent of physical lending.
+- `/admin` adds books/copies; `/admin/circulation` supports authorised staff checkout, usable/damaged returns, and lost-copy resolution.
+- Lending starts **disabled in the database**. EVG must approve eligibility, limits, due-date policy, timezone, and loss/damage handling before enabling it. Staff enter each due date explicitly.
+
+The new migrations are prepared locally, not deployed. Local SQL and mocked browser checks have passed for the September account, circulation, reading and interest increment; hosted email, hosted migrations and real cross-account walkthroughs remain release gates. Rewards, goals, submissions, facilitator access, moderation, managed learning resources and recommendations remain future work. Follow the [pilot release gates](docs/SUPABASE_PILOT.md) and use synthetic data until they pass.
 
 See PLAN Section 7 for the route-by-route boundary and next frontend increments. The existing optional backend configuration remains untouched.
 
@@ -146,4 +154,4 @@ For Vercel, select the Vite framework preset, use `npm run build`, and publish `
 
 For Cloudflare Pages, use the same build command and output directory. Its equivalent routing rule is `public/_redirects`; Vercel uses `vercel.json` instead.
 
-Current feature folders are `auth`, `learning`, `library`, `explore`, `community`, and `admin`. The demo state boundary is shared across routes; a production circulation service is still deferred. Student and staff library screens should use the same catalogue and lending logic. S12 provides staff access to feature operations rather than duplicating their business rules.
+Current feature folders are `auth`, `learning`, `library`, `explore`, `community`, and `admin`. The demo state boundary is shared across routes; circulation is available after its migration and policy release gate. Student and staff library screens should use the same catalogue and lending logic. S12 provides staff access to feature operations rather than duplicating their business rules.

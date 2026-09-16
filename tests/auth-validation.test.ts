@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validEmail, validPassword, authCallbackErrorFromUrl, authErrorKey } from '../src/features/auth/validation.ts';
+import { validEmail, validPassword, authCallbackErrorFromUrl, authErrorKey, safeNextPath } from '../src/features/auth/validation.ts';
 import { buildBookSearchFilter } from '../src/features/library/search.ts';
 test('email validation permits normal aliases and rejects malformed input', () => {
   assert.ok(validEmail('learner+evg@example.com'));
@@ -30,4 +30,11 @@ test('auth callback errors are read from link query or hash without exposing pro
   assert.equal(authCallbackErrorFromUrl('https://heal-edu-tech.vercel.app/sign-in?error_code=otp_expired'), 'auth.linkExpired');
   assert.equal(authCallbackErrorFromUrl('https://heal-edu-tech.vercel.app/sign-in#error=access_denied'), 'auth.linkExpired');
   assert.equal(authCallbackErrorFromUrl('https://heal-edu-tech.vercel.app/sign-in'), null);
+});
+test('next redirect only allows known local pages with safe characters', () => {
+  assert.equal(safeNextPath('/library'), '/library');
+  assert.equal(safeNextPath('/library?page=2#books'), '/library?page=2#books');
+  for (const value of [null, '', 'https://evil.example', '//evil.example', '/unknown', '/library\\evil', '/library%5cevil', '/library%0aevil', '/admin/%2f..']) {
+    assert.equal(safeNextPath(value), '/learning');
+  }
 });

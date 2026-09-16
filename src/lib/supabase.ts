@@ -18,3 +18,9 @@ export const supabase = env
 export function authRedirectUrl() {
   return new URL('/sign-in', window.location.origin).toString();
 }
+
+export function passwordResetRedirectUrl() {
+  // Keep recovery on the existing allowlisted auth URL; the PASSWORD_RECOVERY
+  // event switches the form into the new-password state after the link lands.
+  return new URL('/sign-in?mode=recovery', window.location.origin).toString();
+}
