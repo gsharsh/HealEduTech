@@ -8,7 +8,7 @@ This increment implements registration with a display name, email, password and 
 
 The initial SQL migration has been applied. All three application tables have RLS enabled. Supabase Auth owns email addresses and hashed passwords; no password column exists in application tables. Display name and interface preference are non-authorisation Auth metadata. Staff membership is a separate protected table and cannot be set through registration metadata.
 
-The account screen is optional: visitors can browse without logging in. Learning goals, example reading records, interests, activities and showcases remain demos. Real loans, lending availability, reading history persistence, staff account-management UI, password changes, moderation and recommendations are not included.
+Visitors can browse without logging in. The local September increment adds password recovery, private reading history/interests and gated circulation; apply its migrations before enabling those screens against a hosted project. Goals, activities/showcases, staff account-management, facilitator access, moderation and recommendations remain deferred or explicitly labelled examples.
 
 ## Routes and responsibilities
 
@@ -76,7 +76,7 @@ classDiagram
   }
 ```
 
-The registration operation normally creates 1–100 copies per book. `add_book_with_copies` runs with invoker permissions, not elevated permissions, so its writes still obey RLS. A request-stable book UUID prevents sequential retries from creating duplicate records. Concurrent retries may report a uniqueness error; retry with the same ID to recover. Copy counts are inventory only, not loan availability.
+The registration operation normally creates 1–100 copies per book. `add_book_with_copies` runs with invoker permissions, not elevated permissions, so its writes still obey RLS. A request-stable book UUID prevents sequential retries from creating duplicate records. Concurrent retries may report a uniqueness error; retry with the same ID to recover. Inventory counts remain separate from available copies. The circulation migration adds a public aggregate of usable copies without active loans; it exposes no borrower identity.
 
 ## Verification and release gates
 
@@ -85,8 +85,28 @@ The registration operation normally creates 1–100 copies per book. `add_book_w
 - `supabase/tests/access.sql`: rollback-only database integration assertions for a trusted SQL session. The connector's `execute_sql` currently uses a read-only role and cannot run this test; a passing advisor report does not replace it.
 - Public API checks verified catalogue reads work and guests cannot read staff records, insert books, or invoke the staff creation function.
 - Supabase security advisor returned no findings after the initial migration.
-- Still required: real email receipt/verification, successful staff book creation from the browser, refresh persistence, learner-denied writes, and responsive browser verification of the published build.
+- Local September checks passed for the prepared migrations and UI: lint/build, TypeScript unit tests, rollback-only reading/circulation SQL tests, circulation concurrency tests, and mocked browser checks for auth recovery, reading/interests, staff circulation and 360 px responsive layouts.
+- Still required on the hosted project: real email receipt/verification, successful staff book creation from the browser, hosted refresh/cross-account checks, learner-denied writes against deployed policies, and responsive browser verification of the published build.
 
 ## Handover
 
 Keep the migration, templates and this guide in Git. Record the EVG organisation owners, billing contact, email-provider owner and technical maintainer outside public source. Back up the database and test restoration before collecting real student data. No Storage buckets or ebook uploads are part of this increment.
+
+## September increment: deployment checklist
+
+Prepared migrations (not applied to the hosted project by this task):
+
+1. `20260915044351_circulation.sql`
+2. `20260915044352_reading_and_interests.sql`
+
+Apply both through the usual reviewed migration process before deploying the new frontend. Keep circulation disabled until EVG approves lending rules. Registration of an eligible borrower uses an existing verified account's identifier; do not invent accounts or infer eligibility from sign-up metadata. Staff must reconcile any paper loans before enabling digital checkout. The initial policy values are placeholders, not EVG-approved rules.
+
+Reading rows and interests are learner-owned with database access policies. Existing catalogue books can be recorded without a loan. No staff-wide reading access is granted. Loan resolution never changes reading status. Staff permissions come from `staff_members`, not user-editable metadata.
+
+Password recovery returns to `/sign-in?mode=recovery`; verify that this exact redirect is permitted in the hosted Auth URL configuration (and for each intended preview origin). Test a new recovery email after changing redirect configuration. A successful simulated browser check is not evidence of real email delivery. Do not disable confirmation to make a test pass.
+
+### Verification scope
+
+Local checks use a disposable PostgreSQL database with synthetic `auth.users` and `auth.uid()` plus Supabase-style roles. They verify PostgreSQL constraints/RLS/RPC behavior, not hosted Supabase Auth, SMTP, PostgREST deployment or production data. Browser flow checks use simulated API responses, separately from SQL tests. Hosted end-to-end checks remain a release gate.
+
+Auth UX references: [web.dev sign-in form guidance](https://web.dev/articles/sign-in-form-best-practices) and [Supabase password authentication](https://supabase.com/docs/guides/auth/passwords). The existing Supabase stack is retained; no Clerk or Eve runtime was added.

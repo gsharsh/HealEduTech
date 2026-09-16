@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from '../auth/context';
 import { addBook, type NewBook } from '../library/catalogue';
+import { libraryTranslations } from '../library/libraryTranslations';
 const emptyBook: NewBook = { title_en: '', title_vi: '', author: '', language: 'vi', topic: 'stories', description_en: '', description_vi: '', copies: 1 };
 export function BookManagement() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const copy = libraryTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
   const { user, loading, canManageBooks } = useAccount();
   const [book, setBook] = useState<NewBook>(emptyBook);
   const [requestId, setRequestId] = useState(() => crypto.randomUUID());
@@ -25,6 +27,7 @@ export function BookManagement() {
   if (loading) return <p role="status">{t('auth.loading')}</p>;
   return <>
     <div className="page-heading"><div><span className="eyebrow">{t('staff')}</span><h1>{t('catalogue.addTitle')}</h1><p>{t('catalogue.staffBody')}</p></div></div>
+    {canManageBooks && <nav className="form-actions"><Link className="secondary" to="/admin/circulation">{copy.desk} →</Link></nav>}
     {!user ? <section className="staff-panel"><p>{t('catalogue.signInRequired')}</p><Link className="primary" to="/sign-in">{t('auth.account')}</Link></section> : !canManageBooks ? <section className="staff-panel"><p>{t('catalogue.staffRequired')}</p><Link className="secondary" to="/library">{t('library')}</Link></section> : <section className="staff-panel">
       <form className="data-form" onSubmit={event => void submit(event)}><fieldset disabled={busy}>
         <div className="form-grid">{(['title_en', 'title_vi', 'author'] as const).map(field => <label key={field}>{t(`catalogue.${field}`)}<input value={book[field]} onChange={event => setBook(value => ({ ...value, [field]: event.target.value }))} maxLength={200} required={field !== 'author'} /></label>)}
@@ -38,6 +41,5 @@ export function BookManagement() {
       {status === 'saved' && <p role="status">{t('catalogue.saved')} <Link className="text-link" to="/library">{t('library')} →</Link></p>}
       {status === 'error' && <p role="alert" className="form-error">{t('catalogue.saveError')}</p>}
     </section>}
-    <p className="muted section-block">{t('catalogue.circulationLater')}</p>
   </>;
 }

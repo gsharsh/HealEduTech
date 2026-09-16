@@ -1,143 +1,103 @@
-import { useEffect, useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { authRedirectUrl, supabase } from '../../lib/supabase';
+import { authRedirectUrl, passwordResetRedirectUrl, supabase } from '../../lib/supabase';
 import { useAccount } from './context';
-import { authCallbackErrorFromUrl, authErrorKey, validEmail, validPassword } from './validation';
+import { authCallbackErrorFromUrl, authErrorKey, safeNextPath, validEmail, validPassword } from './validation';
+import './auth.css';
 
-type Mode = 'register' | 'password' | 'magic-link';
-type PendingEmail = { email: string; signup: boolean };
+type Mode = 'sign-in' | 'register' | 'recover' | 'reset' | 'magic-link';
+type PendingEmail = { email: string; signup: boolean; recovery?: boolean };
 
 export function SignInPage() {
   const { t, i18n } = useTranslation();
-  const { user, loading } = useAccount();
-  const [mode, setMode] = useState<Mode>('register');
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmation, setConfirmation] = useState('');
-  const [pending, setPending] = useState<PendingEmail | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [cooldown, setCooldown] = useState(0);
-  const [error, setError] = useState(() => authCallbackErrorFromUrl(window.location.href) ?? '');
-  const [showPassword, setShowPassword] = useState(false);
+  const { user, loading, recovery, clearRecovery } = useAccount();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isResetPath = location.pathname === '/reset-password';
+  const isRecoveryPath = new URLSearchParams(location.search).get('mode') === 'recovery';
+  const next = useMemo(() => safeNextPath(new URLSearchParams(location.search).get('next')), [location.search]);
+  const [mode, setMode] = useState<Mode>(isResetPath ? 'reset' : isRecoveryPath ? 'reset' : 'sign-in');
+  const [email, setEmail] = useState(''); const [name, setName] = useState('');
+  const [password, setPassword] = useState(''); const [confirmation, setConfirmation] = useState('');
+  const [pending, setPending] = useState<PendingEmail | null>(null); const [busy, setBusy] = useState(false); const [cooldown, setCooldown] = useState(0);
+  const [error, setError] = useState(() => authCallbackErrorFromUrl(window.location.href) ?? ''); const [notice, setNotice] = useState(''); const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(() => { if (authCallbackErrorFromUrl(window.location.href)) window.history.replaceState({}, document.title, window.location.pathname); }, []);
+  useEffect(() => { if (!cooldown) return; const timer = window.setTimeout(() => setCooldown(value => Math.max(0, value - 1)), 1000); return () => window.clearTimeout(timer); }, [cooldown]);
   useEffect(() => {
-    if (authCallbackErrorFromUrl(window.location.href)) window.history.replaceState({}, document.title, window.location.pathname);
-  }, []);
-
-  useEffect(() => {
-    if (!cooldown) return;
-    const timer = window.setTimeout(() => setCooldown(value => Math.max(0, value - 1)), 1000);
+    if (!recovery) return;
+    const timer = window.setTimeout(() => { setMode('reset'); setPending(null); setError(''); }, 0);
     return () => window.clearTimeout(timer);
-  }, [cooldown]);
+  }, [recovery]);
 
-  function resetForm(nextMode: Mode) {
-    setMode(nextMode);
-    setPending(null);
-    setError('');
-    setPassword('');
-    setConfirmation('');
-    setCooldown(0);
+  function changeMode(nextMode: Mode) {
+    setMode(nextMode); setPending(null); setError(''); setNotice(''); setPassword(''); setConfirmation(''); setCooldown(0);
+    if (nextMode === 'reset') navigate('/reset-password', { replace: true }); else if (location.pathname === '/reset-password') navigate('/sign-in', { replace: true });
   }
 
   async function submit(event: FormEvent) {
-    event.preventDefault();
-    if (!supabase || busy || pending) return;
-    setError('');
+    event.preventDefault(); if (!supabase || busy || pending) return; setError(''); setNotice('');
     const address = email.trim();
-    if (!validEmail(address)) { setError('auth.invalidEmail'); return; }
-    if (mode === 'register') {
-      if (!name.trim() || name.trim().length > 80) { setError('auth.invalidName'); return; }
-      if (!validPassword(password)) { setError('auth.passwordHelp'); return; }
-      if (password !== confirmation) { setError('auth.passwordMismatch'); return; }
+    if (mode !== 'reset' && !validEmail(address)) { setError('auth.invalidEmail'); return; }
+    if (mode === 'register') { if (!name.trim() || name.trim().length > 80) { setError('auth.invalidName'); return; } if (!validPassword(password)) { setError('auth.passwordHelp'); return; } if (password !== confirmation) { setError('auth.passwordMismatch'); return; } }
+    if (mode === 'sign-in' && !password) { setError('auth.invalidCredentials'); return; }
+    if (mode === 'reset') { if (!validPassword(password)) { setError('auth.passwordHelp'); return; } if (password !== confirmation) { setError('auth.passwordMismatch'); return; }
     }
-    if (mode === 'password' && !password) { setError('auth.invalidCredentials'); return; }
     setBusy(true);
     try {
       if (mode === 'register') {
-        const result = await supabase.auth.signUp({ email: address, password, options: {
-          emailRedirectTo: authRedirectUrl(),
-          data: { display_name: name.trim(), preferred_language: i18n.language === 'vi' ? 'vi' : 'en' },
-        } });
-        if (result.error) throw result.error;
-        setPassword(''); setConfirmation('');
-        if (!result.data.session) { setPending({ email: address, signup: true }); setCooldown(60); }
-      } else if (mode === 'password') {
-        const result = await supabase.auth.signInWithPassword({ email: address, password });
-        if (result.error) throw result.error;
-        setPassword('');
+        const result = await supabase.auth.signUp({ email: address, password, options: { emailRedirectTo: authRedirectUrl(), data: { display_name: name.trim(), preferred_language: i18n.language === 'vi' ? 'vi' : 'en' } } });
+        if (result.error) throw result.error; setPassword(''); setConfirmation('');
+        if (!result.data.session) { setPending({ email: address, signup: true }); setCooldown(60); } else navigate(next, { replace: true });
+      } else if (mode === 'sign-in') {
+        const result = await supabase.auth.signInWithPassword({ email: address, password }); if (result.error) throw result.error; setPassword(''); navigate(next, { replace: true });
+      } else if (mode === 'magic-link') {
+        const result = await supabase.auth.signInWithOtp({ email: address, options: { shouldCreateUser: false, emailRedirectTo: authRedirectUrl() } }); if (result.error) throw result.error; setPending({ email: address, signup: false }); setCooldown(60);
+      } else if (mode === 'recover') {
+        const result = await supabase.auth.resetPasswordForEmail(address, { redirectTo: passwordResetRedirectUrl() }); if (result.error) throw result.error; setPending({ email: address, signup: false, recovery: true }); setCooldown(60);
       } else {
-        const result = await supabase.auth.signInWithOtp({ email: address, options: {
-          shouldCreateUser: false,
-          emailRedirectTo: authRedirectUrl(),
-        } });
-        if (result.error) throw result.error;
-        setPending({ email: address, signup: false }); setCooldown(60);
+        if (!recovery) { setError('auth.invalidRecovery'); return; }
+        const result = await supabase.auth.updateUser({ password }); if (result.error) throw result.error;
+        clearRecovery();
+        const signOutResult = await supabase.auth.signOut({ scope: 'local' });
+        setPassword(''); setConfirmation(''); setMode('sign-in'); setNotice(signOutResult.error ? 'auth.passwordUpdatedSignOutFailed' : 'auth.passwordUpdated'); navigate('/sign-in', { replace: true });
       }
-    } catch (failure) { setError(authErrorKey(failure as { code?: string; status?: number })); }
-    finally { setBusy(false); }
+    } catch (failure) { setError(authErrorKey(failure as { code?: string; status?: number })); } finally { setBusy(false); }
   }
 
   async function resend() {
-    if (!supabase || !pending || cooldown || busy) return;
-    setBusy(true); setError('');
+    if (!supabase || !pending || cooldown || busy) return; setBusy(true); setError('');
     try {
-      const result = pending.signup
-        ? await supabase.auth.resend({ type: 'signup', email: pending.email, options: { emailRedirectTo: authRedirectUrl() } })
-        : await supabase.auth.signInWithOtp({ email: pending.email, options: { shouldCreateUser: false, emailRedirectTo: authRedirectUrl() } });
-      if (result.error) throw result.error;
-      setCooldown(60);
-    } catch (failure) { setError(authErrorKey(failure as { code?: string; status?: number })); }
-    finally { setBusy(false); }
+      const result = pending.recovery ? await supabase.auth.resetPasswordForEmail(pending.email, { redirectTo: passwordResetRedirectUrl() }) : pending.signup ? await supabase.auth.resend({ type: 'signup', email: pending.email, options: { emailRedirectTo: authRedirectUrl() } }) : await supabase.auth.signInWithOtp({ email: pending.email, options: { shouldCreateUser: false, emailRedirectTo: authRedirectUrl() } });
+      if (result.error) throw result.error; setCooldown(60);
+    } catch (failure) { setError(authErrorKey(failure as { code?: string; status?: number })); } finally { setBusy(false); }
   }
 
-  async function signOut() {
-    if (!supabase) return;
+  async function signOut() { if (!supabase) return; setBusy(true); setError(''); try { const { error: signOutError } = await supabase.auth.signOut({ scope: 'local' }); if (signOutError) throw signOutError; clearRecovery(); } catch { setError('auth.failed'); } finally { setBusy(false); } }
+
+  async function resendConfirmation() {
+    if (!supabase || !email.trim() || cooldown || busy || !validEmail(email.trim())) { setError('auth.invalidEmail'); return; }
     setBusy(true); setError('');
-    try {
-      const { error: signOutError } = await supabase.auth.signOut({ scope: 'local' });
-      if (signOutError) throw signOutError;
-    } catch { setError('auth.failed'); }
-    finally { setBusy(false); }
+    try { const result = await supabase.auth.resend({ type: 'signup', email: email.trim(), options: { emailRedirectTo: authRedirectUrl() } }); if (result.error) throw result.error; setPending({ email: email.trim(), signup: true }); setCooldown(60); }
+    catch (failure) { setError(authErrorKey(failure as { code?: string; status?: number })); } finally { setBusy(false); }
   }
 
-  return <main className="sign-in-page"><section className="sign-in-card account-card">
-    <span className="brand-mark">e.</span><span className="eyebrow">EVG VIETNAM</span>
-    <h1>{t(user ? 'auth.signedIn' : pending ? 'auth.verifyTitle' : 'auth.title')}</h1>
-    {loading ? <p role="status">{t('auth.loading')}</p> : user ? <>
-      <p>{user.email}</p><Link className="primary" to="/library">{t('library')}</Link>
-      <Link className="secondary" to="/admin">{t('staff')}</Link>
-      <button className="secondary" disabled={busy} onClick={() => void signOut()}>{t('auth.signOut')}</button>
-      <p className="muted">{t('auth.sharedDevice')}</p>
-    </> : !supabase ? <p role="status">{t('auth.notConfigured')}</p> : <>
-      {!pending && <div className="account-tabs" aria-label={t('auth.methods')}>
-        {(['register', 'password', 'magic-link'] as const).map(value => <button key={value} type="button" aria-pressed={mode === value} disabled={busy}
-          onClick={() => resetForm(value)}>{t(`auth.${value}`)}</button>)}
-      </div>}
-      {pending ? <div className="email-link-panel" role="status">
-        <p>{t('auth.checkEmail', { email: pending.email })}</p>
-        <p className="muted">{t('auth.linkHelp')}</p>
-      </div> : <form className="data-form" onSubmit={event => void submit(event)} noValidate><fieldset disabled={busy}>
-        {mode === 'register' && <label>{t('auth.name')}<input value={name} onChange={event => setName(event.target.value)} autoComplete="nickname" maxLength={80} required /></label>}
-        <label>{t('auth.email')}<input type="email" value={email} onChange={event => setEmail(event.target.value)} autoComplete="email" maxLength={254} required /></label>
-        {mode === 'password' || mode === 'register' ? <>
-          <label>{t('auth.passwordLabel')}<input type={showPassword ? 'text' : 'password'} value={password} onChange={event => setPassword(event.target.value)} autoComplete={mode === 'register' ? 'new-password' : 'current-password'} maxLength={128} required aria-describedby={mode === 'register' ? 'password-help' : undefined} /></label>
-          {mode === 'register' && <>
-            <p className="muted" id="password-help">{t('auth.passwordHelp')}</p>
-            <label>{t('auth.confirmPassword')}<input type={showPassword ? 'text' : 'password'} value={confirmation} onChange={event => setConfirmation(event.target.value)} autoComplete="new-password" maxLength={128} required /></label>
-          </>}
-          <label className="checkbox-label"><input type="checkbox" checked={showPassword} onChange={event => setShowPassword(event.target.checked)} />{t('auth.showPassword')}</label>
-        </> : <p className="muted">{t('auth.magicLinkHelp')}</p>}
-        <button className="primary" type="submit">{t(busy ? 'auth.working' : mode === 'register' ? 'auth.create' : mode === 'password' ? 'auth.signIn' : 'auth.sendLink')}</button>
+  const title = mode === 'reset' ? 'auth.resetTitle' : user ? 'auth.signedIn' : pending ? (pending.recovery ? 'auth.recoverTitle' : 'auth.verifyTitle') : mode === 'recover' ? 'auth.recoverTitle' : mode === 'register' ? 'auth.registerTitle' : 'auth.signInTitle';
+  return <main className="sign-in-page"><section className="sign-in-card account-card" aria-labelledby="auth-title">
+    <span className="brand-mark" aria-hidden="true">e.</span><span className="eyebrow">EVG VIETNAM</span><h1 id="auth-title">{t(title)}</h1>{mode === 'sign-in' && !user && <p className="auth-subtitle">{t('auth.signInSubtitle')}</p>}
+    {loading ? <p role="status">{t('auth.loading')}</p> : user && mode !== 'reset' ? <><p>{user.email}</p><Link className="primary" to={next}>{t('auth.continue')}</Link><Link className="secondary" to="/admin">{t('staff')}</Link><button className="secondary" type="button" disabled={busy} onClick={() => void signOut()}>{t('auth.signOut')}</button><p className="muted">{t('auth.sharedDevice')}</p></> : !supabase ? <p role="status">{t('auth.notConfigured')}</p> : <>
+      {!pending && mode !== 'reset' && <nav className="account-tabs" aria-label={t('auth.methods')}><button type="button" aria-pressed={mode === 'sign-in'} disabled={busy} onClick={() => changeMode('sign-in')}>{t('auth.signIn')}</button><button type="button" aria-pressed={mode === 'register'} disabled={busy} onClick={() => changeMode('register')}>{t('auth.register')}</button></nav>}
+      {pending ? <div className="email-link-panel" role="status"><p>{t(pending.recovery ? 'auth.recoverCheckEmail' : 'auth.checkEmail', { email: pending.email })}</p><p className="muted">{t('auth.linkHelp')}</p></div> : mode === 'reset' && !recovery ? <p role="status" className="form-error">{t('auth.invalidRecovery')}</p> : <form className="data-form" onSubmit={event => void submit(event)} noValidate><fieldset disabled={busy}>
+        {mode === 'register' && <label htmlFor="display-name">{t('auth.name')}<input id="display-name" name="name" value={name} onChange={event => setName(event.target.value)} autoComplete="name" maxLength={80} required /></label>}
+        {mode !== 'reset' && <label htmlFor="auth-email">{t('auth.email')}<input id="auth-email" name="email" type="email" value={email} onChange={event => setEmail(event.target.value)} autoComplete="username" maxLength={254} required /></label>}
+        {mode === 'sign-in' || mode === 'register' || mode === 'reset' ? <><label htmlFor={mode === 'reset' || mode === 'register' ? 'new-password' : 'current-password'}>{t('auth.passwordLabel')}<input id={mode === 'reset' || mode === 'register' ? 'new-password' : 'current-password'} name="password" type={showPassword ? 'text' : 'password'} value={password} onChange={event => setPassword(event.target.value)} autoComplete={mode === 'reset' || mode === 'register' ? 'new-password' : 'current-password'} maxLength={128} required aria-describedby={mode !== 'sign-in' ? 'password-help' : undefined} /></label>{mode !== 'sign-in' && <p className="muted" id="password-help">{t('auth.passwordHelp')}</p>}{(mode === 'register' || mode === 'reset') && <label htmlFor="confirm-password">{t('auth.confirmPassword')}<input id="confirm-password" name="password-confirmation" type={showPassword ? 'text' : 'password'} value={confirmation} onChange={event => setConfirmation(event.target.value)} autoComplete="new-password" maxLength={128} required /></label>}<label className="checkbox-label" htmlFor="show-password"><input id="show-password" name="show-password" type="checkbox" checked={showPassword} onChange={event => setShowPassword(event.target.checked)} />{t('auth.showPassword')}</label></> : <p className="muted">{t(mode === 'recover' ? 'auth.recoverHelp' : 'auth.magicLinkHelp')}</p>}
+        <button className="primary" type="submit">{t(busy ? 'auth.working' : mode === 'register' ? 'auth.create' : mode === 'sign-in' ? 'auth.signIn' : mode === 'recover' ? 'auth.sendReset' : mode === 'reset' ? 'auth.updatePassword' : 'auth.sendLink')}</button>
       </fieldset></form>}
-      {pending && <div className="form-actions">
-        <button className="secondary" disabled={busy || cooldown > 0} onClick={() => void resend()}>{cooldown > 0 ? t('auth.resendAfter', { seconds: cooldown }) : t('auth.resend')}</button>
-        <button className="secondary" disabled={busy} onClick={() => resetForm(mode)}>{t('auth.back')}</button>
-      </div>}
+      {!pending && mode === 'sign-in' && <div className="auth-links"><button type="button" className="text-link" onClick={() => changeMode('recover')}>{t('auth.forgotPassword')}</button><button type="button" className="text-link" onClick={() => changeMode('magic-link')}>{t('auth.magicLink')}</button></div>}
+      {mode === 'reset' && !pending && <button type="button" className="secondary" onClick={() => changeMode('sign-in')}>{t('auth.back')}</button>}
+      {pending && <div className="form-actions"><button type="button" className="secondary" disabled={busy || cooldown > 0} onClick={() => void resend()}>{cooldown > 0 ? t('auth.resendAfter', { seconds: cooldown }) : t('auth.resend')}</button><button type="button" className="secondary" disabled={busy} onClick={() => changeMode(mode === 'recover' || mode === 'magic-link' ? 'sign-in' : 'register')}>{t('auth.back')}</button></div>}
     </>}
-    {error && <p role="alert" className="form-error">{t(error)}</p>}
-    <Link className="text-link" to="/learning">{t('auth.browse')}</Link>
-    <button className="language-button" onClick={() => void i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')}>{i18n.language === 'vi' ? 'English' : 'Tiếng Việt'}</button>
+    {notice && <p role="status" className="form-success">{t(notice)}</p>}{error && <p role="alert" className="form-error">{t(error)}</p>}{error === 'auth.unconfirmed' && !pending && <button type="button" className="text-link" disabled={busy || cooldown > 0} onClick={() => void resendConfirmation()}>{t(cooldown > 0 ? 'auth.resendAfter' : 'auth.resendConfirmation', { seconds: cooldown })}</button>}<Link className="text-link" to="/learning">{t('auth.browse')}</Link><button type="button" className="language-button" onClick={() => void i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')}>{i18n.language === 'vi' ? 'English' : 'Tiếng Việt'}</button>
   </section></main>;
 }

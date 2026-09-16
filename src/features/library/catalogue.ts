@@ -5,6 +5,7 @@ export interface CatalogueBook {
   language: 'en' | 'vi' | 'bilingual'; topic: 'nature' | 'stories' | 'science';
   description_en: string; description_vi: string;
   book_copies: { count: number }[];
+  available_copies?: number;
 }
 export interface NewBook {
   title_en: string; title_vi: string; author: string;
@@ -22,7 +23,17 @@ export async function listBooks(page: number, signal: AbortSignal, query = '', t
     .order('created_at', { ascending: false }).order('id')
     .range(page * 24, page * 24 + 23).abortSignal(signal);
   if (error) throw error;
-  return { books: data as CatalogueBook[], total: count ?? 0 };
+  const books = data as CatalogueBook[];
+  if (books.length) {
+    const availability = await supabase.from('book_availability')
+      .select('book_id,available_copies').in('book_id', books.map(book => book.id)).abortSignal(signal);
+    // Older deployments can still browse books while the circulation migration awaits release.
+    if (!availability.error) {
+      const counts = new Map(availability.data.map(row => [row.book_id, row.available_copies as number]));
+      books.forEach(book => { book.available_copies = counts.get(book.id); });
+    }
+  }
+  return { books, total: count ?? 0 };
 }
 export async function addBook(id: string, book: NewBook) {
   if (!supabase) throw new Error('Database is not configured');

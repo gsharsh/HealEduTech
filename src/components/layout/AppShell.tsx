@@ -2,9 +2,13 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
+import { useAccount } from '../../features/auth/context';
+import { libraryTranslations } from '../../features/library/libraryTranslations';
 const destinations = [['/learning', 'home', '⌂'], ['/library', 'library', '▤'], ['/explore', 'explore', '⌁'], ['/community', 'community', '☷']];
 export function AppShell() {
   const { t, i18n } = useTranslation();
+  const { user } = useAccount();
+  const copy = libraryTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
   const [help, setHelp] = useState(false);
   const { pathname } = useLocation();
   useEffect(() => {
@@ -36,7 +40,7 @@ export function AppShell() {
       <header className="topbar">
         <span className="centre-name">{t('centre')}</span>
         <div className="topbar-actions">
-          <NavLink className="language-button" to="/sign-in">{t('auth.account')}</NavLink>
+          <NavLink className="language-button" to="/sign-in">{user ? copy.account : copy.signIn}</NavLink>
           <button className="language-button" onClick={() => void i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')} lang={i18n.language === 'vi' ? 'en' : 'vi'}>{i18n.language === 'vi' ? 'English' : 'Tiếng Việt'} <span aria-hidden="true">◎</span>
           </button>
           <button className="help-button" aria-expanded={help} onClick={() => setHelp(value => !value)}>{t('help')} <span aria-hidden="true">?</span>
@@ -47,7 +51,7 @@ export function AppShell() {
         <p>{t('helpBody')}</p>
         <button className="secondary" onClick={() => setHelp(false)}>{t('close')}</button>
       </div>}<div className="demo-banner">
-        <span className="demo-dot" />{t(supabase ? 'auth.pilotBanner' : 'demo')}</div>
+        <span className="demo-dot" />{supabase ? copy.pilot : t('demo')}</div>
       <main id="main-content" tabIndex={-1}>
         <Outlet />
       </main>
