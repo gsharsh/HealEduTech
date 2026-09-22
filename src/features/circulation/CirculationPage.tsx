@@ -98,6 +98,8 @@ function CirculationDesk({ staffRole }: { staffRole: 'librarian' | 'administrato
   const formatDate = (value: string) => dateFormatter.format(new Date(`${value}T00:00:00`));
   const activeCopyIds = new Set(loans.filter(loan => !loan.resolved_at).map(loan => loan.copy_id));
   const lendableCopies = copies.filter(item => item.condition === 'usable' && !activeCopyIds.has(item.id));
+  const eligibleBorrowers = borrowers.filter(item => item.eligible);
+  const canRecordCheckout = eligibleBorrowers.length > 0 && lendableCopies.length > 0;
 
   return <>
     <div className="page-heading"><div><span className="eyebrow">{t('staff')}</span><h1>{t('circulation.title')}</h1><p>{t('circulation.body')}</p></div></div>
@@ -115,10 +117,11 @@ function CirculationDesk({ staffRole }: { staffRole: 'librarian' | 'administrato
         <button className="primary" disabled={busy}>{t('circulation.registerButton')}</button>
       </form></section>
       <section className="circulation-card"><h2>{t('circulation.checkout')}</h2><form className="circulation-form" onSubmit={event => void submitCheckout(event)}>
-        <label>{t('circulation.borrower')}<select value={borrowerId} onChange={event => setBorrowerId(event.target.value)} required><option value="">—</option>{borrowers.filter(item => item.eligible).map(item => <option key={item.user_id} value={item.user_id}>{item.display_name}</option>)}</select></label>
-        <label>{t('circulation.copy')}<select value={copyId} onChange={event => setCopyId(event.target.value)} required><option value="">—</option>{lendableCopies.map(item => <option key={item.id} value={item.id}>{item.inventory_code} · {item.books?.title_en ?? item.book_id}</option>)}</select></label>
+        {!canRecordCheckout && <p className="circulation-muted">{t(eligibleBorrowers.length === 0 ? 'circulation.noBorrowersAction' : 'circulation.noCopiesAction')}</p>}
+        <label>{t('circulation.borrower')}<select value={borrowerId} onChange={event => setBorrowerId(event.target.value)} required disabled={eligibleBorrowers.length === 0}><option value="">{t('circulation.chooseBorrower')}</option>{eligibleBorrowers.map(item => <option key={item.user_id} value={item.user_id}>{item.display_name}</option>)}</select></label>
+        <label>{t('circulation.copy')}<select value={copyId} onChange={event => setCopyId(event.target.value)} required disabled={lendableCopies.length === 0}><option value="">{t('circulation.chooseCopy')}</option>{lendableCopies.map(item => <option key={item.id} value={item.id}>{item.inventory_code} · {item.books?.title_en ?? item.book_id}</option>)}</select></label>
         <label>{t('circulation.dueDate')}<input type="date" value={dueDate} onChange={event => setDueDate(event.target.value)} required /></label>
-        <button className="primary" disabled={busy}>{t('circulation.checkout')}</button>
+        <button className="primary" disabled={busy || !canRecordCheckout}>{t('circulation.checkout')}</button>
       </form></section>
       <section className="circulation-card circulation-wide"><h2>{t('circulation.loans')}</h2>{loans.length === 0 ? <p className="circulation-muted">{t('circulation.noLoans')}</p> : <div className="table-wrap"><table className="circulation-table"><thead><tr><th>{t('circulation.borrower')}</th><th>{t('circulation.copy')}</th><th>{t('circulation.dueDate')}</th><th>{t('status')}</th><th /></tr></thead><tbody>{loans.map(loan => <tr key={loan.id}><td>{borrowers.find(item => item.user_id === loan.borrower_user_id)?.display_name ?? loan.borrower_user_id}</td><td>{loan.book_copies?.inventory_code ?? loan.copy_id}</td><td>{t('circulation.dueOn', { date: formatDate(loan.due_date) })}</td><td>{loan.resolved_at ? t('circulation.resolved') : t('circulation.active')}</td><td>{!loan.resolved_at && <div className="circulation-actions"><button className="secondary" disabled={busy} onClick={() => void finish(loan, 'returned', 'usable')}>{t('circulation.return')}</button><button className="secondary" disabled={busy} onClick={() => void finish(loan, 'returned', 'damaged')}>{t('circulation.damaged')}</button><button className="secondary" disabled={busy} onClick={() => void finish(loan, 'lost')}>{t('circulation.lost')}</button></div>}</td></tr>)}</tbody></table></div>}</section>
     </div>

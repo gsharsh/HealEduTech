@@ -8,7 +8,7 @@ This increment implements registration with a display name, email, password and 
 
 The initial SQL migration has been applied. All three application tables have RLS enabled. Supabase Auth owns email addresses and hashed passwords; no password column exists in application tables. Display name and interface preference are non-authorisation Auth metadata. Staff membership is a separate protected table and cannot be set through registration metadata.
 
-Visitors can browse without logging in. The local September increment adds password recovery, private reading history/interests and gated circulation; apply its migrations before enabling those screens against a hosted project. Goals, activities/showcases, staff account-management, facilitator access, moderation and recommendations remain deferred or explicitly labelled examples.
+Visitors can browse without logging in. The local September increment adds password recovery, private reading history/interests, gated circulation and staff access management; apply its migrations before enabling those screens against a hosted project. Goals, activities/showcases, facilitator access, moderation and recommendations remain deferred or explicitly labelled examples.
 
 ## Routes and responsibilities
 
@@ -16,7 +16,7 @@ Visitors can browse without logging in. The local September increment adds passw
 |---|---|---|
 | `/sign-in` | Register, confirm by email link, password or magic-link sign-in, sign out | Public entry; Supabase validates credentials and links |
 | `/library` | Read real book records and registered copy counts, paginated | Public read-only |
-| `/admin` | Save a bilingual book and 1–100 physical copies in one database transaction | Authenticated account listed in `staff_members` |
+| `/admin` | Save a bilingual book and 1–100 physical copies in one database transaction; administrators can grant/revoke staff access | Authenticated account listed in `staff_members`; access changes require `administrator` |
 
 An empty live catalogue stays empty; it does not fall back to fictional books after a failed request. Without public Supabase configuration, the original library/staff demo is available and account submission is disabled.
 
@@ -34,18 +34,44 @@ Before declaring signup and email-link sign-in ready, the technical owner must v
 
 Do not send SMTP passwords or service-role keys through the frontend. The frontend uses only `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` (legacy anon-key fallback remains for compatibility). Sessions use tab-scoped `sessionStorage`; refresh keeps the session, and users should explicitly sign out on shared devices.
 
-## First staff account
+## Staff access and first administrator
 
-Register and verify the nominated owner's email in the app. A trusted database operator then grants the role using the SQL Editor, substituting the explicitly approved email:
+Staff access is stored in `public.staff_members`, not Auth metadata. The frontend never uses a service-role key and never trusts user-editable metadata for authorisation. Existing administrators manage staff from `/admin` by entering an existing Supabase Auth email and choosing `librarian` or `administrator`. The database refuses ordinary learner calls and refuses to remove the last administrator.
+
+For the first administrator, apply `supabase/migrations/20260920123529_staff_access_management.sql`, then register and confirm `gsharsh11235@gmail.com` in the app. The migration already adds this email to the trusted bootstrap allowlist, and the hosted data migration `20260920123837_assign_initial_admin_gsharsh.sql` assigns the confirmed account as administrator.
+
+To add a different first-admin bootstrap email later, run this in the hosted project `znftduqfbwfrprhawgxh` SQL Editor:
 
 ```sql
-insert into public.staff_members(user_id, role)
-select id, 'administrator' from auth.users
-where email = 'APPROVED_OWNER_EMAIL' and email_confirmed_at is not null
-on conflict (user_id) do nothing;
+insert into public.staff_admin_bootstrap(email, note)
+values (lower(trim('APPROVED_OWNER_EMAIL')), 'Approved HealEduTech bootstrap administrator')
+on conflict (email) do update
+set note = excluded.note;
 ```
 
-Confirm exactly one account was selected before granting access. The user can refresh the app to load the role. Never automatically make the first public signup an administrator. Organisation ownership and application staff access are separate permissions.
+This claim only works while no administrator exists, only for a confirmed Auth user whose server-side email matches an unused bootstrap row, and it records the bootstrap row as used. Do not seed a broad domain, public signup, service-role key, or client metadata. Organisation ownership and application staff access are separate permissions.
+
+Administrators can also assign roles directly from the Supabase Dashboard. In SQL Editor, use the private dashboard helper so you can target an Auth user by email instead of copying UUIDs:
+
+```sql
+select *
+from staff_private.assign_staff_from_dashboard(
+  'staff-member@example.com',
+  'librarian',
+  'gsharsh11235@gmail.com'
+);
+```
+
+Use `'administrator'` instead of `'librarian'` when the person should manage other staff. The target email must already exist in Authentication → Users. The helper is not exposed to website users; it is intended for trusted Dashboard operators running SQL in the correct hosted project. You may also edit `public.staff_members` in Table Editor, but then you must copy the user's UUID from Authentication → Users and choose only `librarian` or `administrator`.
+
+To check the live state without changing it:
+
+```sql
+select sm.user_id, u.email, sm.role, sm.created_at, sm.updated_at
+from public.staff_members sm
+join auth.users u on u.id = sm.user_id
+order by sm.role, u.email;
+```
 
 ## Data model
 
@@ -61,6 +87,7 @@ classDiagram
   class StaffMember {
     uuid user_id
     string role
+    uuid granted_by
   }
   class Book {
     uuid id
@@ -82,7 +109,7 @@ The registration operation normally creates 1–100 copies per book. `add_book_w
 
 - `node --test tests/auth-validation.test.ts`: email format checks, password bounds, link callback errors and safe error mapping.
 - `npm run build` and `npm run lint`: compile and static checks.
-- `supabase/tests/access.sql`: rollback-only database integration assertions for a trusted SQL session. The connector's `execute_sql` currently uses a read-only role and cannot run this test; a passing advisor report does not replace it.
+- `supabase/tests/access.sql`: rollback-only database integration assertions for first-admin bootstrap, admin grants, last-admin protection, staff-only book writes and learner/guest denial. The connector's `execute_sql` currently uses a read-only role and cannot run this test; a passing advisor report does not replace it.
 - Public API checks verified catalogue reads work and guests cannot read staff records, insert books, or invoke the staff creation function.
 - Supabase security advisor returned no findings after the initial migration.
 - Local September checks passed for the prepared migrations and UI: lint/build, TypeScript unit tests, rollback-only reading/circulation SQL tests, circulation concurrency tests, and mocked browser checks for auth recovery, reading/interests, staff circulation and 360 px responsive layouts.
@@ -94,12 +121,17 @@ Keep the migration, templates and this guide in Git. Record the EVG organisation
 
 ## September increment: deployment checklist
 
-Prepared migrations (not applied to the hosted project by this task):
+Hosted project `znftduqfbwfrprhawgxh` has these migrations applied:
 
-1. `20260915044351_circulation.sql`
-2. `20260915044352_reading_and_interests.sql`
+1. `20260920123336_circulation.sql`
+2. `20260920123406_reading_and_interests.sql`
+3. `20260920123529_staff_access_management.sql`
+4. `20260920123758_sample_catalogue_seed.sql`
+5. `20260920123837_assign_initial_admin_gsharsh.sql`
 
-Apply both through the usual reviewed migration process before deploying the new frontend. Keep circulation disabled until EVG approves lending rules. Registration of an eligible borrower uses an existing verified account's identifier; do not invent accounts or infer eligibility from sign-up metadata. Staff must reconcile any paper loans before enabling digital checkout. The initial policy values are placeholders, not EVG-approved rules.
+Keep circulation disabled until EVG approves lending rules. Registration of an eligible borrower uses an existing verified account's identifier; do not invent accounts or infer eligibility from sign-up metadata. Staff must reconcile any paper loans before enabling digital checkout. The initial policy values are placeholders, not EVG-approved rules.
+
+Before any future hosted migration or seed, confirm the connected Supabase project is `znftduqfbwfrprhawgxh`. A connector pointed at a different project must be reconnected or scoped to HealEduTech first; do not apply HealEduTech migrations or `supabase/seed.sql` to another project.
 
 Reading rows and interests are learner-owned with database access policies. Existing catalogue books can be recorded without a loan. No staff-wide reading access is granted. Loan resolution never changes reading status. Staff permissions come from `staff_members`, not user-editable metadata.
 

@@ -27,6 +27,7 @@ export function LiveLibraryPage() {
   function changePage(next: number) { setResult(value => ({ ...value, loading: true })); setPage(next); }
   function changeQuery(next: string) { setResult(value => ({ ...value, loading: true })); setQuery(next); setPage(0); }
   function changeTopic(next: typeof topic) { setResult(value => ({ ...value, loading: true })); setTopic(next); setPage(0); }
+  const hasFilters = query.trim().length > 0 || topic !== 'all';
   return <>
     <div className="page-heading"><div><span className="eyebrow">{t('library')}</span><h1>{t('libraryTitle')}</h1><p>{t('catalogue.body')}</p></div></div>
     <form className="library-filters" onSubmit={event => event.preventDefault()}>
@@ -34,11 +35,13 @@ export function LiveLibraryPage() {
       <label>{t('topic')}<select value={topic} onChange={event => changeTopic(event.target.value as typeof topic)}>{(['all', 'nature', 'stories', 'science'] as const).map(value => <option key={value} value={value}>{t(`topics.${value}`)}</option>)}</select></label>
       {(query || topic !== 'all') && <button type="button" className="secondary" onClick={() => { setResult(value => ({ ...value, loading: true })); setQuery(''); setTopic('all'); setPage(0); }}>{copy.clear}</button>}
     </form>
-    {result.loading ? <p role="status">{t('auth.loading')}</p> : result.failed ? <div role="alert" className="empty-state">
+    {result.loading ? <p role="status">{t('catalogue.loading')}</p> : result.failed ? <div role="alert" className="empty-state">
       <p>{t('catalogue.loadError')}</p><button className="secondary" onClick={() => { setResult(value => ({ ...value, loading: true })); setAttempt(value => value + 1); }}>{t('catalogue.retry')}</button>
     </div> : <>
-      <p role="status">{t('results', { count: result.total })}</p>
-      {result.books.length === 0 && <div className="empty-state"><h2>{t('noBooks')}</h2><p>{t('catalogue.empty')}</p><Link className="secondary" to="/admin">{t('staff')}</Link></div>}
+      {result.books.length > 0 && <p role="status">{t('results', { count: result.total })}</p>}
+      {result.books.length === 0 && <div className="empty-state"><h2>{t(hasFilters ? 'catalogue.emptySearchTitle' : 'catalogue.emptyTitle')}</h2><p>{t(hasFilters ? 'catalogue.emptySearch' : 'catalogue.empty')}</p>
+        {hasFilters ? <button type="button" className="secondary" onClick={() => { setResult(value => ({ ...value, loading: true })); setQuery(''); setTopic('all'); setPage(0); }}>{copy.clear}</button> : <Link className="secondary" to="/admin">{t('catalogue.addFirst')}</Link>}
+      </div>}
       <div className="book-grid library-grid">{result.books.map(book => <article className="catalogue-book" key={book.id}>
         <div className={`book-cover ${book.topic === 'nature' ? 'sage' : book.topic === 'science' ? 'blue' : 'clay'}`}>
           <span className="cover-edition">EVG</span><strong>{vi ? book.title_vi : book.title_en}</strong><span className="cover-symbol" aria-hidden="true">{book.topic === 'nature' ? '✳' : book.topic === 'science' ? '△' : '≈'}</span>

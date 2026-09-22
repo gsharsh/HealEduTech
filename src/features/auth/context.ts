@@ -6,6 +6,7 @@ export interface AccountState {
   loading: boolean;
   recovery: boolean;
   clearRecovery: () => void;
+  refreshStaffAccess: () => Promise<void>;
   canManageBooks: boolean;
   staffRole: 'librarian' | 'administrator' | null;
 }
@@ -14,6 +15,7 @@ export const AccountContext = createContext<AccountState>({
   loading: true,
   recovery: false,
   clearRecovery: () => {},
+  refreshStaffAccess: async () => {},
   canManageBooks: false,
   staffRole: null,
 });

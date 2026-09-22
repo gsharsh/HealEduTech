@@ -90,10 +90,10 @@ An original community-library interface informed by Khan Academy, Duolingo and K
 - `/sign-in` opens on login, with separate registration, email confirmation/resend, optional magic links, and password recovery. `/reset-password` accepts a valid recovery session.
 - `/library` shows catalogue records, derived copy availability, private reading actions, and the signed-in learner's loans.
 - `/learning` saves reading status and optional reflections; `/explore` saves editable interests. Reading is independent of physical lending.
-- `/admin` adds books/copies; `/admin/circulation` supports authorised staff checkout, usable/damaged returns, and lost-copy resolution.
+- `/admin` adds books/copies and lets administrators manage staff access; `/admin/circulation` supports authorised staff checkout, usable/damaged returns, and lost-copy resolution.
 - Lending starts **disabled in the database**. EVG must approve eligibility, limits, due-date policy, timezone, and loss/damage handling before enabling it. Staff enter each due date explicitly.
 
-The new migrations are prepared locally, not deployed. Local SQL and mocked browser checks have passed for the September account, circulation, reading and interest increment; hosted email, hosted migrations and real cross-account walkthroughs remain release gates. Rewards, goals, submissions, facilitator access, moderation, managed learning resources and recommendations remain future work. Follow the [pilot release gates](docs/SUPABASE_PILOT.md) and use synthetic data until they pass.
+The new migrations are prepared locally, not deployed. Local SQL and mocked browser checks have passed for the September account, circulation, reading, interest and staff-access increment; hosted email, hosted migrations, first-admin bootstrap and real cross-account walkthroughs remain release gates. Rewards, goals, submissions, facilitator access, moderation, managed learning resources and recommendations remain future work. Follow the [pilot release gates](docs/SUPABASE_PILOT.md) and use synthetic data until they pass.
 
 See PLAN Section 7 for the route-by-route boundary and next frontend increments. The existing optional backend configuration remains untouched.
 
@@ -148,6 +148,8 @@ src/
 supabase/
   functions/      server-only privileged operations
   migrations/     reviewed database schema and row-level security changes
+  seed.sql        idempotent public-domain sample catalogue for local demos
+  tests/          rollback-only SQL checks for policies and seed data
 ```
 
 For Vercel, select the Vite framework preset, use `npm run build`, and publish `dist`. Set the project root to the folder containing this README, `package.json`, and `vercel.json`. The rewrite in `vercel.json` sends direct requests such as `/learning` and `/library` to the React entry point, so opening or refreshing those URLs works. Redeploy after changing this configuration. See [Vercel's Vite SPA guidance](https://vercel.com/docs/frameworks/frontend/vite#using-vite-to-make-spas).

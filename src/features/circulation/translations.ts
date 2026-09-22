@@ -21,6 +21,8 @@ const en = {
     copy: 'Copy',
     dueDate: 'Due date',
     checkout: 'Record checkout',
+    chooseBorrower: 'Choose an eligible borrower',
+    chooseCopy: 'Choose an available copy',
     loans: 'Current and past loans',
     return: 'Return',
     damaged: 'Return damaged',
@@ -28,6 +30,8 @@ const en = {
     noLoans: 'No loan records found.',
     noBorrowers: 'No eligible borrowers registered.',
     noCopies: 'No copies found.',
+    noBorrowersAction: 'Register an eligible learner before recording a checkout.',
+    noCopiesAction: 'Add books and usable copies before recording a checkout.',
     saved: 'Saved.',
     failed: 'Could not save. Check the policy, permissions, and connection, then try again.',
     retry: 'Try again',
@@ -51,8 +55,8 @@ const vi = {
     policy: 'Chính sách', enable: 'Bật mượn trả', disable: 'Tắt mượn trả',
     maxLoans: 'Số sách đang mượn tối đa mỗi học sinh', timezone: 'Múi giờ trung tâm', savePolicy: 'Lưu chính sách', enabledNotice: 'Đang bật mượn trả với tối đa {{count}} lượt mượn đang hoạt động cho mỗi học sinh theo múi giờ {{timezone}}.',
     borrower: 'Người mượn đủ điều kiện', register: 'Đăng ký người mượn', userId: 'UUID tài khoản học sinh', displayName: 'Tên hiển thị', registerButton: 'Đăng ký học sinh đủ điều kiện',
-    copies: 'Bản sách', copy: 'Bản sách', dueDate: 'Hạn trả', checkout: 'Ghi nhận mượn', loans: 'Lịch sử mượn trả', return: 'Ghi trả', damaged: 'Trả sách hỏng', lost: 'Ghi nhận mất',
-    noLoans: 'Chưa có lượt mượn.', noBorrowers: 'Chưa đăng ký người mượn đủ điều kiện.', noCopies: 'Chưa có bản sách.', saved: 'Đã lưu.', failed: 'Không thể lưu. Hãy kiểm tra chính sách, quyền truy cập và kết nối rồi thử lại.', retry: 'Thử lại', dueOn: 'Hạn trả {{date}}', loading: 'Đang tải mượn trả…', signIn: 'Đăng nhập bằng tài khoản nhân viên được cấp quyền để quản lý mượn trả.', ownTitle: 'Sách em đang mượn', ownBody: 'Lượt mượn và hạn trả của em chỉ hiển thị trong tài khoản này.', ownEmpty: 'Em chưa có lượt mượn.', active: 'Đang mượn', overdue: 'Quá hạn', resolved: 'Đã xử lý', condition: 'Tình trạng',
+    copies: 'Bản sách', copy: 'Bản sách', dueDate: 'Hạn trả', checkout: 'Ghi nhận mượn', chooseBorrower: 'Chọn học sinh đủ điều kiện', chooseCopy: 'Chọn bản sách có thể mượn', loans: 'Lịch sử mượn trả', return: 'Ghi trả', damaged: 'Trả sách hỏng', lost: 'Ghi nhận mất',
+    noLoans: 'Chưa có lượt mượn.', noBorrowers: 'Chưa đăng ký người mượn đủ điều kiện.', noCopies: 'Chưa có bản sách.', noBorrowersAction: 'Đăng ký học sinh đủ điều kiện trước khi ghi nhận mượn sách.', noCopiesAction: 'Thêm sách và bản sách còn dùng được trước khi ghi nhận mượn.', saved: 'Đã lưu.', failed: 'Không thể lưu. Hãy kiểm tra chính sách, quyền truy cập và kết nối rồi thử lại.', retry: 'Thử lại', dueOn: 'Hạn trả {{date}}', loading: 'Đang tải mượn trả…', signIn: 'Đăng nhập bằng tài khoản nhân viên được cấp quyền để quản lý mượn trả.', ownTitle: 'Sách em đang mượn', ownBody: 'Lượt mượn và hạn trả của em chỉ hiển thị trong tài khoản này.', ownEmpty: 'Em chưa có lượt mượn.', active: 'Đang mượn', overdue: 'Quá hạn', resolved: 'Đã xử lý', condition: 'Tình trạng',
   },
 };
 

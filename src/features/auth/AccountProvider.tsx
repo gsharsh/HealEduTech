@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '../../lib/supabase';
 import { AccountContext } from './context';
@@ -23,11 +23,27 @@ function rememberRecoveryToken(token: string | null) {
   }
 }
 
+async function loadStaffRecord(userId: string): Promise<StaffRecord> {
+  const client = supabase;
+  if (!client) return null;
+  const { data, error } = await client.from('staff_members').select('user_id,role').eq('user_id', userId).maybeSingle();
+  const role = data?.role;
+  return !error && data && (role === 'librarian' || role === 'administrator') ? { userId, role } : null;
+}
+
 export function AccountProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(Boolean(supabase));
   const [recovery, setRecovery] = useState(false);
   const [staffRecord, setStaffRecord] = useState<StaffRecord>(null);
+
+  const refreshStaffAccess = useCallback(async () => {
+    if (!user) {
+      setStaffRecord(null);
+      return;
+    }
+    setStaffRecord(await loadStaffRecord(user.id));
+  }, [user]);
 
   useEffect(() => {
     const client = supabase;
@@ -49,11 +65,10 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       return;
     }
     let active = true;
-    void client.from('staff_members').select('user_id,role').eq('user_id', user.id).maybeSingle()
-      .then(({ data, error }) => {
+    void loadStaffRecord(user.id)
+      .then(record => {
         if (!active) return;
-        const role = data?.role;
-        setStaffRecord(!error && data && (role === 'librarian' || role === 'administrator') ? { userId: user.id, role } : null);
+        setStaffRecord(record);
       });
     return () => { active = false; };
   }, [user]);
@@ -65,7 +80,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
 
   const staffRole = user && staffRecord?.userId === user.id ? staffRecord.role : null;
 
-  return <AccountContext.Provider value={{ user, loading, recovery, clearRecovery, canManageBooks: !!staffRole, staffRole }}>
+  return <AccountContext.Provider value={{ user, loading, recovery, clearRecovery, refreshStaffAccess, canManageBooks: !!staffRole, staffRole }}>
     {children}
   </AccountContext.Provider>;
 }

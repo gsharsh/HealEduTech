@@ -199,7 +199,12 @@
   },
   "catalogue": {
     "body": "Khám phá những cuốn sách do nhân viên EVG đăng ký.",
-    "empty": "Nhân viên có thể thêm sách đầu tiên tại bàn thư viện.",
+    "loading": "Đang tải thư viện…",
+    "emptyTitle": "Thư viện đã sẵn sàng để thêm sách đầu tiên",
+    "empty": "Sách do nhân viên được cấp quyền thêm sẽ hiển thị tại đây để học sinh tìm đọc.",
+    "emptySearchTitle": "Không có sách phù hợp",
+    "emptySearch": "Thử tên sách hoặc chủ đề khác, hoặc xóa bộ lọc để xem tất cả sách đã đăng ký.",
+    "addFirst": "Thêm sách đầu tiên",
     "loadError": "Chưa thể tải danh mục. Vui lòng thử lại.",
     "retry": "Thử lại",
     "previous": "Trước",
@@ -224,5 +229,29 @@
     "save": "Lưu sách và các bản",
     "saved": "Đã lưu sách vào thư viện.",
     "saveError": "Chưa thể lưu sách. Kiểm tra hai tên sách, số bản (1–100), kết nối và quyền nhân viên, rồi thử lại."
+  },
+  "staffAccess": {
+    "eyebrow": "Quyền truy cập",
+    "title": "Quyền nhân viên",
+    "refresh": "Tải lại",
+    "signedInRole": "{{email}} đang đăng nhập với vai trò {{role}}.",
+    "signedInNoRole": "{{email}} đang đăng nhập nhưng chưa có quyền nhân viên.",
+    "canClaim": "Email đã xác nhận này nằm trong danh sách khởi tạo quản trị viên đầu tiên. Hãy nhận quyền quản trị để bắt đầu quản lý nhân viên.",
+    "cannotClaim": "Chưa có quản trị viên. Người vận hành cơ sở dữ liệu đáng tin cậy phải thêm email đầu tiên vào danh sách khởi tạo trước.",
+    "claim": "Nhận quyền quản trị",
+    "claimed": "Đã nhận quyền quản trị.",
+    "adminOnly": "Chỉ quản trị viên mới có thể cấp hoặc thu hồi quyền nhân viên.",
+    "email": "Email tài khoản",
+    "role": "Vai trò",
+    "grant": "Lưu quyền nhân viên",
+    "saved": "Đã lưu quyền nhân viên.",
+    "revoked": "Đã thu hồi quyền nhân viên.",
+    "updated": "Cập nhật",
+    "actions": "Thao tác",
+    "revoke": "Thu hồi",
+    "roles": {
+      "librarian": "thủ thư",
+      "administrator": "quản trị viên"
+    }
   }
 }

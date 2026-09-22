@@ -199,7 +199,12 @@
   },
   "catalogue": {
     "body": "Browse the books registered by EVG staff.",
-    "empty": "Staff can add the first books from the library desk.",
+    "loading": "Loading the library…",
+    "emptyTitle": "The library is ready for its first books",
+    "empty": "Books added by authorised staff will appear here for learners to browse.",
+    "emptySearchTitle": "No matching books",
+    "emptySearch": "Try a different title or topic, or clear the filters to see every registered book.",
+    "addFirst": "Add the first book",
     "loadError": "We could not load the catalogue. Please try again.",
     "retry": "Try again",
     "previous": "Previous",
@@ -226,5 +231,29 @@
     "save": "Save book and copies",
     "saved": "Book saved to the library.",
     "saveError": "The book could not be saved. Check both titles, the copy count (1–100), your connection and staff access, then retry."
+  },
+  "staffAccess": {
+    "eyebrow": "Access",
+    "title": "Staff permissions",
+    "refresh": "Refresh",
+    "signedInRole": "{{email}} is signed in as {{role}}.",
+    "signedInNoRole": "{{email}} is signed in without staff access.",
+    "canClaim": "This confirmed email is on the first-admin bootstrap list. Claim administrator access to start managing staff.",
+    "cannotClaim": "No administrator exists yet. A trusted database operator must add the first approved email to the bootstrap list before it can claim access.",
+    "claim": "Claim administrator access",
+    "claimed": "Administrator access claimed.",
+    "adminOnly": "Only administrators can grant or revoke staff access.",
+    "email": "Account email",
+    "role": "Role",
+    "grant": "Save staff access",
+    "saved": "Staff access saved.",
+    "revoked": "Staff access revoked.",
+    "updated": "Updated",
+    "actions": "Actions",
+    "revoke": "Revoke",
+    "roles": {
+      "librarian": "librarian",
+      "administrator": "administrator"
+    }
   }
 }
