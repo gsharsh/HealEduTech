@@ -4,6 +4,7 @@ import { useAccount } from '../auth/context';
 import { useTranslation } from 'react-i18next';
 import { getMyReading, listBooksForReading, listMyReading, saveReading, type ReadingBook, type ReadingRecord, type ReadingStatus } from './reading';
 import { readingTranslations } from './readingTranslations';
+import { WeeklyGoalPrototype } from './WeeklyGoalPrototype';
 import './reading.css';
 
 type ReadingActionProps = { bookId: string; onSaved?: (record: ReadingRecord) => void };
@@ -99,6 +100,7 @@ function ReadingHistory({ userId }: { userId: string }) {
   const bookById = useMemo(() => new Map(books.map(book => [book.id, book])), [books]);
   return <section className="reading-page">
     <div className="page-heading"><div><span className="eyebrow">{copy.title}</span><h1>{copy.title}</h1><p>{copy.intro}</p></div></div>
+    <div className="reading-goal"><WeeklyGoalPrototype /></div>
     {loading ? <p role="status">{copy.loading}</p> : failed ? <div className="reading-empty" role="alert"><p>{copy.loadError}</p><button className="secondary" onClick={() => { setFailed(false); setLoading(true); setAttempt(value => value + 1); }}>{copy.retry}</button></div> : records.length === 0 ? <div className="reading-empty"><h2>{copy.emptyTitle}</h2><p>{copy.empty}</p><Link className="secondary" to="/library">{copy.start}</Link></div> : <div className="reading-history">{records.map(record => {
       const book = bookById.get(record.book_id);
       return <article className="reading-card" key={record.book_id}><div><span className="eyebrow">{record.status === 'finished' ? copy.finished : copy.reading}</span><h2>{book ? (i18n.language === 'vi' ? book.title_vi : book.title_en) : copy.unavailableBook}</h2>{record.status === 'finished' && record.reflection && <p className="reading-reflection">“{record.reflection}”</p>}</div><ReadingAction bookId={record.book_id} onSaved={saved => setRecords(current => current.map(item => item.book_id === saved.book_id ? saved : item))} /></article>;

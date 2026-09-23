@@ -1,11 +1,24 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { checkoutPayloadMatches, correctionPayloadMatches, resolutionPayloadMatches, validDueDate, validReturnCondition } from '../src/features/circulation/validation.ts';
+import { activeLoanStatus, checkoutPayloadMatches, correctionPayloadMatches, dateInTimeZone, resolutionPayloadMatches, validDueDate, validReturnCondition } from '../src/features/circulation/validation.ts';
 
 test('circulation due dates accept only calendar-shaped ISO dates', () => {
   assert.equal(validDueDate('2026-09-16'), true);
+  assert.equal(validDueDate('2024-02-29'), true);
+  assert.equal(validDueDate('2026-02-29'), false);
+  assert.equal(validDueDate('2026-02-31'), false);
+  assert.equal(validDueDate('2026-13-01'), false);
   assert.equal(validDueDate('16-09-2026'), false);
   assert.equal(validDueDate(''), false);
+});
+
+test('centre-local dates and overdue status respect the policy timezone boundary', () => {
+  const instant = new Date('2026-09-23T17:30:00.000Z');
+  assert.equal(dateInTimeZone(instant, 'Asia/Ho_Chi_Minh'), '2026-09-24');
+  assert.equal(dateInTimeZone(instant, 'America/Los_Angeles'), '2026-09-23');
+  assert.equal(activeLoanStatus('2026-09-23', '2026-09-24'), 'overdue');
+  assert.equal(activeLoanStatus('2026-09-24', '2026-09-24'), 'active');
+  assert.equal(activeLoanStatus('2026-09-25', '2026-09-24'), 'active');
 });
 
 test('return condition accepts only usable or damaged copy states', () => {

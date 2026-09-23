@@ -19,10 +19,10 @@ EVG is a place to find a book and share a discovery. The visual identity combine
 
 - **Four student destinations:** My learning, Library, Explore, Together. On phones these become a labelled bottom navigation bar. Staff preview is separate.
 - **One principal task per section:** view a current book; find a title; try an activity. Secondary options appear where they are needed.
-- **Progress without pressure:** an example weekly goal and explicit finished-book count, without a public leaderboard or automatic rewards.
+- **Progress without pressure:** an editable non-persistent weekly-goal preview and explicit finished-book count, without a public leaderboard or automatic rewards.
 - **Readable actions:** text accompanies symbols; search has a visible label; dialogs have a visible close control; empty searches explain how to recover.
 - **Language control stays visible:** English initially, saved Vietnamese respected. Translations include help, sample descriptions, empty states, and staff screens. EVG must review Vietnamese wording with learners.
-- **Honest previews:** fictional book metadata, temporary local state, no actual ebook reader, no protected staff records, no personalised recommendations. Sharing and moderation are labelled future work.
+- **Honest previews:** fictional book metadata, temporary local state, no actual ebook reader, no protected social records, and no personalised recommendations. Project, recognition, sharing, and moderation previews explicitly say that nothing is saved, awarded, or published.
 - **No decorative downloads:** book designs use CSS and text. No remote font, stock-photo dependency, animation library, autoplay video, or AI call is required.
 
 ## Prototype walkthrough
@@ -30,9 +30,11 @@ EVG is a place to find a book and share a discovery. The visual identity combine
 1. Open My learning and select **View my book**.
 2. Close the detail dialog; open **Library** and search by an English or Vietnamese title.
 3. Add another title to **My reading list** and mark it finished. Check the reading count on My learning.
-4. Open **Explore**, expand a short activity, and select interests. These do not change the editorial examples.
-5. Open **Staff preview**, record the sample return, then check that the library's availability changes while reading status stays separate.
-6. Switch language, repeat the primary flow, and reload to demonstrate the explicit reset of demo records.
+4. Edit the weekly goal, change its progress, then reload to demonstrate that the preview resets.
+5. Open **Explore**, expand a short activity, and select interests. These do not change the editorial examples.
+6. Open **Together**, create a fictional private project, inspect draft recognition criteria, and try the moderation state changes. Confirm that nothing is sent, awarded, or published.
+7. Open **Staff preview**, record the sample return, then check that the library's availability changes while reading status stays separate.
+8. Switch language and repeat the primary flow.
 
 ## Validation before approval
 

@@ -7,6 +7,7 @@ Bilingual library, reading, exploration, and peer-learning platform for EVG Viet
 - **README.md:** system overview, delivery order, current status, and local setup.
 - **[PLAN.md](./PLAN.md):** SRS with use cases, FR/NFR IDs, UML diagrams, delivery gates, and handover requirements.
 - **[Frontend verification](./docs/FRONTEND_VERIFICATION.md):** completed prototype checks and remaining release evidence.
+- **[Phase 1C validation guide](./docs/PHASE_1C_VALIDATION.md):** simple learner/staff walkthroughs, Vietnamese review, accessibility checks, and decision record.
 - **[Design research](./docs/DESIGN_RESEARCH.md):** reference platforms, EVG design decisions, and usability validation.
 - **[Recommendation design](./PLAN.md#6-topic-discovery-with-little-initial-data):** the later recommendation system and its approach to limited data.
 
@@ -80,10 +81,13 @@ An original community-library interface informed by Khan Academy, Duolingo and K
 - English/Vietnamese interface and a saved language preference.
 - Six fictional catalogue entries with original CSS/text covers; bilingual search, topic filtering and empty-result recovery.
 - Book detail dialogs, adding to the reading list, marking finished and a derived finished count.
-- One example weekly goal and editable topic interests.
+- One editable weekly-goal preview with progress, plus editable topic interests. The goal is explicitly non-persistent and resets on reload.
 - Three expandable sample activities; no personalised ranking or AI calls.
 - One reversible staff checkout/return demo that updates sample availability independently of reading history.
-- Community previews; account entry now has registration, email verification and sign-in forms when Supabase is configured.
+- A fictional private project/feedback workflow and example community showcases; nothing can be published from the preview.
+- Draft recognition criteria with explicit evidence and fairness boundaries; no badges are awarded and there is no leaderboard.
+- A fictional moderation queue covering showcase approval/rejection/hiding/withdrawal, comment approval/hiding and temporary comment shutdown.
+- Account entry now has registration, email verification and sign-in forms when Supabase is configured.
 
 **Without Supabase, demo learning records reset on refresh.** With Supabase configured and the relevant migrations applied:
 
@@ -91,11 +95,14 @@ An original community-library interface informed by Khan Academy, Duolingo and K
 - `/library` shows catalogue records, derived copy availability, private reading actions, and the signed-in learner's loans.
 - `/learning` saves reading status and optional reflections; `/explore` saves editable interests. Reading is independent of physical lending.
 - `/admin` adds books/copies and lets administrators manage staff access; `/admin/circulation` supports authorised staff checkout, usable/damaged returns, and lost-copy resolution.
+- The circulation desk disables checkout when lending policy is off, rejects past due dates in the centre timezone, marks overdue active loans, and distinguishes usable, damaged, and lost resolutions.
 - Lending starts **disabled in the database**. EVG must approve eligibility, limits, due-date policy, timezone, and loss/damage handling before enabling it. Staff enter each due date explicitly.
 
-The new migrations are prepared locally, not deployed. Local SQL and mocked browser checks have passed for the September account, circulation, reading, interest and staff-access increment; hosted email, hosted migrations, first-admin bootstrap and real cross-account walkthroughs remain release gates. Rewards, goals, submissions, facilitator access, moderation, managed learning resources and recommendations remain future work. Follow the [pilot release gates](docs/SUPABASE_PILOT.md) and use synthetic data until they pass.
+The new migrations are prepared locally, not deployed. Local SQL and mocked browser checks have passed for the September account, circulation, reading, interest and staff-access increment; hosted email, hosted migrations, first-admin bootstrap and real cross-account walkthroughs remain release gates. Goal/project persistence, real facilitator feedback, approved reward logic, protected publication/moderation, managed learning resources and recommendations remain future work. Follow the [pilot release gates](docs/SUPABASE_PILOT.md) and use synthetic data until they pass.
 
 See PLAN Section 7 for the route-by-route boundary and next frontend increments. The existing optional backend configuration remains untouched.
+
+All listed Phase 1B interface slices are now implemented locally. They still require Phase 1C review with EVG students and staff; this does not approve hosted social features, reward rules, lending policy, or collection of real student data.
 
 ## Team task format
 

@@ -13,7 +13,7 @@ export function AdminPage() {
       </div>
     </div>
     <section className="staff-panel">
-      <span className="eyebrow">{t('circulation')}</span>
+      <span className="eyebrow">{t('circulationPreview')}</span>
       <h2>{books[0].title[i18n.language === 'vi' ? 'vi' : 'en']}</h2>
       <dl className="loan-facts">
         <div>

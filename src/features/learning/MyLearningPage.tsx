@@ -5,9 +5,10 @@ import { books, type DemoBook } from '../../demo/catalogue';
 import { useDemo } from '../../demo/context';
 import { BookCard, BookCover } from '../../components/ui/BookCard';
 import { BookDialog } from '../../components/ui/BookDialog';
+import { WeeklyGoalPrototype } from './WeeklyGoalPrototype';
 export function MyLearningPage() {
   const { t, i18n } = useTranslation();
-  const { reading, goalDone, toggleGoal } = useDemo();
+  const { reading } = useDemo();
   const [selected, setSelected] = useState<DemoBook | null>(null);
   const current = books.find(book => reading[book.id] === 'reading');
   const finished = books.filter(book => reading[book.id] === 'finished');
@@ -30,19 +31,7 @@ export function MyLearningPage() {
         </div>{current && <div className="featured-cover">
           <BookCover book={current} />
         </div>}</section>
-      <section className="goal-panel">
-        <div className="section-kicker">
-          <span>{t('thisWeek')}</span>
-          <span aria-hidden="true">◷</span>
-        </div>
-        <h2>{t('oneSmallDiscovery')}</h2>
-        <p>{t('goalBody')}</p>
-        <label className={`goal-check ${goalDone ? 'is-done' : ''}`}>
-          <input type="checkbox" checked={goalDone} onChange={toggleGoal} />
-          <span>{t('goalTask')}</span>
-        </label>
-        <p className="goal-result" role="status">{t(goalDone ? 'goalDone' : 'goalEncourage')}</p>
-      </section>
+      <WeeklyGoalPrototype />
     </div>
     <section className="section-block">
       <div className="section-heading">

@@ -3,8 +3,6 @@ import type { Topic } from './catalogue';
 export interface DemoState {
   reading: Record<string, 'reading' | 'finished'>;
   setReading: (id: string, status: 'reading' | 'finished') => void;
-  goalDone: boolean;
-  toggleGoal: () => void;
   interests: Topic[];
   toggleInterest: (topic: Topic) => void;
   borrowed: boolean;

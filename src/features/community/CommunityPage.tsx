@@ -1,4 +1,8 @@
 import { useTranslation } from 'react-i18next';
+import { ProjectFeedbackPrototype } from './ProjectFeedbackPrototype';
+import { RecognitionCriteriaPrototype } from './RecognitionCriteriaPrototype';
+import { ModerationWorkflowPrototype } from './ModerationWorkflowPrototype';
+import './community.css';
 export function CommunityPage() {
   const { t } = useTranslation();
   return <>
@@ -9,6 +13,9 @@ export function CommunityPage() {
         <p>{t('communityBody')}</p>
       </div>
     </div>
+    <ProjectFeedbackPrototype />
+    <RecognitionCriteriaPrototype />
+    <ModerationWorkflowPrototype />
     <div className="showcase-grid">{['garden', 'bridge'].map((key, index) => <article className="showcase-card" key={key}>
       <div className={`showcase-art ${index ? 'ochre' : 'sage'}`} aria-hidden="true">{index ? '△' : '✳'}<span>{t('sampleProject')}</span>
       </div>

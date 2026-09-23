@@ -28,3 +28,7 @@
 .reading-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
 .reading-fields legend { margin-bottom: 12px; }
 .reading-reflection-label { display: grid; gap: 8px; }
+.reading-goal {
+  max-width:620px;
+  margin-bottom:28px;
+}

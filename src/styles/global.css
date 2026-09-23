@@ -385,6 +385,11 @@ main:focus {
   border-radius:16px;
   padding:25px;
 }
+.route-loading {
+  color:var(--muted);
+  font-size:14px;
+  margin:40px;
+}
 .section-kicker {
   font-size:10px;
   font-weight:750;
@@ -403,6 +408,75 @@ main:focus {
 }
 .goal-panel>p {
   font-size:13px;
+}
+.goal-editor {
+  display:grid;
+  gap:8px;
+  margin-top:18px;
+}
+.goal-editor label {
+  color:#425141;
+  font-size:12px;
+  font-weight:750;
+}
+.goal-editor input,
+.goal-editor select {
+  width:100%;
+  min-height:44px;
+  border:1px solid #cdd8ca;
+  border-radius:8px;
+  background:#fff;
+  color:var(--ink);
+  font:inherit;
+  padding:10px 12px;
+}
+.goal-editor input:focus,
+.goal-editor select:focus {
+  outline:3px solid #d8ead0;
+  border-color:var(--green);
+}
+.goal-summary {
+  border:1px solid #dfe5db;
+  border-radius:10px;
+  padding:14px;
+  margin-top:18px;
+}
+.goal-summary--completed {
+  background:#edf5e9;
+}
+.goal-status {
+  display:inline-flex;
+  border-radius:999px;
+  background:#eef2eb;
+  color:#4b6048;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.08em;
+  padding:5px 8px;
+  text-transform:uppercase;
+}
+.goal-title {
+  color:var(--ink);
+  font-size:14px;
+  font-weight:700;
+  line-height:1.45;
+  margin:12px 0;
+}
+.goal-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:8px;
+}
+.goal-error {
+  color:#a3362d;
+  font-size:12px!important;
+  margin:0;
+}
+.goal-preview-note {
+  color:#667264;
+  font-size:11px!important;
+  margin:12px 0 0;
 }
 .goal-check {
   display:flex;

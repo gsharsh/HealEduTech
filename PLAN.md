@@ -293,10 +293,10 @@ stateDiagram-v2
 
 | Route | What can be tried now | What remains deferred |
 |---|---|---|
-| `/learning` | Current-book details, finished count, example goal checkbox, sample shelf | Persisted goals, actual reward logic, personalised home data |
+| `/learning` | Current-book details, finished count, editable weekly-goal preview with progress, sample shelf | Persisted goals, facilitator support, actual reward logic, personalised home data |
 | `/library` | Bilingual title search, topic filter, no-results recovery, book dialog, reading list/status, sample borrowed-book view | Real catalogue, metadata editing, full loan history/due dates and lost-copy handling |
 | `/explore` | Three expandable activities, editable demo interests | Managed resources and working recommendations |
-| `/community` | Fictional showcase layout and explanatory placeholder | Submission, private feedback, badges, comments and moderation |
+| `/community` | Fictional private project/feedback, draft recognition criteria, showcase/comment moderation states and example showcases | Persistent submissions, real facilitator access/feedback, approved rewards and protected moderation |
 | `/admin` | One reversible sample checkout/return, linked sample availability | Protected access, production circulation, catalogue/accounts/queues/exports |
 | `/sign-in` | Preview entry and language switching | Authentication and recovery |
 
@@ -309,14 +309,14 @@ All interactions use in-memory React state. Reload resets them; no student data 
 3. Keep sample catalogue data in `src/demo/catalogue.ts` and state in `src/demo/`. Components consume typed values; later replace this boundary with authorised application operations.
 4. Add loading, saving, success, validation and recoverable-error states when connecting each operation. Do not pretend the current synchronous fixture demonstrates those states.
 5. Preserve the approved frontend through backend integration; bind real results to the same workflows and test permissions separately.
-6. Present badges, submissions, comments and recommendations as future work until their individual frontend slices and local operating process are approved.
+6. Present badges, comments and recommendations as future work until their individual frontend slices and local operating process are approved. Keep the project/feedback slice explicitly fictional and non-persistent until its private access model is implemented and verified.
 
 The completed prototype checks and remaining release evidence are recorded in [Frontend verification](docs/FRONTEND_VERIFICATION.md).
 
-### Frontend work still to do before backend
+### Frontend work status before further backend expansion
 
 - **1A — Visual foundation:** current book/library/explore/staff demonstration; bilingual desktop/mobile review.
-- **1B — Remaining workflow prototypes:** editable goals, project submission/private feedback, badge criteria display, showcase/comment moderation and full library edge states, still with fictional fixtures.
+- **1B — Workflow prototypes implemented locally:** editable weekly goals, project/private feedback, draft badge criteria, showcase/comment moderation states, and circulation edge-state presentation. Social/learning previews remain explicitly fictional and non-persistent; configured circulation retains its database protections.
 - **1C — Local validation:** observe students and staff; review Vietnamese, target devices, keyboard/screen-reader behaviour; simplify based on findings. Approve a short first backend backlog.
 
 Do not build all of 1B in one pass. Start with the physical-library task EVG operators prioritise, demonstrate it, then add the next meaningful interaction.

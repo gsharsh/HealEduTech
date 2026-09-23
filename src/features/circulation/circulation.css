@@ -9,4 +9,6 @@
 .circulation-table th, .circulation-table td { padding: .7rem .4rem; border-bottom: 1px solid var(--line, #d8d3c6); text-align: left; vertical-align: top; }
 .circulation-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
 .circulation-muted { color: var(--muted, #716d64); }
+.loan-status { display: inline-flex; border-radius: 999px; background: #edf2eb; color: #3f5e45; font-size: .75rem; font-weight: 750; padding: .3rem .5rem; white-space: nowrap; }
+.loan-status--overdue { background: #f8e8e4; color: #8a3328; }
 @media (min-width: 760px) { .circulation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .circulation-wide { grid-column: 1 / -1; } }
