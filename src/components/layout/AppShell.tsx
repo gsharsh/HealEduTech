@@ -69,14 +69,13 @@ export function AppShell() {
             <button className="secondary" onClick={() => setHelp(false)}>{t('close')}</button>
           </div>
         )}
-        <div className="demo-banner">
+        {!supabase && <div className="demo-banner" role="status">
           <span className="demo-dot" aria-hidden="true" />
-          <span>{supabase ? copy.pilot : t('demo')}</span>
-        </div>
+          <span>{t('demo')}</span>
+        </div>}
         <main id="main-content" tabIndex={-1}>
           <Outlet />
         </main>
-        <footer><span>{t('footer')}</span>{accessStatus === 'ready' && staffRole && <NavLink to="/staff/catalogue">{t('access.openDesk')}</NavLink>}</footer>
       </div>
     </div>
   );

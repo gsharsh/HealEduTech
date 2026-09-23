@@ -1,10 +1,15 @@
 .catalogue-book-card { min-width: 0; }
 .catalogue-book-link { display: flex; flex-direction: column; color: inherit; text-decoration: none; height: 100%; }
-.catalogue-book-link:hover .book-cover { box-shadow: 0 7px 15px #243c3726; transform: translateY(-2px); }
+.catalogue-book-link:hover .book-cover, .catalogue-book-link:focus-visible .book-cover { box-shadow: 0 12px 26px #243c3730; transform: translateY(-3px); }
 .catalogue-book-link .book-cover { transition: box-shadow .18s ease, transform .18s ease; }
+.catalogue-synopsis-preview { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 24px 22px; background: linear-gradient(180deg, color-mix(in srgb, var(--green-strong) 74%, transparent) 0%, var(--green-strong) 45%); color: #fff; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 13px; line-height: 1.5; opacity: 0; transform: translateY(8px); transition: opacity .18s ease, transform .18s ease; }
+.catalogue-synopsis-label { font-size: 10px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; color: #cfe0d7; }
+.catalogue-book-link:hover .catalogue-synopsis-preview, .catalogue-book-link:focus-visible .catalogue-synopsis-preview { opacity: 1; transform: translateY(0); }
 .catalogue-author { color: var(--muted); font-size: 12px; margin-top: 5px; }
 .catalogue-book-link .availability { font-size: 12px; margin: 12px 0 0; }
 .catalogue-book-link .text-link { margin-top: auto; padding-top: 5px; }
+@media (hover: none) { .catalogue-synopsis-preview { display: none; } }
+@media (prefers-reduced-motion: reduce) { .catalogue-book-link .book-cover, .catalogue-synopsis-preview { transition: none; } }
 .book-detail-page { max-width: 1080px; margin: 0 auto; }
 .book-detail-back { display: inline-flex; align-items: center; min-height: 44px; color: var(--green); font-weight: 650; margin-bottom: 18px; }
 .book-detail-hero { display: grid; grid-template-columns: minmax(220px, 330px) minmax(0, 1fr); gap: clamp(32px, 6vw, 76px); align-items: start; }

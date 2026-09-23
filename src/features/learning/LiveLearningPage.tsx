@@ -71,7 +71,13 @@ export function LiveLearningPage() {
   const { i18n } = useTranslation();
   const copy = readingTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
   if (loading) return <p role="status">{copy.loading}</p>;
-  if (!user) return <section className="reading-page"><div className="page-heading"><div><h1>{copy.title}</h1><p>{copy.signInBody}</p><Link className="primary" to="/sign-in?next=/learning">{copy.signIn}</Link></div></div></section>;
+  if (!user) return <section className="signed-out-reading">
+    <div className="signed-out-reading__content">
+      <h1>{copy.signedOutTitle}</h1>
+      <p>{copy.signInBody}</p>
+      <Link className="primary" to="/sign-in?next=/learning">{copy.signIn}</Link>
+    </div>
+  </section>;
   return <ReadingHistory key={user.id} userId={user.id} />;
 }
 function ReadingHistory({ userId }: { userId: string }) {
@@ -97,6 +103,5 @@ function ReadingHistory({ userId }: { userId: string }) {
       const book = bookById.get(record.book_id);
       return <article className="reading-card" key={record.book_id}><div><span className="eyebrow">{record.status === 'finished' ? copy.finished : copy.reading}</span><h2>{book ? (i18n.language === 'vi' ? book.title_vi : book.title_en) : copy.unavailableBook}</h2>{record.status === 'finished' && record.reflection && <p className="reading-reflection">“{record.reflection}”</p>}</div><ReadingAction bookId={record.book_id} onSaved={saved => setRecords(current => current.map(item => item.book_id === saved.book_id ? saved : item))} /></article>;
     })}</div>}
-    <section className="reading-deferred"><span className="future-label">{copy.deferredTitle}</span><p>{copy.deferredBody}</p></section>
   </section>;
 }
