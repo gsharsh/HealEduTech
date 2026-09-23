@@ -1,7 +1,8 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useAccount } from '../auth/context';
+import { useAccount, type StaffRole } from '../auth/context';
+import { WorkspaceNavigation } from '../admin/WorkspaceNavigation';
 import { checkoutCopy, configureCirculation, getCirculationPolicy, listBorrowers, listCopies, listLoans, registerBorrower, resolveLoan, type Borrower, type CirculationCopy, type CirculationPolicy, type Loan } from './data';
 import './translations';
 import './circulation.css';
@@ -12,11 +13,11 @@ export function CirculationPage() {
   const { t } = useTranslation();
   const { user, loading, canManageBooks, staffRole } = useAccount();
   if (loading) return <p role="status">{t('circulation.loading')}</p>;
-  if (!user || !canManageBooks) return <section className="circulation-card"><p>{t('circulation.signIn')}</p><Link className="secondary" to="/sign-in">{t('auth.account')}</Link></section>;
+  if (!user || !canManageBooks) return <section className="circulation-card"><p>{t('circulation.signIn')}</p><Link className="secondary" to="/sign-in?next=/staff/circulation">{t('auth.account')}</Link></section>;
   return <CirculationDesk key={user.id} staffRole={staffRole} />;
 }
 
-function CirculationDesk({ staffRole }: { staffRole: 'librarian' | 'administrator' | null }) {
+function CirculationDesk({ staffRole }: { staffRole: StaffRole | null }) {
   const { t, i18n } = useTranslation();
   const [borrowers, setBorrowers] = useState<Borrower[]>([]);
   const [copies, setCopies] = useState<CirculationCopy[]>([]);
@@ -102,6 +103,7 @@ function CirculationDesk({ staffRole }: { staffRole: 'librarian' | 'administrato
   const canRecordCheckout = eligibleBorrowers.length > 0 && lendableCopies.length > 0;
 
   return <>
+    <WorkspaceNavigation staffRole={staffRole} current="circulation" />
     <div className="page-heading"><div><span className="eyebrow">{t('staff')}</span><h1>{t('circulation.title')}</h1><p>{t('circulation.body')}</p></div></div>
     {error && <p role="alert" className="form-error">{t(error)}</p>}
     <div className="circulation-grid">

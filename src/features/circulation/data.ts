@@ -64,13 +64,17 @@ export async function listCopies() {
 }
 
 export async function listLoans(scope: 'own' | 'staff' = 'own', options: { userId?: string; signal?: AbortSignal } = {}) {
+  if (scope === 'own') {
+    if (!options.userId) throw new Error('User id is required for own loans');
+    let request = requireClient().rpc('list_my_loans');
+    if (options.signal) request = request.abortSignal(options.signal);
+    const { data, error } = await request;
+    if (error) throw error;
+    return (data ?? []) as unknown as Loan[];
+  }
   let query = requireClient().from('loans')
     .select('id,borrower_user_id,copy_id,checked_out_at,due_date,resolved_at,resolution,return_condition,book_copies(inventory_code,books(title_en,title_vi))')
     .order('resolved_at', { ascending: true, nullsFirst: true }).order('due_date');
-  if (scope === 'own') {
-    if (!options.userId) throw new Error('User id is required for own loans');
-    query = query.eq('borrower_user_id', options.userId);
-  }
   if (options.signal) query = query.abortSignal(options.signal);
   const { data, error } = await query;
   if (error) throw error;

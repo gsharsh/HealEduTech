@@ -1,5 +1,5 @@
 export type AppLanguage = "vi" | "en";
-export type AppRole = "learner" | "facilitator" | "administrator";
+export type AppRole = "student" | "librarian" | "administrator";
 export type ReadingStatus = "currently_reading" | "finished";
 export type GoalStatus = "planned" | "in_progress" | "completed";
 export type ModerationStatus = "draft" | "pending" | "approved" | "rejected" | "hidden";

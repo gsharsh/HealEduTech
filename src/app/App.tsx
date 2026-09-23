@@ -14,7 +14,16 @@ import { BookManagement } from "../features/admin/BookManagement";
 import { LiveLearningPage } from "../features/learning/LiveLearningPage";
 import { LiveExplorePage } from "../features/explore/LiveExplorePage";
 import { CirculationPage } from "../features/circulation/CirculationPage";
+import { RequireAuth, RequireStaff } from "../features/auth/RequireStaff";
+import { AdministratorDashboard } from "../features/admin/AdministratorDashboard";
+import { useAccount } from "../features/auth/context";
 import { supabase } from "../lib/supabase";
+
+function LegacyAdminRoute() {
+  const { staffRole } = useAccount();
+  return <Navigate to={staffRole === 'administrator' ? '/admin/settings' : '/staff/catalogue'} replace />;
+}
+
 export function App() {
   return (<AccountProvider><DemoProvider>
     <Routes>
@@ -27,8 +36,12 @@ export function App() {
         {supabase && <Route path="/library/:bookId" element={<BookDetailPage />} />}
         <Route path="/explore" element={supabase ? <LiveExplorePage /> : <ExplorePage />} />
         <Route path="/community" element={<CommunityPage />} />
-        <Route path="/admin" element={supabase ? <BookManagement /> : <AdminPage />} />
-        <Route path="/admin/circulation" element={supabase ? <CirculationPage /> : <AdminPage />} />
+        <Route path="/staff" element={<RequireStaff><Navigate to="/staff/catalogue" replace /></RequireStaff>} />
+        <Route path="/staff/catalogue" element={<RequireStaff>{supabase ? <BookManagement /> : <AdminPage />}</RequireStaff>} />
+        <Route path="/staff/circulation" element={<RequireStaff>{supabase ? <CirculationPage /> : <AdminPage />}</RequireStaff>} />
+        <Route path="/admin/settings" element={<RequireAuth><AdministratorDashboard /></RequireAuth>} />
+        <Route path="/admin" element={<RequireStaff>{supabase ? <LegacyAdminRoute /> : <AdminPage />}</RequireStaff>} />
+        <Route path="/admin/circulation" element={<RequireStaff><Navigate to="/staff/circulation" replace /></RequireStaff>} />
       </Route>
       <Route path="*" element={<Navigate to="/learning" replace />} />
     </Routes>

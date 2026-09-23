@@ -5,9 +5,11 @@ import { listBooks, type CatalogueBook } from './catalogue';
 import { MyLoans } from '../circulation/MyLoans';
 import { libraryTranslations } from './libraryTranslations';
 import { CatalogueBookCard } from '../../components/ui/BookCard';
+import { useAccount } from '../auth/context';
 import './library.css';
 export function LiveLibraryPage() {
   const { t, i18n } = useTranslation();
+  const { staffRole } = useAccount();
   const copy = libraryTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
   const [page, setPage] = useState(0);
   const [query, setQuery] = useState('');
@@ -40,7 +42,7 @@ export function LiveLibraryPage() {
     </div> : <>
       {result.books.length > 0 && <p role="status">{t('results', { count: result.total })}</p>}
       {result.books.length === 0 && <div className="empty-state"><h2>{t(hasFilters ? 'catalogue.emptySearchTitle' : 'catalogue.emptyTitle')}</h2><p>{t(hasFilters ? 'catalogue.emptySearch' : 'catalogue.empty')}</p>
-        {hasFilters ? <button type="button" className="secondary" onClick={() => { setResult(value => ({ ...value, loading: true })); setQuery(''); setTopic('all'); setPage(0); }}>{copy.clear}</button> : <Link className="secondary" to="/admin">{t('catalogue.addFirst')}</Link>}
+        {hasFilters ? <button type="button" className="secondary" onClick={() => { setResult(value => ({ ...value, loading: true })); setQuery(''); setTopic('all'); setPage(0); }}>{copy.clear}</button> : staffRole ? <Link className="secondary" to="/staff/catalogue">{t('catalogue.addFirst')}</Link> : null}
       </div>}
       <div className="book-grid library-grid">{result.books.map(book => <CatalogueBookCard key={book.id} book={book} availabilityLabel={book.available_copies === undefined ? copy.availabilityUnknown : copy.availableLabel(book.available_copies)} />)}</div>
       {result.total > 24 && <div className="form-actions">

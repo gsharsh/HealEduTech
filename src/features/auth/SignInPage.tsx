@@ -11,7 +11,7 @@ type PendingEmail = { email: string; signup: boolean; recovery?: boolean };
 
 export function SignInPage() {
   const { t, i18n } = useTranslation();
-  const { user, loading, recovery, clearRecovery } = useAccount();
+  const { user, loading, accessStatus, staffRole, recovery, clearRecovery } = useAccount();
   const location = useLocation();
   const navigate = useNavigate();
   const isResetPath = location.pathname === '/reset-password';
@@ -86,7 +86,7 @@ export function SignInPage() {
   const title = mode === 'reset' ? 'auth.resetTitle' : user ? 'auth.signedIn' : pending ? (pending.recovery ? 'auth.recoverTitle' : 'auth.verifyTitle') : mode === 'recover' ? 'auth.recoverTitle' : mode === 'register' ? 'auth.registerTitle' : 'auth.signInTitle';
   return <main className="sign-in-page"><section className="sign-in-card account-card" aria-labelledby="auth-title">
     <span className="brand-mark" aria-hidden="true">e.</span><span className="eyebrow">EVG VIETNAM</span><h1 id="auth-title">{t(title)}</h1>{mode === 'sign-in' && !user && <p className="auth-subtitle">{t('auth.signInSubtitle')}</p>}
-    {loading ? <p role="status">{t('auth.loading')}</p> : user && mode !== 'reset' ? <><p>{user.email}</p><Link className="primary" to={next}>{t('auth.continue')}</Link><Link className="secondary" to="/admin">{t('staff')}</Link><button className="secondary" type="button" disabled={busy} onClick={() => void signOut()}>{t('auth.signOut')}</button><p className="muted">{t('auth.sharedDevice')}</p></> : !supabase ? <p role="status">{t('auth.notConfigured')}</p> : <>
+    {loading ? <p role="status">{t('auth.loading')}</p> : user && mode !== 'reset' ? <><p>{user.email}</p><Link className="primary" to={next}>{t('auth.continue')}</Link>{accessStatus === 'loading' && <p className="muted" role="status">{t('access.checking')}</p>}{accessStatus === 'ready' && staffRole && <Link className="secondary" to="/staff/catalogue">{t('access.openDesk')}</Link>}<button className="secondary" type="button" disabled={busy} onClick={() => void signOut()}>{t('auth.signOut')}</button><p className="muted">{t('auth.sharedDevice')}</p></> : !supabase ? <p role="status">{t('auth.notConfigured')}</p> : <>
       {!pending && mode !== 'reset' && <nav className="account-tabs" aria-label={t('auth.methods')}><button type="button" aria-pressed={mode === 'sign-in'} disabled={busy} onClick={() => changeMode('sign-in')}>{t('auth.signIn')}</button><button type="button" aria-pressed={mode === 'register'} disabled={busy} onClick={() => changeMode('register')}>{t('auth.register')}</button></nav>}
       {pending ? <div className="email-link-panel" role="status"><p>{t(pending.recovery ? 'auth.recoverCheckEmail' : 'auth.checkEmail', { email: pending.email })}</p><p className="muted">{t('auth.linkHelp')}</p></div> : mode === 'reset' && !recovery ? <p role="status" className="form-error">{t('auth.invalidRecovery')}</p> : <form className="data-form" onSubmit={event => void submit(event)} noValidate><fieldset disabled={busy}>
         {mode === 'register' && <label htmlFor="display-name">{t('auth.name')}<input id="display-name" name="name" value={name} onChange={event => setName(event.target.value)} autoComplete="name" maxLength={80} required /></label>}

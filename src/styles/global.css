@@ -164,23 +164,20 @@ main:focus {
   width:24px;
   text-align:center;
 }
-.sidebar-bottom {
+.staff-navigation {
   margin-top:auto;
-  padding-top:24px;
+  padding-top:20px;
+  border-top:1px solid var(--line);
 }
-.staff-link {
-  min-height:44px;
-  font-size:12px;
-  padding:10px 14px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  color:var(--muted);
-  border-radius:9px;
+.staff-navigation .nav-label {
+  display:block;
+  margin:0 14px 10px;
 }
-.staff-link:hover {
-  background:#f2f5f0;
-  color:var(--green-strong);
+.staff-navigation nav a {
+  font-size:13px;
+}
+.staff-navigation nav a.active {
+  background:#e1ece7;
 }
 .workspace {
   margin-left:224px;
@@ -598,10 +595,14 @@ footer {
   margin:auto;
   padding:24px clamp(28px,4vw,64px) 30px;
   display:flex;
-  justify-content:flex-end;
+  justify-content:space-between;
+  align-items:center;
   gap:15px;
   font-size:12px;
   color:#67776c;
+}
+footer span {
+  color:var(--muted);
 }
 footer a {
   min-height:44px;
@@ -729,6 +730,25 @@ input[type=search],select {
   background:var(--paper);
   border:1px solid var(--line);
   border-radius:16px;
+}
+.route-access-state {
+  width:min(100%,680px);
+  margin:clamp(24px,8vh,90px) auto;
+  padding:clamp(28px,5vw,52px);
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+}
+.route-access-state h1 {
+  max-width:560px;
+}
+.route-access-state p {
+  max-width:560px;
+}
+.route-access-state .primary+.secondary,
+.route-access-state button+.secondary {
+  margin-left:10px;
 }
 .topic-grid {
   display:grid;
@@ -1198,7 +1218,7 @@ dialog::backdrop {
     display:block;
     padding-bottom:env(safe-area-inset-bottom);
   }
-  .sidebar>.brand,.nav-label,.sidebar-bottom {
+  .sidebar>.brand,.nav-label,.staff-navigation {
     display:none;
   }
   .sidebar nav {
@@ -1422,6 +1442,10 @@ dialog::backdrop {
     font-size:9px;
     align-items:center;
   }
+  .route-access-state .primary+.secondary,
+  .route-access-state button+.secondary {
+    margin:10px 0 0;
+  }
   .staff-panel {
     padding:22px;
   }
@@ -1479,6 +1503,9 @@ dialog::backdrop {
   }
   .compact-brand>span:last-child {
     display:none;
+  }
+  .staff-shortcut {
+    display:none!important;
   }
 }
 

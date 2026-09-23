@@ -18,7 +18,7 @@ export interface BookUpdate extends Omit<NewBook, 'copies'> {
 export async function listBooks(page: number, signal: AbortSignal, query = '', topic: CatalogueBook['topic'] | 'all' = 'all') {
   if (!supabase) throw new Error('Database is not configured');
   let request = supabase.from('books')
-    .select('id,title_en,title_vi,author,language,topic,description_en,description_vi,book_copies(count)', { count: 'exact' });
+    .select('id,title_en,title_vi,author,language,topic,description_en,description_vi', { count: 'exact' });
   const searchFilter = buildBookSearchFilter(query);
   if (searchFilter) request = request.or(searchFilter);
   if (topic !== 'all') request = request.eq('topic', topic);
@@ -26,14 +26,18 @@ export async function listBooks(page: number, signal: AbortSignal, query = '', t
     .order('created_at', { ascending: false }).order('id')
     .range(page * 24, page * 24 + 23).abortSignal(signal);
   if (error) throw error;
-  const books = data as CatalogueBook[];
+  const books = (data ?? []).map(book => ({ ...book, book_copies: [] })) as CatalogueBook[];
   if (books.length) {
     const availability = await supabase.from('book_availability')
-      .select('book_id,available_copies').in('book_id', books.map(book => book.id)).abortSignal(signal);
+      .select('book_id,total_copies,available_copies').in('book_id', books.map(book => book.id)).abortSignal(signal);
     // Older deployments can still browse books while the circulation migration awaits release.
     if (!availability.error) {
-      const counts = new Map(availability.data.map(row => [row.book_id, row.available_copies as number]));
-      books.forEach(book => { book.available_copies = counts.get(book.id); });
+      const counts = new Map(availability.data.map(row => [row.book_id, { total: row.total_copies as number, available: row.available_copies as number }]));
+      books.forEach(book => {
+        const count = counts.get(book.id);
+        book.available_copies = count?.available;
+        book.book_copies = [{ count: count?.total ?? 0 }];
+      });
     }
   }
   return { books, total: count ?? 0 };
@@ -42,12 +46,16 @@ export async function listBooks(page: number, signal: AbortSignal, query = '', t
 async function addAvailability(books: CatalogueBook[], signal?: AbortSignal) {
   if (!supabase || books.length === 0) return books;
   const request = supabase.from('book_availability')
-    .select('book_id,available_copies').in('book_id', books.map(book => book.id));
+    .select('book_id,total_copies,available_copies').in('book_id', books.map(book => book.id));
   const availability = signal ? await request.abortSignal(signal) : await request;
   // Older deployments can still show catalogue details while circulation awaits release.
   if (!availability.error) {
-    const counts = new Map(availability.data.map(row => [row.book_id, row.available_copies as number]));
-    books.forEach(book => { book.available_copies = counts.get(book.id); });
+    const counts = new Map(availability.data.map(row => [row.book_id, { total: row.total_copies as number, available: row.available_copies as number }]));
+    books.forEach(book => {
+      const count = counts.get(book.id);
+      book.available_copies = count?.available;
+      book.book_copies = [{ count: count?.total ?? 0 }];
+    });
   }
   return books;
 }
@@ -55,24 +63,24 @@ async function addAvailability(books: CatalogueBook[], signal?: AbortSignal) {
 export async function getBook(bookId: string, signal?: AbortSignal): Promise<CatalogueBook | null> {
   if (!supabase) throw new Error('Database is not configured');
   let request = supabase.from('books')
-    .select('id,title_en,title_vi,author,language,topic,description_en,description_vi,book_copies(count)')
+    .select('id,title_en,title_vi,author,language,topic,description_en,description_vi')
     .eq('id', bookId);
   if (signal) request = request.abortSignal(signal);
   const { data, error } = await request.maybeSingle();
   if (error) throw error;
   if (!data) return null;
-  return (await addAvailability([data as CatalogueBook], signal))[0];
+  return (await addAvailability([{ ...data, book_copies: [] } as CatalogueBook], signal))[0];
 }
 
 export async function listRelatedBooks(book: CatalogueBook, signal?: AbortSignal): Promise<CatalogueBook[]> {
   if (!supabase) throw new Error('Database is not configured');
   let request = supabase.from('books')
-    .select('id,title_en,title_vi,author,language,topic,description_en,description_vi,book_copies(count)')
+    .select('id,title_en,title_vi,author,language,topic,description_en,description_vi')
     .eq('topic', book.topic).neq('id', book.id).order('title_en').limit(3);
   if (signal) request = request.abortSignal(signal);
   const { data, error } = await request;
   if (error) throw error;
-  return addAvailability((data ?? []) as CatalogueBook[], signal);
+  return addAvailability((data ?? []).map(item => ({ ...item, book_copies: [] })) as CatalogueBook[], signal);
 }
 export async function addBook(id: string, book: NewBook) {
   if (!supabase) throw new Error('Database is not configured');

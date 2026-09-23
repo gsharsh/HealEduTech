@@ -36,6 +36,10 @@ test('next redirect only allows known local pages with safe characters', () => {
   assert.equal(safeNextPath('/library'), '/library');
   assert.equal(safeNextPath('/library?page=2#books'), '/library?page=2#books');
   assert.equal(safeNextPath('/library/the-tale-of-peter-rabbit'), '/library/the-tale-of-peter-rabbit');
+  assert.equal(safeNextPath('/admin/circulation'), '/admin/circulation');
+  assert.equal(safeNextPath('/staff/catalogue'), '/staff/catalogue');
+  assert.equal(safeNextPath('/staff/circulation'), '/staff/circulation');
+  assert.equal(safeNextPath('/admin/settings'), '/admin/settings');
   for (const value of [null, '', 'https://evil.example', '//evil.example', '/unknown', '/library\\evil', '/library%5cevil', '/library%0aevil', '/admin/%2f..']) {
     assert.equal(safeNextPath(value), '/learning');
   }

@@ -98,6 +98,11 @@ end $$;
 select set_config('request.jwt.claims','{"sub":"50000000-0000-4000-8000-000000000003","role":"authenticated"}',true);
 do $$ begin
   if (select count(*) from public.loans) <> 1 then raise exception 'Learner can see another borrower loan'; end if;
+  if (select count(*) from public.list_my_loans()) <> 1 then raise exception 'Learner loan summary is missing'; end if;
+  if (select book_copies->>'inventory_code' from public.list_my_loans() limit 1) <> 'EVG-CIRC-001' then
+    raise exception 'Learner loan summary has the wrong copy';
+  end if;
+  if (select count(*) from public.book_copies) <> 0 then raise exception 'Learner can read raw copy inventory'; end if;
 end $$;
 
 set local role anon;

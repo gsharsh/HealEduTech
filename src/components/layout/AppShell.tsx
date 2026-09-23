@@ -5,9 +5,10 @@ import { supabase } from '../../lib/supabase';
 import { useAccount } from '../../features/auth/context';
 import { libraryTranslations } from '../../features/library/libraryTranslations';
 const destinations = [['/learning', 'home', '⌂'], ['/library', 'library', '▤'], ['/explore', 'explore', '⌁'], ['/community', 'community', '☷']];
+const staffDestinations = [['/staff/catalogue', 'access.catalogue', '▦'], ['/staff/circulation', 'access.circulation', '⇄']];
 export function AppShell() {
   const { t, i18n } = useTranslation();
-  const { user } = useAccount();
+  const { user, accessStatus, staffRole } = useAccount();
   const copy = libraryTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
   const [help, setHelp] = useState(false);
   const { pathname } = useLocation();
@@ -32,11 +33,15 @@ export function AppShell() {
             </NavLink>
           ))}
         </nav>
-        <div className="sidebar-bottom">
-          <NavLink className="staff-link" to="/admin">
-            {t('staff')} <span aria-hidden="true">↗</span>
-          </NavLink>
-        </div>
+        {accessStatus === 'ready' && staffRole && <div className="staff-navigation">
+          <span className="nav-label">{t('access.staffArea')}</span>
+          <nav aria-label={t('access.navigation')}>
+            {staffDestinations.map(([path, key, symbol]) => <NavLink key={path} to={path}>
+              <span className="nav-icon" aria-hidden="true">{symbol}</span><span>{t(key)}</span>
+            </NavLink>)}
+            {staffRole === 'administrator' && <NavLink to="/admin/settings"><span className="nav-icon" aria-hidden="true">⚙</span><span>{t('access.administration')}</span></NavLink>}
+          </nav>
+        </div>}
       </aside>
       <div className="workspace">
         <header className="topbar">
@@ -45,6 +50,7 @@ export function AppShell() {
             <span>EVG</span>
           </NavLink>
           <div className="topbar-actions">
+            {accessStatus === 'ready' && staffRole && <NavLink className="topbar-button staff-shortcut" to="/staff/catalogue">{t('access.openDesk')}</NavLink>}
             <NavLink className="topbar-button" to="/sign-in">{user ? copy.account : copy.signIn}</NavLink>
             <button className="topbar-button" onClick={() => void i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')} lang={i18n.language === 'vi' ? 'en' : 'vi'}>
               {i18n.language === 'vi' ? 'English' : 'Tiếng Việt'}
@@ -70,7 +76,7 @@ export function AppShell() {
         <main id="main-content" tabIndex={-1}>
           <Outlet />
         </main>
-        <footer><NavLink to="/admin">{t('staff')}</NavLink></footer>
+        <footer><span>{t('footer')}</span>{accessStatus === 'ready' && staffRole && <NavLink to="/staff/catalogue">{t('access.openDesk')}</NavLink>}</footer>
       </div>
     </div>
   );

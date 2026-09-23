@@ -92,6 +92,10 @@ end $$;
 select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-000000000002","role":"authenticated"}',true);
 do $$ begin
  if (select count(*) from public.staff_members) <> 0 then raise exception 'Learner can see staff records'; end if;
+ if (select count(*) from public.book_copies) <> 0 then raise exception 'Learner can see raw copy inventory without a loan'; end if;
+ if (select total_copies from public.book_availability where book_id='20000000-0000-4000-8000-000000000001') <> 3 then
+  raise exception 'Learner cannot see aggregate catalogue availability';
+ end if;
  begin
   perform public.add_book_with_copies(gen_random_uuid(),'Blocked','Bị chặn','', 'vi','stories','','',1);
   raise exception 'Learner created a book';
@@ -116,10 +120,17 @@ set local role anon;
 select set_config('request.jwt.claims','{"role":"anon"}',true);
 do $$ begin
  if (select count(*) from public.books where id='20000000-0000-4000-8000-000000000001') <> 1 then raise exception 'Public cannot browse books'; end if;
+ if (select total_copies from public.book_availability where book_id='20000000-0000-4000-8000-000000000001') <> 3 then
+  raise exception 'Public cannot see aggregate catalogue availability';
+ end if;
+ begin
+  perform count(*) from public.book_copies;
+  raise exception 'Guest can see raw copy inventory';
+ exception when insufficient_privilege then null; end;
  begin
   perform public.add_book_with_copies(gen_random_uuid(),'Blocked','Bị chặn','', 'vi','stories','','',1);
   raise exception 'Guest created a book';
  exception when insufficient_privilege then null; end;
 end $$;
 rollback;
-select 'PASS: staff bootstrap, admin grants, last-admin guard, catalogue add/edit, retry safety, learner isolation, no self-promotion, guest read-only' as result;
+select 'PASS: staff bootstrap, admin grants, last-admin guard, catalogue add/edit, private copy inventory, retry safety, learner isolation, no self-promotion, guest read-only' as result;
