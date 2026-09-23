@@ -6,8 +6,8 @@ alter table public.books
 update public.books
 set cover_url = case id::text
   when '31000000-0000-4000-8000-000000000001' then 'https://covers.openlibrary.org/b/id/2557658-L.jpg'
-  when '31000000-0000-4000-8000-000000000002' then 'https://covers.openlibrary.org/b/id/1340606-L.jpg'
-  when '31000000-0000-4000-8000-000000000003' then 'https://covers.openlibrary.org/b/id/5886325-L.jpg'
+  when '31000000-0000-4000-8000-000000000002' then 'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Velveteen%20Rabbit%20Cover.jpg?width=600'
+  when '31000000-0000-4000-8000-000000000003' then 'https://covers.openlibrary.org/b/olid/OL7021379M-L.jpg'
   when '31000000-0000-4000-8000-000000000004' then 'https://www.gutenberg.org/cache/epub/10737/pg10737.cover.medium.jpg'
   when '31000000-0000-4000-8000-000000000005' then 'https://covers.openlibrary.org/b/id/7960578-L.jpg'
   when '31000000-0000-4000-8000-000000000006' then 'https://covers.openlibrary.org/b/id/15458-L.jpg'
