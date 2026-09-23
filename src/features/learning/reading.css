@@ -10,6 +10,8 @@
 .reading-action details { border-top: 1px solid var(--line); padding-top: 10px; }
 .reading-action summary { cursor: pointer; color: var(--muted); font-size: 13px; }
 .reading-action textarea { display: block; width: 100%; min-height: 80px; border: 1px solid var(--line); border-radius: 8px; padding: 10px; margin-top: 8px; resize: vertical; }
+.reading-review { border-top: 1px solid var(--line); padding-top: 14px; }
+.reading-review p { margin: 5px 0 0; }
 .reading-save { justify-self: start; }
 .reading-action-link { color: var(--green); text-decoration: underline; font-size: 13px; }
 .reading-error { color: #8d3d2c; font-size: 13px; margin: 0; }

@@ -1,0 +1,32 @@
+.admin-catalogue { display: grid; gap: 24px; max-width: 1120px; margin: 0 auto; }
+.admin-catalogue__heading, .admin-inventory__heading, .admin-editor__heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.admin-catalogue__heading h1, .admin-inventory__heading h2, .admin-editor__heading h2 { margin: 5px 0 6px; }
+.admin-catalogue__heading p { max-width: 620px; margin: 0; color: var(--muted, #65766f); }
+.admin-catalogue__links { display: flex; flex-wrap: wrap; gap: 10px; }
+.admin-access-state { max-width: 680px; }
+.admin-access-state h2 { margin-top: 0; }
+.admin-editor { border-color: #afc4b5; box-shadow: 0 18px 48px rgba(32, 74, 61, .08); }
+.admin-editor__heading { border-bottom: 1px solid #dce5dd; padding-bottom: 16px; margin-bottom: 20px; }
+.admin-editor__heading .text-link { border: 0; background: none; cursor: pointer; padding: 8px; }
+.admin-editor__note { padding: 12px 14px; border-radius: 8px; background: #f3f6ef; color: #52655e; font-size: 14px; }
+.admin-editor small { color: #65766f; font-weight: 400; }
+.admin-notice { margin: 0; padding: 12px 16px; border-radius: 8px; background: #eef5ef; color: #235f4d; }
+.admin-inventory { display: grid; gap: 16px; }
+.admin-inventory__heading { padding-bottom: 12px; border-bottom: 1px solid #dce5dd; }
+.admin-inventory__empty { padding: 34px; text-align: center; border: 1px dashed #bac8bd; border-radius: 12px; }
+.admin-book-list { display: grid; gap: 10px; }
+.admin-book-row { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 16px; border: 1px solid #dce5dd; border-radius: 12px; background: #fff; }
+.admin-book-row__cover { display: grid; place-items: center; width: 64px; aspect-ratio: 4 / 5; border-radius: 7px; background: #e7eddf; color: #285e4c; font: 700 26px/1 Georgia, serif; }
+.admin-book-row h3 { margin: 0 0 5px; font-size: 18px; }
+.admin-book-row p { margin: 0; }
+.admin-book-row__meta, .admin-book-row__description { color: #65766f; font-size: 14px; }
+.admin-book-row__description { margin-top: 6px !important; max-width: 760px; }
+.admin-book-row__stock { margin-top: 9px !important; color: #235f4d; font-size: 13px; font-weight: 700; }
+
+@media (max-width: 700px) {
+  .admin-catalogue__heading, .admin-inventory__heading, .admin-editor__heading { align-items: stretch; flex-direction: column; gap: 12px; }
+  .admin-catalogue__heading > .primary { width: 100%; }
+  .admin-book-row { grid-template-columns: 48px minmax(0, 1fr); align-items: start; }
+  .admin-book-row__cover { width: 48px; }
+  .admin-book-row > .secondary { grid-column: 1 / -1; width: 100%; }
+}

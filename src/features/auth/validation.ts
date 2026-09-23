@@ -17,7 +17,8 @@ export function safeNextPath(value: string | null): string {
   if (hasUnsafeCharacter || /%(?:2f|5c|0[0-9a-f]|1[0-9a-f]|7f)/i.test(value)) return '/learning';
   try {
     const url = new URL(value, 'https://evg.local');
-    return appPaths.has(url.pathname) ? `${url.pathname}${url.search}${url.hash}` : '/learning';
+    const isBookDetail = /^\/library\/[^/]+$/.test(url.pathname);
+    return appPaths.has(url.pathname) || isBookDetail ? `${url.pathname}${url.search}${url.hash}` : '/learning';
   } catch {
     return '/learning';
   }

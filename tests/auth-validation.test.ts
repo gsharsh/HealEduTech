@@ -23,7 +23,8 @@ test('link errors provide safe actionable messages without revealing backend det
 });
 test('catalogue search quotes punctuation before building a PostgREST OR filter', () => {
   const filter = buildBookSearchFilter('Seed (the "green")\\book');
-  assert.equal(filter, 'title_en.ilike."%Seed (the \\"green\\")\\\\book%",title_vi.ilike."%Seed (the \\"green\\")\\\\book%"');
+  assert.equal(filter, 'title_en.ilike."%Seed (the \\"green\\")\\\\book%",title_vi.ilike."%Seed (the \\"green\\")\\\\book%",author.ilike."%Seed (the \\"green\\")\\\\book%"');
+  assert.equal(buildBookSearchFilter('Beatrix Potter'), 'title_en.ilike."%Beatrix Potter%",title_vi.ilike."%Beatrix Potter%",author.ilike."%Beatrix Potter%"');
   assert.equal(buildBookSearchFilter('%,_'), null);
 });
 test('auth callback errors are read from link query or hash without exposing provider text', () => {
@@ -34,6 +35,7 @@ test('auth callback errors are read from link query or hash without exposing pro
 test('next redirect only allows known local pages with safe characters', () => {
   assert.equal(safeNextPath('/library'), '/library');
   assert.equal(safeNextPath('/library?page=2#books'), '/library?page=2#books');
+  assert.equal(safeNextPath('/library/the-tale-of-peter-rabbit'), '/library/the-tale-of-peter-rabbit');
   for (const value of [null, '', 'https://evil.example', '//evil.example', '/unknown', '/library\\evil', '/library%5cevil', '/library%0aevil', '/admin/%2f..']) {
     assert.equal(safeNextPath(value), '/learning');
   }

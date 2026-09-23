@@ -68,9 +68,17 @@ set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
 select public.add_book_with_copies('20000000-0000-4000-8000-000000000001','Test book','Sách thử nghiệm','', 'vi','stories','','',2);
 select public.add_book_with_copies('20000000-0000-4000-8000-000000000001','Test book','Sách thử nghiệm','', 'vi','stories','','',2);
+select public.update_book_and_add_copies(
+  '20000000-0000-4000-8000-000000000001',
+  'Updated test book', 'Sách thử nghiệm đã sửa', 'EVG', 'bilingual', 'stories',
+  'Updated description', 'Mô tả đã sửa', 1
+);
 do $$ begin
- if (select count(*) from public.book_copies where book_id='20000000-0000-4000-8000-000000000001') <> 2 then
-  raise exception 'Retry created duplicate copies';
+ if (select count(*) from public.book_copies where book_id='20000000-0000-4000-8000-000000000001') <> 3 then
+  raise exception 'Catalogue edit did not append exactly one copy';
+ end if;
+ if (select title_en from public.books where id='20000000-0000-4000-8000-000000000001') <> 'Updated test book' then
+  raise exception 'Catalogue edit did not update book details';
  end if;
  begin
   perform public.add_book_with_copies('20000000-0000-4000-8000-000000000002','Bad count','Sách','', 'vi','stories','','',0);
@@ -87,6 +95,13 @@ do $$ begin
  begin
   perform public.add_book_with_copies(gen_random_uuid(),'Blocked','Bị chặn','', 'vi','stories','','',1);
   raise exception 'Learner created a book';
+ exception when insufficient_privilege then null; end;
+ begin
+  perform public.update_book_and_add_copies(
+    '20000000-0000-4000-8000-000000000001',
+    'Blocked edit', 'Bị chặn', '', 'vi', 'stories', '', '', 1
+  );
+  raise exception 'Learner edited a book';
  exception when insufficient_privilege then null; end;
  begin
   insert into public.staff_members(user_id,role) values('10000000-0000-4000-8000-000000000002','administrator');
@@ -107,4 +122,4 @@ do $$ begin
  exception when insufficient_privilege then null; end;
 end $$;
 rollback;
-select 'PASS: staff bootstrap, admin grants, last-admin guard, atomic validation, retry safety, learner isolation, no self-promotion, guest read-only' as result;
+select 'PASS: staff bootstrap, admin grants, last-admin guard, catalogue add/edit, retry safety, learner isolation, no self-promotion, guest read-only' as result;

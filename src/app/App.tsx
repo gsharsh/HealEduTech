@@ -9,6 +9,7 @@ import { LibraryPage } from "../features/library/LibraryPage";
 import { DemoProvider } from "../demo/DemoProvider";
 import { AccountProvider } from "../features/auth/AccountProvider";
 import { LiveLibraryPage } from "../features/library/LiveLibraryPage";
+import { BookDetailPage } from "../features/library/BookDetailPage";
 import { BookManagement } from "../features/admin/BookManagement";
 import { LiveLearningPage } from "../features/learning/LiveLearningPage";
 import { LiveExplorePage } from "../features/explore/LiveExplorePage";
@@ -23,6 +24,7 @@ export function App() {
         <Route index element={<Navigate to="/learning" replace />} />
         <Route path="/learning" element={supabase ? <LiveLearningPage /> : <MyLearningPage />} />
         <Route path="/library" element={supabase ? <LiveLibraryPage /> : <LibraryPage />} />
+        {supabase && <Route path="/library/:bookId" element={<BookDetailPage />} />}
         <Route path="/explore" element={supabase ? <LiveExplorePage /> : <ExplorePage />} />
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/admin" element={supabase ? <BookManagement /> : <AdminPage />} />

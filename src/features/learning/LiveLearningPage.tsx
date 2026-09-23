@@ -7,7 +7,7 @@ import { readingTranslations } from './readingTranslations';
 import './reading.css';
 
 type ReadingActionProps = { bookId: string; onSaved?: (record: ReadingRecord) => void };
-export function ReadingAction(props: ReadingActionProps) {
+function ReadingAction(props: ReadingActionProps) {
   const { user, loading } = useAccount();
   const { i18n } = useTranslation();
   const copy = readingTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
@@ -38,12 +38,13 @@ function ReadingEditor({ bookId, userId, onSaved }: ReadingActionProps & { userI
   }, [bookId, userId, attempt]);
   if (loadState === 'loading') return <p role="status">{copy.loading}</p>;
   if (loadState === 'failed') return <div role="alert"><p>{copy.loadError}</p><button className="secondary" onClick={() => { setLoadState('loading'); setAttempt(value => value + 1); }}>{copy.retry}</button></div>;
-  const clean = record?.status === status && (record?.reflection ?? '') === reflection.trim();
+  const nextReflection = status === 'finished' ? reflection.trim() : '';
+  const clean = record?.status === status && (record?.reflection ?? '') === nextReflection;
   async function save() {
     if (saving) return;
     setSaving(true); setError(false);
     try {
-      const saved = await saveReading(userId, { bookId, status, reflection });
+      const saved = await saveReading(userId, { bookId, status, reflection: nextReflection });
       setRecord(saved); setReflection(saved.reflection ?? ''); onSaved?.(saved);
     } catch { setError(true); }
     finally { setSaving(false); }
@@ -52,14 +53,14 @@ function ReadingEditor({ bookId, userId, onSaved }: ReadingActionProps & { userI
     <fieldset disabled={saving} className="reading-fields">
       <legend className="reading-private">{copy.private}</legend>
       <div className="reading-action-buttons">
-        <button type="button" className={status === 'currently_reading' ? 'selected' : ''} aria-pressed={status === 'currently_reading'} onClick={() => setStatus('currently_reading')}>{copy.markReading}</button>
-        <button type="button" className={status === 'finished' ? 'selected' : ''} aria-pressed={status === 'finished'} onClick={() => setStatus('finished')}>{copy.markFinished}</button>
+        {status === 'currently_reading' ? <button type="button" className="secondary" onClick={() => setStatus('finished')}>{copy.markFinished}</button> : <button type="button" className="secondary" onClick={() => setStatus('currently_reading')}>{copy.stillReading}</button>}
       </div>
-      <details><summary>{copy.reflection}</summary>
-        <label className="reading-reflection-label" htmlFor={reflectionId}>{copy.reflection}</label>
+      {status === 'finished' && <div className="reading-review">
+        <label className="reading-reflection-label" htmlFor={reflectionId}>{copy.review}</label>
+        <p className="reading-action-muted">{copy.reviewBody}</p>
         <textarea id={reflectionId} value={reflection} maxLength={2000} onChange={event => setReflection(event.target.value)} placeholder={copy.reflectionPlaceholder} />
-      </details>
-      <button type="button" className="primary reading-save" disabled={saving || clean} onClick={() => void save()}>{saving ? copy.saving : clean ? copy.saved : copy.save}</button>
+      </div>}
+      <button type="button" className="primary reading-save" disabled={saving || clean} onClick={() => void save()}>{saving ? copy.saving : clean ? copy.saved : copy.saveChanges}</button>
     </fieldset>
     {error && <p className="reading-error" role="alert">{copy.saveError}</p>}
   </div>;
@@ -94,7 +95,7 @@ function ReadingHistory({ userId }: { userId: string }) {
     <div className="page-heading"><div><span className="eyebrow">{copy.title}</span><h1>{copy.title}</h1><p>{copy.intro}</p></div></div>
     {loading ? <p role="status">{copy.loading}</p> : failed ? <div className="reading-empty" role="alert"><p>{copy.loadError}</p><button className="secondary" onClick={() => { setFailed(false); setLoading(true); setAttempt(value => value + 1); }}>{copy.retry}</button></div> : records.length === 0 ? <div className="reading-empty"><h2>{copy.emptyTitle}</h2><p>{copy.empty}</p><Link className="secondary" to="/library">{copy.start}</Link></div> : <div className="reading-history">{records.map(record => {
       const book = bookById.get(record.book_id);
-      return <article className="reading-card" key={record.book_id}><div><span className="eyebrow">{record.status === 'finished' ? copy.finished : copy.reading}</span><h2>{book ? (i18n.language === 'vi' ? book.title_vi : book.title_en) : copy.unavailableBook}</h2>{record.reflection && <p className="reading-reflection">“{record.reflection}”</p>}</div><ReadingAction bookId={record.book_id} onSaved={saved => setRecords(current => current.map(item => item.book_id === saved.book_id ? saved : item))} /></article>;
+      return <article className="reading-card" key={record.book_id}><div><span className="eyebrow">{record.status === 'finished' ? copy.finished : copy.reading}</span><h2>{book ? (i18n.language === 'vi' ? book.title_vi : book.title_en) : copy.unavailableBook}</h2>{record.status === 'finished' && record.reflection && <p className="reading-reflection">“{record.reflection}”</p>}</div><ReadingAction bookId={record.book_id} onSaved={saved => setRecords(current => current.map(item => item.book_id === saved.book_id ? saved : item))} /></article>;
     })}</div>}
     <section className="reading-deferred"><span className="future-label">{copy.deferredTitle}</span><p>{copy.deferredBody}</p></section>
   </section>;

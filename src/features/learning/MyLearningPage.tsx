@@ -61,6 +61,6 @@ export function MyLearningPage() {
         <h2>{t('yourJourney')}</h2>
         <p>{t('finishedCount', { count: finished.length })} {t('noRush')}</p>
       </div>
-      <Link className="text-link" to="/library?view=reading">{t('myReading')} →</Link>
+      <Link className="text-link" to="/learning">{t('myReading')} →</Link>
     </section>{selected && <BookDialog book={selected} onClose={() => setSelected(null)} />}</>;
 }

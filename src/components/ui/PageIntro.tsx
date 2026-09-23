@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 interface PageIntroProps {
   eyebrow: string;
   title: string;
-  description: string;
+  description?: string;
   action?: ReactNode;
 }
 
@@ -13,9 +13,9 @@ export function PageIntro({ eyebrow, title, description, action }: PageIntroProp
       <div>
         <p className="eyebrow">{eyebrow}</p>
         <h1>{title}</h1>
-        <p>{description}</p>
+        {description ? <p>{description}</p> : null}
       </div>
-      {action}
+      {action ? <div className="page-intro-action">{action}</div> : null}
     </header>
   );
 }

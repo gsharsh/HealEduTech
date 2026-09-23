@@ -9,7 +9,7 @@ export function BookDialog({ book, onClose }: {
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const { t, i18n } = useTranslation();
-  const { reading, setReading, borrowed } = useDemo();
+  const { borrowed } = useDemo();
   const language = i18n.language === 'vi' ? 'vi' : 'en';
   useEffect(() => {
     const dialog = ref.current;
@@ -33,8 +33,8 @@ export function BookDialog({ book, onClose }: {
         <p>{book.description[language]}</p>
         <p className="availability">{t('available', { count: book.copies - (book.id === 'garden' && borrowed ? 1 : 0) })}</p>
         <p className="muted">{t('sampleBook')}</p>
-        <p role="status">{reading[book.id] ? t(reading[book.id] === 'finished' ? 'finished' : 'onYourList') : t('askStaff')}</p>
-        <button className="primary" onClick={() => setReading(book.id, reading[book.id] === 'reading' ? 'finished' : 'reading')}>{t(reading[book.id] === 'finished' ? 'markReading' : reading[book.id] ? 'markFinished' : 'addReading')}</button>
+        <p role="status">{t('askStaff')}</p>
+        <p className="muted">{t('catalogue.circulationLater')}</p>
       </div>
     </div>
   </dialog>;
