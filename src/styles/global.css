@@ -476,7 +476,7 @@ main:focus {
   transform:translateY(-2px);
 }
 .book-cover {
-  aspect-ratio:.78;
+  aspect-ratio:.72;
   width:100%;
   border-radius:4px 11px 11px 4px;
   padding:18px 20px 15px 24px;
@@ -1053,7 +1053,7 @@ dialog::backdrop {
 }
 @media(min-width:1500px) {
   .book-cover {
-    aspect-ratio:1;
+    aspect-ratio:.72;
   }
   .cover-symbol {
     font-size:100px;
@@ -1166,7 +1166,7 @@ dialog::backdrop {
     gap:25px;
   }
   .book-cover {
-    aspect-ratio:1;
+    aspect-ratio:.72;
   }
   .book-cover strong {
     font-size:24px;
@@ -1495,7 +1495,7 @@ dialog::backdrop {
     grid-template-columns:1fr;
   }
   .book-cover {
-    aspect-ratio:.82;
+    aspect-ratio:.72;
   }
   .topbar-button,.language-button,.help-button {
     font-size:10px;
