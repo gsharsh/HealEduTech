@@ -4,13 +4,14 @@ export interface CatalogueBook {
   id: string; title_en: string; title_vi: string; author: string;
   language: 'en' | 'vi' | 'bilingual'; topic: 'nature' | 'stories' | 'science';
   description_en: string; description_vi: string;
+  cover_url: string;
   book_copies: { count: number }[];
   available_copies?: number;
 }
 export interface NewBook {
   title_en: string; title_vi: string; author: string;
   language: CatalogueBook['language']; topic: CatalogueBook['topic'];
-  description_en: string; description_vi: string; copies: number;
+  description_en: string; description_vi: string; cover_url: string; copies: number;
 }
 export interface BookUpdate extends Omit<NewBook, 'copies'> {
   additionalCopies: number;
@@ -18,7 +19,7 @@ export interface BookUpdate extends Omit<NewBook, 'copies'> {
 export async function listBooks(page: number, signal: AbortSignal, query = '', topic: CatalogueBook['topic'] | 'all' = 'all') {
   if (!supabase) throw new Error('Database is not configured');
   let request = supabase.from('books')
-    .select('id,title_en,title_vi,author,language,topic,description_en,description_vi', { count: 'exact' });
+    .select('id,title_en,title_vi,author,language,topic,description_en,description_vi,cover_url', { count: 'exact' });
   const searchFilter = buildBookSearchFilter(query);
   if (searchFilter) request = request.or(searchFilter);
   if (topic !== 'all') request = request.eq('topic', topic);
@@ -63,7 +64,7 @@ async function addAvailability(books: CatalogueBook[], signal?: AbortSignal) {
 export async function getBook(bookId: string, signal?: AbortSignal): Promise<CatalogueBook | null> {
   if (!supabase) throw new Error('Database is not configured');
   let request = supabase.from('books')
-    .select('id,title_en,title_vi,author,language,topic,description_en,description_vi')
+    .select('id,title_en,title_vi,author,language,topic,description_en,description_vi,cover_url')
     .eq('id', bookId);
   if (signal) request = request.abortSignal(signal);
   const { data, error } = await request.maybeSingle();
@@ -75,7 +76,7 @@ export async function getBook(bookId: string, signal?: AbortSignal): Promise<Cat
 export async function listRelatedBooks(book: CatalogueBook, signal?: AbortSignal): Promise<CatalogueBook[]> {
   if (!supabase) throw new Error('Database is not configured');
   let request = supabase.from('books')
-    .select('id,title_en,title_vi,author,language,topic,description_en,description_vi')
+    .select('id,title_en,title_vi,author,language,topic,description_en,description_vi,cover_url')
     .eq('topic', book.topic).neq('id', book.id).order('title_en').limit(3);
   if (signal) request = request.abortSignal(signal);
   const { data, error } = await request;
@@ -91,6 +92,7 @@ export async function addBook(id: string, book: NewBook) {
     p_copy_count: book.copies,
   });
   if (error) throw error;
+  if (book.cover_url.trim()) await updateBookCover(id, book.cover_url);
   return data as string;
 }
 
@@ -108,5 +110,12 @@ export async function updateBook(id: string, book: BookUpdate) {
     p_additional_copies: book.additionalCopies,
   });
   if (error) throw error;
+  await updateBookCover(id, book.cover_url);
   return data as string;
+}
+
+async function updateBookCover(id: string, coverUrl: string) {
+  if (!supabase) throw new Error('Database is not configured');
+  const { error } = await supabase.rpc('update_book_cover', { p_id: id, p_cover_url: coverUrl.trim() });
+  if (error) throw error;
 }

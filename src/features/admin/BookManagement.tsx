@@ -6,13 +6,13 @@ import { addBook, listBooks, updateBook, type BookUpdate, type CatalogueBook, ty
 import { WorkspaceNavigation } from './WorkspaceNavigation';
 import './admin.css';
 
-const emptyBook: NewBook = { title_en: '', title_vi: '', author: '', language: 'vi', topic: 'stories', description_en: '', description_vi: '', copies: 1 };
+const emptyBook: NewBook = { title_en: '', title_vi: '', author: '', language: 'vi', topic: 'stories', description_en: '', description_vi: '', cover_url: '', copies: 1 };
 type EditorState = { mode: 'new'; value: NewBook } | { mode: 'edit'; id: string; registeredCopies: number; value: BookUpdate };
 
 function editorFromBook(book: CatalogueBook): EditorState {
   return { mode: 'edit', id: book.id, registeredCopies: book.book_copies[0]?.count ?? 0, value: {
     title_en: book.title_en, title_vi: book.title_vi, author: book.author, language: book.language, topic: book.topic,
-    description_en: book.description_en, description_vi: book.description_vi, additionalCopies: 0,
+    description_en: book.description_en, description_vi: book.description_vi, cover_url: book.cover_url, additionalCopies: 0,
   } };
 }
 
@@ -67,7 +67,7 @@ export function BookManagement() {
     if (busy || !canManageBooks || !editor) return;
     const value = editor.value;
     const copyCount = editor.mode === 'new' ? editor.value.copies : editor.value.additionalCopies;
-    if (!value.title_en.trim() || !value.title_vi.trim() || !Number.isInteger(copyCount) || copyCount < (editor.mode === 'new' ? 1 : 0) || copyCount > 100) { setStatus('error'); return; }
+    if (!value.title_en.trim() || !value.title_vi.trim() || !Number.isInteger(copyCount) || copyCount < (editor.mode === 'new' ? 1 : 0) || copyCount > 100 || (value.cover_url.trim() !== '' && !/^https?:\/\//i.test(value.cover_url.trim()))) { setStatus('error'); return; }
     setBusy(true); setStatus('idle');
     try {
       if (editor.mode === 'new') await addBook(requestId, editor.value);
@@ -92,6 +92,7 @@ export function BookManagement() {
               <div className="form-grid">{(['title_en', 'title_vi', 'author'] as const).map(field => <label key={field}>{t(`catalogue.${field}`)}<input value={editor.value[field]} onChange={event => setEditor(current => current ? ({ ...current, value: { ...current.value, [field]: event.target.value } } as EditorState) : current)} maxLength={200} required={field !== 'author'} /></label>)}
                 <label>{t('catalogue.language')}<select value={editor.value.language} onChange={event => setEditor(current => current ? ({ ...current, value: { ...current.value, language: event.target.value as NewBook['language'] } } as EditorState) : current)}>{(['vi', 'en', 'bilingual'] as const).map(language => <option key={language} value={language}>{t(`catalogue.${language}`)}</option>)}</select></label>
                 <label>{t('topic')}<select value={editor.value.topic} onChange={event => setEditor(current => current ? ({ ...current, value: { ...current.value, topic: event.target.value as NewBook['topic'] } } as EditorState) : current)}>{(['nature', 'stories', 'science'] as const).map(topic => <option key={topic} value={topic}>{t(`topics.${topic}`)}</option>)}</select></label>
+                <label className="form-grid__wide">{t('catalogue.coverUrl')}<input type="url" value={editor.value.cover_url} onChange={event => setEditor(current => current ? ({ ...current, value: { ...current.value, cover_url: event.target.value } } as EditorState) : current)} maxLength={1000} placeholder="https://…" /></label>
                 {editor.mode === 'new' ? <label>{t('catalogue.copies')}<input type="number" min={1} max={100} step={1} required value={editor.value.copies} onChange={event => setEditor(current => current?.mode === 'new' ? { ...current, value: { ...current.value, copies: Number(event.target.value) } } : current)} /></label>
                   : <label>{t('catalogue.addCopies')}<input type="number" min={0} max={100 - editor.registeredCopies} step={1} required value={editor.value.additionalCopies} onChange={event => setEditor(current => current?.mode === 'edit' ? { ...current, value: { ...current.value, additionalCopies: Number(event.target.value) } } : current)} /><small>{t('catalogue.registeredCopies', { count: editor.registeredCopies })}</small></label>}
               </div>
@@ -105,7 +106,7 @@ export function BookManagement() {
           <section className="admin-inventory" aria-labelledby="inventory-title"><div className="admin-inventory__heading"><div><span className="eyebrow">{t('catalogue.inventoryEyebrow')}</span><h2 id="inventory-title">{t('catalogue.inventoryTitle')}</h2></div><button className="secondary" type="button" onClick={reloadCatalogue}>{t('catalogue.refresh')}</button></div>
             {catalogueState === 'loading' ? <p role="status">{t('catalogue.loading')}</p> : catalogueState === 'error' ? <div role="alert"><p>{t('catalogue.loadError')}</p><button className="secondary" type="button" onClick={reloadCatalogue}>{t('catalogue.retry')}</button></div> : books.length === 0 ? <div className="admin-inventory__empty"><p>{t('catalogue.empty')}</p><button className="primary" type="button" onClick={beginAdd}>{t('catalogue.addAction')}</button></div> : <div className="admin-book-list">{books.map(book => {
               const title = locale === 'vi' ? book.title_vi : book.title_en; const description = locale === 'vi' ? book.description_vi : book.description_en; const total = book.book_copies[0]?.count ?? 0;
-              return <article className="admin-book-row" key={book.id}><div className="admin-book-row__cover" aria-hidden="true">{title.slice(0, 1)}</div><div className="admin-book-row__body"><h3>{title}</h3><p className="admin-book-row__meta">{book.author || t('catalogue.unknownAuthor')} · {t(`topics.${book.topic}`)}</p>{description && <p className="admin-book-row__description">{description}</p>}<p className="admin-book-row__stock">{t('catalogue.stockSummary', { available: book.available_copies ?? total, total })}</p></div><button className="secondary" type="button" onClick={() => beginEdit(book)}>{t('catalogue.editAction')}</button></article>;
+              return <article className="admin-book-row" key={book.id}><div className="admin-book-row__cover" aria-hidden="true" style={book.cover_url ? { backgroundImage: `url(${book.cover_url})` } : undefined}>{!book.cover_url && title.slice(0, 1)}</div><div className="admin-book-row__body"><h3>{title}</h3><p className="admin-book-row__meta">{book.author || t('catalogue.unknownAuthor')} · {t(`topics.${book.topic}`)}</p>{description && <p className="admin-book-row__description">{description}</p>}<p className="admin-book-row__stock">{t('catalogue.stockSummary', { available: book.available_copies ?? total, total })}</p></div><button className="secondary" type="button" onClick={() => beginEdit(book)}>{t('catalogue.editAction')}</button></article>;
             })}</div>}
           </section>
         </>}

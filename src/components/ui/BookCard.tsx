@@ -29,7 +29,8 @@ export function BookCard({ book, onOpen }: {
 }
 
 export function CatalogueBookCover({ book, title, synopsis, synopsisLabel }: { book: CatalogueBook; title: string; synopsis?: string; synopsisLabel?: string }) {
-  return <div className={`book-cover ${book.topic === 'nature' ? 'sage' : book.topic === 'science' ? 'blue' : 'clay'}`} aria-hidden="true">
+  return <div className={`book-cover ${book.topic === 'nature' ? 'sage' : book.topic === 'science' ? 'blue' : 'clay'}${book.cover_url ? ' has-cover-image' : ''}`} aria-hidden="true" style={book.cover_url ? { backgroundImage: `url(${book.cover_url})` } : undefined}>
+    {book.cover_url && <span className="cover-image-wash" />}
     <span className="cover-edition">EVG</span>
     <strong>{title}</strong>
     <span className="cover-symbol">{book.topic === 'nature' ? '✳' : book.topic === 'science' ? '△' : '≈'}</span>

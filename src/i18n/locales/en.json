@@ -270,6 +270,7 @@
     "copies": "Number of physical copies",
     "description_en": "English description (optional)",
     "description_vi": "Vietnamese description (optional)",
+    "coverUrl": "Cover image URL (optional)",
     "save": "Save book and copies",
     "saved": "Catalogue saved.",
     "saveError": "The book could not be saved. Check the titles, copy count, connection and staff access. If editing still does not work, ask the site owner to finish enabling catalogue management."
