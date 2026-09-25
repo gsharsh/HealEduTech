@@ -36,12 +36,12 @@ export function CatalogueBookCover({ book, title }: { book: CatalogueBook; title
   </div>;
 }
 
-export function CatalogueBookCard({ book, availabilityLabel }: { book: CatalogueBook; availabilityLabel: string }) {
+export function CatalogueBookCard({ book, availabilityLabel, returnTo = '/library' }: { book: CatalogueBook; availabilityLabel: string; returnTo?: string }) {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'vi' ? 'vi' : 'en';
   const title = locale === 'vi' ? book.title_vi : book.title_en;
   return <article className="catalogue-book catalogue-book-card">
-    <Link className="catalogue-book-link" to={`/library/${encodeURIComponent(book.id)}`}>
+    <Link className="catalogue-book-link" to={`/library/${encodeURIComponent(book.id)}?${new URLSearchParams({ returnTo }).toString()}`}>
       <CatalogueBookCover book={book} title={title} />
       <span className="book-meta">{t(`topics.${book.topic}`)} · {t(`catalogue.${book.language}`)}</span>
       <span className="book-title">{title}</span>

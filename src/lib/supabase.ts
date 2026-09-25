@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { getPublicEnv } from "./env";
+import { buildAuthRedirectUrl } from "../features/auth/validation";
 
 const env = getPublicEnv();
 
@@ -15,12 +16,12 @@ export const supabase = env
     })
   : null;
 
-export function authRedirectUrl() {
-  return new URL('/sign-in', window.location.origin).toString();
+export function authRedirectUrl(nextPath?: string | null) {
+  return buildAuthRedirectUrl(window.location.origin, nextPath);
 }
 
-export function passwordResetRedirectUrl() {
+export function passwordResetRedirectUrl(nextPath?: string | null) {
   // Keep recovery on the existing allowlisted auth URL; the PASSWORD_RECOVERY
   // event switches the form into the new-password state after the link lands.
-  return new URL('/sign-in?mode=recovery', window.location.origin).toString();
+  return buildAuthRedirectUrl(window.location.origin, nextPath, 'recovery');
 }

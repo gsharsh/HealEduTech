@@ -14,14 +14,30 @@ export function safeNextPath(value: string | null): string {
     const code = character.charCodeAt(0);
     return character === '\\' || code < 32 || code === 127;
   });
-  if (hasUnsafeCharacter || /%(?:2f|5c|0[0-9a-f]|1[0-9a-f]|7f)/i.test(value)) return '/learning';
+  if (hasUnsafeCharacter) return '/learning';
   try {
     const url = new URL(value, 'https://evg.local');
+    if (/%(?:2f|5c|0[0-9a-f]|1[0-9a-f]|7f)/i.test(url.pathname)) return '/learning';
     const isBookDetail = /^\/library\/[^/]+$/.test(url.pathname);
     return appPaths.has(url.pathname) || isBookDetail ? `${url.pathname}${url.search}${url.hash}` : '/learning';
   } catch {
     return '/learning';
   }
+}
+
+export function safeBrowseTarget(value: string | null): string {
+  const candidate = safeNextPath(value);
+  const pathname = new URL(candidate, 'https://evg.local').pathname;
+  return pathname === '/library' || pathname === '/explore' || /^\/library\/[^/]+$/.test(pathname)
+    ? candidate
+    : '/library';
+}
+
+export function buildAuthRedirectUrl(origin: string, nextPath?: string | null, mode?: 'recovery'): string {
+  const url = new URL('/sign-in', origin);
+  if (mode === 'recovery') url.searchParams.set('mode', 'recovery');
+  if (nextPath) url.searchParams.set('next', safeNextPath(nextPath));
+  return url.toString();
 }
 
 export function authErrorKey(error: { code?: string; status?: number }): string {

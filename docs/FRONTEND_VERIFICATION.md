@@ -1,5 +1,7 @@
 # Frontend verification — 24 September 2026
 
+For the subsequent hosted-site QA, regression fixes and remaining real-account checks, see [Live QA, 24–25 September](LIVE_QA_2026-09-24.md). The prototype checks below are historical evidence, separate from the hosted QA.
+
 Scope: the Phase 1A–1B frontend prototypes and the configured circulation presentation in [PLAN.md](../PLAN.md). Fictional workflow results do not verify production accounts, permissions, persistence, database integrity or actual learning outcomes.
 
 ## Completed checks

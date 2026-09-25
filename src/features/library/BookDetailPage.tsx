@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CatalogueBookCard, CatalogueBookCover } from '../../components/ui/BookCard';
 import { useAccount } from '../auth/context';
 import { getMyReading, saveReading, type ReadingRecord } from '../learning/reading';
 import { getBook, listRelatedBooks, type CatalogueBook } from './catalogue';
 import { libraryTranslations } from './libraryTranslations';
+import { libraryReturnPath } from './libraryState';
 import './library.css';
 
 type DetailState = {
@@ -63,6 +64,7 @@ function SignedInReadingAction({ bookId, userId }: { bookId: string; userId: str
 
 export function BookDetailPage() {
   const { bookId = '' } = useParams();
+  const location = useLocation();
   const { t, i18n } = useTranslation();
   const copy = libraryTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
   const [attempt, setAttempt] = useState(0);
@@ -88,8 +90,9 @@ export function BookDetailPage() {
   const description = (i18n.language === 'vi' ? book.description_vi : book.description_en).trim() || copy.noDescription;
   const availability = book.available_copies === undefined ? copy.availabilityUnknown : copy.availableLabel(book.available_copies);
   const deskMessage = book.available_copies === 0 ? copy.noCopies : copy.borrowAtDesk;
+  const returnTo = libraryReturnPath(new URLSearchParams(location.search).get('returnTo'));
   return <article className="book-detail-page">
-    <Link className="book-detail-back" to="/library">← {copy.back}</Link>
+    <Link className="book-detail-back" to={returnTo}>← {copy.back}</Link>
     <div className="book-detail-hero">
       <div className="book-detail-cover"><CatalogueBookCover book={book} title={title} /></div>
       <div className="book-detail-copy">
@@ -113,12 +116,12 @@ export function BookDetailPage() {
         {book.author && <div><dt>{copy.author}</dt><dd>{book.author}</dd></div>}
         <div><dt>{copy.language}</dt><dd>{t(`catalogue.${book.language}`)}</dd></div>
         <div><dt>{copy.topic}</dt><dd>{t(`topics.${book.topic}`)}</dd></div>
-        <div><dt>{copy.copies}</dt><dd>{book.book_copies[0]?.count ?? 0}</dd></div>
+        <div><dt>{copy.copies}</dt><dd>{book.book_copies[0]?.count ?? copy.copiesUnknown}</dd></div>
       </dl>
     </section>
     {state.related.length > 0 && <section className="related-books" aria-labelledby="related-heading">
       <div className="section-heading"><div><h2 id="related-heading">{copy.relatedTitle}</h2><p>{copy.relatedBody}</p></div></div>
-      <div className="book-grid">{state.related.map(related => <CatalogueBookCard key={related.id} book={related} availabilityLabel={related.available_copies === undefined ? copy.availabilityUnknown : copy.availableLabel(related.available_copies)} />)}</div>
+      <div className="book-grid">{state.related.map(related => <CatalogueBookCard key={related.id} book={related} returnTo={returnTo} availabilityLabel={related.available_copies === undefined ? copy.availabilityUnknown : copy.availableLabel(related.available_copies)} />)}</div>
     </section>}
   </article>;
 }

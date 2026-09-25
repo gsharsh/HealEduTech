@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { authRedirectUrl, passwordResetRedirectUrl, supabase } from '../../lib/supabase';
 import { useAccount } from './context';
-import { authCallbackErrorFromUrl, authErrorKey, safeNextPath, validEmail, validPassword } from './validation';
+import { authCallbackErrorFromUrl, authErrorKey, safeBrowseTarget, safeNextPath, validEmail, validPassword } from './validation';
 import './auth.css';
 
 type Mode = 'sign-in' | 'register' | 'recover' | 'reset' | 'magic-link';
@@ -14,15 +14,22 @@ export function SignInPage() {
   const { user, loading, accessStatus, staffRole, recovery, clearRecovery } = useAccount();
   const location = useLocation();
   const navigate = useNavigate();
+  const mainRef = useRef<HTMLElement>(null);
   const isResetPath = location.pathname === '/reset-password';
   const isRecoveryPath = new URLSearchParams(location.search).get('mode') === 'recovery';
   const next = useMemo(() => safeNextPath(new URLSearchParams(location.search).get('next')), [location.search]);
+  const callbackNext = useMemo(() => new URLSearchParams(location.search).get('next'), [location.search]);
+  const browseTarget = useMemo(() => safeBrowseTarget(new URLSearchParams(location.search).get('next')), [location.search]);
   const [mode, setMode] = useState<Mode>(isResetPath ? 'reset' : isRecoveryPath ? 'reset' : 'sign-in');
   const [email, setEmail] = useState(''); const [name, setName] = useState('');
   const [password, setPassword] = useState(''); const [confirmation, setConfirmation] = useState('');
   const [pending, setPending] = useState<PendingEmail | null>(null); const [busy, setBusy] = useState(false); const [cooldown, setCooldown] = useState(0);
   const [error, setError] = useState(() => authCallbackErrorFromUrl(window.location.href) ?? ''); const [notice, setNotice] = useState(''); const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    mainRef.current?.focus({ preventScroll: true });
+  }, []);
   useEffect(() => { if (authCallbackErrorFromUrl(window.location.href)) window.history.replaceState({}, document.title, window.location.pathname); }, []);
   useEffect(() => { if (!cooldown) return; const timer = window.setTimeout(() => setCooldown(value => Math.max(0, value - 1)), 1000); return () => window.clearTimeout(timer); }, [cooldown]);
   useEffect(() => {
@@ -47,15 +54,15 @@ export function SignInPage() {
     setBusy(true);
     try {
       if (mode === 'register') {
-        const result = await supabase.auth.signUp({ email: address, password, options: { emailRedirectTo: authRedirectUrl(), data: { display_name: name.trim(), preferred_language: i18n.language === 'vi' ? 'vi' : 'en' } } });
+        const result = await supabase.auth.signUp({ email: address, password, options: { emailRedirectTo: authRedirectUrl(callbackNext), data: { display_name: name.trim(), preferred_language: i18n.language === 'vi' ? 'vi' : 'en' } } });
         if (result.error) throw result.error; setPassword(''); setConfirmation('');
         if (!result.data.session) { setPending({ email: address, signup: true }); setCooldown(60); } else navigate(next, { replace: true });
       } else if (mode === 'sign-in') {
         const result = await supabase.auth.signInWithPassword({ email: address, password }); if (result.error) throw result.error; setPassword(''); navigate(next, { replace: true });
       } else if (mode === 'magic-link') {
-        const result = await supabase.auth.signInWithOtp({ email: address, options: { shouldCreateUser: false, emailRedirectTo: authRedirectUrl() } }); if (result.error) throw result.error; setPending({ email: address, signup: false }); setCooldown(60);
+        const result = await supabase.auth.signInWithOtp({ email: address, options: { shouldCreateUser: false, emailRedirectTo: authRedirectUrl(callbackNext) } }); if (result.error) throw result.error; setPending({ email: address, signup: false }); setCooldown(60);
       } else if (mode === 'recover') {
-        const result = await supabase.auth.resetPasswordForEmail(address, { redirectTo: passwordResetRedirectUrl() }); if (result.error) throw result.error; setPending({ email: address, signup: false, recovery: true }); setCooldown(60);
+        const result = await supabase.auth.resetPasswordForEmail(address, { redirectTo: passwordResetRedirectUrl(callbackNext) }); if (result.error) throw result.error; setPending({ email: address, signup: false, recovery: true }); setCooldown(60);
       } else {
         if (!recovery) { setError('auth.invalidRecovery'); return; }
         const result = await supabase.auth.updateUser({ password }); if (result.error) throw result.error;
@@ -69,7 +76,7 @@ export function SignInPage() {
   async function resend() {
     if (!supabase || !pending || cooldown || busy) return; setBusy(true); setError('');
     try {
-      const result = pending.recovery ? await supabase.auth.resetPasswordForEmail(pending.email, { redirectTo: passwordResetRedirectUrl() }) : pending.signup ? await supabase.auth.resend({ type: 'signup', email: pending.email, options: { emailRedirectTo: authRedirectUrl() } }) : await supabase.auth.signInWithOtp({ email: pending.email, options: { shouldCreateUser: false, emailRedirectTo: authRedirectUrl() } });
+      const result = pending.recovery ? await supabase.auth.resetPasswordForEmail(pending.email, { redirectTo: passwordResetRedirectUrl(callbackNext) }) : pending.signup ? await supabase.auth.resend({ type: 'signup', email: pending.email, options: { emailRedirectTo: authRedirectUrl(callbackNext) } }) : await supabase.auth.signInWithOtp({ email: pending.email, options: { shouldCreateUser: false, emailRedirectTo: authRedirectUrl(callbackNext) } });
       if (result.error) throw result.error; setCooldown(60);
     } catch (failure) { setError(authErrorKey(failure as { code?: string; status?: number })); } finally { setBusy(false); }
   }
@@ -79,12 +86,12 @@ export function SignInPage() {
   async function resendConfirmation() {
     if (!supabase || !email.trim() || cooldown || busy || !validEmail(email.trim())) { setError('auth.invalidEmail'); return; }
     setBusy(true); setError('');
-    try { const result = await supabase.auth.resend({ type: 'signup', email: email.trim(), options: { emailRedirectTo: authRedirectUrl() } }); if (result.error) throw result.error; setPending({ email: email.trim(), signup: true }); setCooldown(60); }
+    try { const result = await supabase.auth.resend({ type: 'signup', email: email.trim(), options: { emailRedirectTo: authRedirectUrl(callbackNext) } }); if (result.error) throw result.error; setPending({ email: email.trim(), signup: true }); setCooldown(60); }
     catch (failure) { setError(authErrorKey(failure as { code?: string; status?: number })); } finally { setBusy(false); }
   }
 
   const title = mode === 'reset' ? 'auth.resetTitle' : user ? 'auth.signedIn' : pending ? (pending.recovery ? 'auth.recoverTitle' : 'auth.verifyTitle') : mode === 'recover' ? 'auth.recoverTitle' : mode === 'register' ? 'auth.registerTitle' : 'auth.signInTitle';
-  return <main className="sign-in-page"><section className="sign-in-card account-card" aria-labelledby="auth-title">
+  return <main ref={mainRef} tabIndex={-1} className="sign-in-page"><section className="sign-in-card account-card" aria-labelledby="auth-title">
     <span className="brand-mark" aria-hidden="true">e.</span><span className="eyebrow">EVG VIETNAM</span><h1 id="auth-title">{t(title)}</h1>{mode === 'sign-in' && !user && <p className="auth-subtitle">{t('auth.signInSubtitle')}</p>}
     {loading ? <p role="status">{t('auth.loading')}</p> : user && mode !== 'reset' ? <><p>{user.email}</p><Link className="primary" to={next}>{t('auth.continue')}</Link>{accessStatus === 'loading' && <p className="muted" role="status">{t('access.checking')}</p>}{accessStatus === 'ready' && staffRole && <Link className="secondary" to="/staff/catalogue">{t('access.openDesk')}</Link>}<button className="secondary" type="button" disabled={busy} onClick={() => void signOut()}>{t('auth.signOut')}</button><p className="muted">{t('auth.sharedDevice')}</p></> : !supabase ? <p role="status">{t('auth.notConfigured')}</p> : <>
       {!pending && mode !== 'reset' && <nav className="account-tabs" aria-label={t('auth.methods')}><button type="button" aria-pressed={mode === 'sign-in'} disabled={busy} onClick={() => changeMode('sign-in')}>{t('auth.signIn')}</button><button type="button" aria-pressed={mode === 'register'} disabled={busy} onClick={() => changeMode('register')}>{t('auth.register')}</button></nav>}
@@ -98,6 +105,6 @@ export function SignInPage() {
       {mode === 'reset' && !pending && <button type="button" className="secondary" onClick={() => changeMode('sign-in')}>{t('auth.back')}</button>}
       {pending && <div className="form-actions"><button type="button" className="secondary" disabled={busy || cooldown > 0} onClick={() => void resend()}>{cooldown > 0 ? t('auth.resendAfter', { seconds: cooldown }) : t('auth.resend')}</button><button type="button" className="secondary" disabled={busy} onClick={() => changeMode(mode === 'recover' || mode === 'magic-link' ? 'sign-in' : 'register')}>{t('auth.back')}</button></div>}
     </>}
-    {notice && <p role="status" className="form-success">{t(notice)}</p>}{error && <p role="alert" className="form-error">{t(error)}</p>}{error === 'auth.unconfirmed' && !pending && <button type="button" className="text-link" disabled={busy || cooldown > 0} onClick={() => void resendConfirmation()}>{t(cooldown > 0 ? 'auth.resendAfter' : 'auth.resendConfirmation', { seconds: cooldown })}</button>}<Link className="text-link" to="/learning">{t('auth.browse')}</Link><button type="button" className="language-button" onClick={() => void i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')}>{i18n.language === 'vi' ? 'English' : 'Tiếng Việt'}</button>
+    {notice && <p role="status" className="form-success">{t(notice)}</p>}{error && <p role="alert" className="form-error">{t(error)}</p>}{error === 'auth.unconfirmed' && !pending && <button type="button" className="text-link" disabled={busy || cooldown > 0} onClick={() => void resendConfirmation()}>{t(cooldown > 0 ? 'auth.resendAfter' : 'auth.resendConfirmation', { seconds: cooldown })}</button>}<Link className="text-link" to={browseTarget}>{t('auth.browse')}</Link><button type="button" className="language-button" onClick={() => void i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')}>{i18n.language === 'vi' ? 'English' : 'Tiếng Việt'}</button>
   </section></main>;
 }

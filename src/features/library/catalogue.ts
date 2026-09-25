@@ -1,11 +1,11 @@
 import { supabase } from '../../lib/supabase';
-import { buildBookSearchFilter } from './search';
+import { isValidBookId } from './libraryState';
 export interface CatalogueBook {
   id: string; title_en: string; title_vi: string; author: string;
   language: 'en' | 'vi' | 'bilingual'; topic: 'nature' | 'stories' | 'science';
   description_en: string; description_vi: string;
   cover_url: string;
-  book_copies: { count: number }[];
+  book_copies: { count?: number }[];
   available_copies?: number;
 }
 export interface NewBook {
@@ -18,16 +18,22 @@ export interface BookUpdate extends Omit<NewBook, 'copies'> {
 }
 export async function listBooks(page: number, signal: AbortSignal, query = '', topic: CatalogueBook['topic'] | 'all' = 'all') {
   if (!supabase) throw new Error('Database is not configured');
-  let request = supabase.from('books')
-    .select('id,title_en,title_vi,author,language,topic,description_en,description_vi,cover_url', { count: 'exact' });
-  const searchFilter = buildBookSearchFilter(query);
-  if (searchFilter) request = request.or(searchFilter);
-  if (topic !== 'all') request = request.eq('topic', topic);
-  const { data, error, count } = await request
-    .order('created_at', { ascending: false }).order('id')
-    .range(page * 24, page * 24 + 23).abortSignal(signal);
+  const columns = 'id,title_en,title_vi,author,language,topic,description_en,description_vi,cover_url,created_at';
+  const trimmedQuery = query.trim();
+  async function fetchPage(requestedPage: number) {
+    let request = trimmedQuery
+      ? supabase!.rpc('search_books', { p_query: trimmedQuery }, { count: 'exact' }).select(columns)
+      : supabase!.from('books').select(columns, { count: 'exact' });
+    if (topic !== 'all') request = request.eq('topic', topic);
+    return request.order('created_at', { ascending: false }).order('id')
+      .range(requestedPage * 24, requestedPage * 24 + 23).abortSignal(signal);
+  }
+  let response = await fetchPage(page);
+  if (page > 0 && response.error?.code === 'PGRST103' && !signal.aborted) response = await fetchPage(0);
+  const { data, error, count } = response;
   if (error) throw error;
-  const books = (data ?? []).map(book => ({ ...book, book_copies: [] })) as CatalogueBook[];
+  const books = ((data ?? []) as unknown as Omit<CatalogueBook, 'book_copies' | 'available_copies'>[])
+    .map(book => ({ ...book, book_copies: [] })) as CatalogueBook[];
   if (books.length) {
     const availability = await supabase.from('book_availability')
       .select('book_id,total_copies,available_copies').in('book_id', books.map(book => book.id)).abortSignal(signal);
@@ -36,8 +42,8 @@ export async function listBooks(page: number, signal: AbortSignal, query = '', t
       const counts = new Map(availability.data.map(row => [row.book_id, { total: row.total_copies as number, available: row.available_copies as number }]));
       books.forEach(book => {
         const count = counts.get(book.id);
-        book.available_copies = count?.available;
-        book.book_copies = [{ count: count?.total ?? 0 }];
+        if (typeof count?.available === 'number') book.available_copies = count.available;
+        if (typeof count?.total === 'number') book.book_copies = [{ count: count.total }];
       });
     }
   }
@@ -54,14 +60,15 @@ async function addAvailability(books: CatalogueBook[], signal?: AbortSignal) {
     const counts = new Map(availability.data.map(row => [row.book_id, { total: row.total_copies as number, available: row.available_copies as number }]));
     books.forEach(book => {
       const count = counts.get(book.id);
-      book.available_copies = count?.available;
-      book.book_copies = [{ count: count?.total ?? 0 }];
+      if (typeof count?.available === 'number') book.available_copies = count.available;
+      if (typeof count?.total === 'number') book.book_copies = [{ count: count.total }];
     });
   }
   return books;
 }
 
 export async function getBook(bookId: string, signal?: AbortSignal): Promise<CatalogueBook | null> {
+  if (!isValidBookId(bookId)) return null;
   if (!supabase) throw new Error('Database is not configured');
   let request = supabase.from('books')
     .select('id,title_en,title_vi,author,language,topic,description_en,description_vi,cover_url')
