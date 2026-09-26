@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validEmail, validPassword, authCallbackErrorFromUrl, authErrorKey, safeBrowseTarget, safeNextPath, buildAuthRedirectUrl } from '../src/features/auth/validation.ts';
+import { validEmail, validPassword, authCallbackErrorFromUrl, authErrorKey, recoveryTokenMatches, safeBrowseTarget, safeNextPath, buildAuthRedirectUrl } from '../src/features/auth/validation.ts';
 test('email validation permits normal aliases and rejects malformed input', () => {
   assert.ok(validEmail('learner+evg@example.com'));
   assert.ok(validEmail(' student@example.com '));
@@ -19,6 +19,12 @@ test('link errors provide safe actionable messages without revealing backend det
   assert.equal(authErrorKey({code:'otp_expired'}), 'auth.linkExpired');
   assert.equal(authErrorKey({code:'access_denied'}), 'auth.linkExpired');
   assert.equal(authErrorKey({code:'unexpected_internal_error'}), 'auth.failed');
+});
+test('password recovery requires the exact recovery access token', () => {
+  assert.equal(recoveryTokenMatches('recovery-token', 'recovery-token', null), true);
+  assert.equal(recoveryTokenMatches('recovery-token', null, 'recovery-token'), true);
+  assert.equal(recoveryTokenMatches('new-token', 'recovery-token', 'recovery-token'), false);
+  assert.equal(recoveryTokenMatches(null, 'recovery-token', 'recovery-token'), false);
 });
 test('auth callback errors are read from link query or hash without exposing provider text', () => {
   assert.equal(authCallbackErrorFromUrl('https://heal-edu-tech.vercel.app/sign-in?error_code=otp_expired'), 'auth.linkExpired');

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '../../lib/supabase';
 import { AccountContext, type StaffRole } from './context';
+import { recoveryTokenMatches } from './validation';
 
 const recoveryStorageKey = 'evg-auth-recovery-token';
 type StaffRecord = { userId: string; role: StaffRole } | null;
@@ -40,6 +41,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   const [accessStatus, setAccessStatus] = useState<'loading' | 'ready' | 'error'>(supabase ? 'loading' : 'ready');
   const [staffAccessRevision, setStaffAccessRevision] = useState(0);
   const currentUserId = useRef<string | null>(null);
+  const recoveryTokenRef = useRef<string | null>(null);
 
   const refreshStaffAccess = useCallback(async () => {
     if (!user) {
@@ -79,9 +81,11 @@ export function AccountProvider({ children }: { children: ReactNode }) {
         setStaffAccessRevision(value => value + 1);
       }
       setUser(nextUser);
+      if (event === 'PASSWORD_RECOVERY') recoveryTokenRef.current = session?.access_token ?? null;
+      if (event === 'SIGNED_OUT') recoveryTokenRef.current = null;
       if (event === 'PASSWORD_RECOVERY') rememberRecoveryToken(session?.access_token ?? null);
       if (event === 'SIGNED_OUT') rememberRecoveryToken(null);
-      setRecovery(Boolean(session?.access_token && storedRecoveryToken() === session.access_token));
+      setRecovery(recoveryTokenMatches(session?.access_token ?? null, recoveryTokenRef.current, storedRecoveryToken()));
       setLoading(false);
     });
     return () => data.subscription.unsubscribe();
@@ -117,6 +121,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   }, [userId]);
 
   function clearRecovery() {
+    recoveryTokenRef.current = null;
     rememberRecoveryToken(null);
     setRecovery(false);
   }

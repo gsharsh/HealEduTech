@@ -50,6 +50,10 @@ export function authErrorKey(error: { code?: string; status?: number }): string 
   return 'auth.failed';
 }
 
+export function recoveryTokenMatches(sessionToken: string | null, inMemoryToken: string | null, storedToken: string | null): boolean {
+  return Boolean(sessionToken && (sessionToken === inMemoryToken || sessionToken === storedToken));
+}
+
 export function authCallbackErrorFromUrl(href: string): string | null {
   const url = new URL(href);
   const query = url.searchParams;
