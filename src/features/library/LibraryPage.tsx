@@ -33,7 +33,7 @@ export function LibraryPage() {
       <BookCard book={book} onOpen={setSelected} /></div>)}</div>{matches.length === 0 && <div className="empty-state">
         <h2>{t('noBooks')}</h2>
         <p>{t('trySearch')}</p>
-        <button className="secondary" onClick={() => { setQuery(''); setTopic('all'); }}>{t('clearFilters')}</button>
+        <button type="button" className="secondary" onClick={() => { setQuery(''); setTopic('all'); }}>{t('clearFilters')}</button>
       </div>}<section className="loan-panel">
       <div>
         <span className="eyebrow">{t('myLoans')}</span>

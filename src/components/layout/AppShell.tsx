@@ -52,21 +52,21 @@ export function AppShell() {
           <div className="topbar-actions">
             {accessStatus === 'ready' && staffRole && <NavLink className="topbar-button staff-shortcut" to="/staff/catalogue">{t('access.openDesk')}</NavLink>}
             <NavLink className="topbar-button" to="/sign-in">{user ? copy.account : copy.signIn}</NavLink>
-            <button className="topbar-button" onClick={() => void i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')} lang={i18n.language === 'vi' ? 'en' : 'vi'}>
+            <button type="button" className="topbar-button" onClick={() => void i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')} lang={i18n.language === 'vi' ? 'en' : 'vi'}>
               {i18n.language === 'vi' ? 'English' : 'Tiếng Việt'}
             </button>
-            <button className="help-button" aria-expanded={help} onClick={() => setHelp(value => !value)}>
+            <button type="button" className="help-button" aria-expanded={help} aria-controls="help-panel" onClick={() => setHelp(value => !value)}>
               {t('help')} <span aria-hidden="true">?</span>
             </button>
           </div>
         </header>
         {help && (
-          <div className="help-panel">
+          <div className="help-panel" id="help-panel" role="region" aria-label={t('helpTitle')}>
             <div>
               <strong>{t('helpTitle')}</strong>
               <p>{t('helpBody')}</p>
             </div>
-            <button className="secondary" onClick={() => setHelp(false)}>{t('close')}</button>
+            <button type="button" className="secondary" onClick={() => setHelp(false)}>{t('close')}</button>
           </div>
         )}
         {!supabase && <div className="demo-banner" role="status">

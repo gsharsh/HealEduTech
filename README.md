@@ -98,11 +98,11 @@ An original community-library interface informed by Khan Academy, Duolingo and K
 - The circulation desk disables checkout when lending policy is off, rejects past due dates in the centre timezone, marks overdue active loans, and distinguishes usable, damaged, and lost resolutions.
 - Lending starts **disabled in the database**. EVG must approve eligibility, limits, due-date policy, timezone, and loss/damage handling before enabling it. Staff enter each due date explicitly.
 
-The new migrations are prepared locally, not deployed. Local SQL and mocked browser checks have passed for the September account, circulation, reading, interest and staff-access increment; hosted email, hosted migrations, first-admin bootstrap and real cross-account walkthroughs remain release gates. Goal/project persistence, real facilitator feedback, approved reward logic, protected publication/moderation, managed learning resources and recommendations remain future work. Follow the [pilot release gates](docs/SUPABASE_PILOT.md) and use synthetic data until they pass.
+The configured site is deployed at [heal-edu-tech.vercel.app](https://heal-edu-tech.vercel.app). Fifteen hosted migrations were verified on 25 September, including accent-insensitive catalogue search. Guest browsing, search/filter recovery, book details, login validation and sampled mobile layouts have been checked on the hosted site. Successful login/email delivery, saved learner-data journeys and real cross-account walkthroughs still require dedicated test accounts; they are not implied by successful deployment. See the [live QA evidence and remaining checks](docs/LIVE_QA_2026-09-24.md). Goal/project persistence, real facilitator feedback, approved reward logic, protected publication/moderation, managed learning resources and recommendations remain future work. Follow the [pilot release gates](docs/SUPABASE_PILOT.md) and use synthetic data until they pass.
 
 See PLAN Section 7 for the route-by-route boundary and next frontend increments. The existing optional backend configuration remains untouched.
 
-All listed Phase 1B interface slices are now implemented locally. They still require Phase 1C review with EVG students and staff; this does not approve hosted social features, reward rules, lending policy, or collection of real student data.
+All listed Phase 1B interface slices are deployed as explicitly labelled previews. They still require Phase 1C review with EVG students and staff; this does not approve persistent social features, reward rules, lending policy, or collection of real student data.
 
 ## Team task format
 

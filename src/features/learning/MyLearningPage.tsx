@@ -26,7 +26,7 @@ export function MyLearningPage() {
         <div className="continue-copy">
           <span className="eyebrow">{t(current ? 'continueReading' : 'nextChapter')}</span>
           <h2>{current ? current.title[i18n.language === 'vi' ? 'vi' : 'en'] : t('findBook')}</h2>
-          <p>{t('atYourPace')}</p>{current ? <button className="primary" onClick={() => setSelected(current)}>{t('openReading')} <span aria-hidden="true">→</span>
+          <p>{t('atYourPace')}</p>{current ? <button type="button" className="primary" onClick={() => setSelected(current)}>{t('openReading')} <span aria-hidden="true">→</span>
           </button> : <Link className="primary" to="/library">{t('library')} →</Link>}<span className="quiet-note">{t('physicalReading')}</span>
         </div>{current && <div className="featured-cover">
           <BookCover book={current} />

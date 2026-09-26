@@ -26,6 +26,8 @@ This structure follows common software requirements specification (SRS) practice
 
 ## Implementation update — September 2026
 
+**25 September release evidence:** the frontend QA fixes and fifteen database migrations are hosted. Public catalogue/search, guest access boundaries and sampled responsive journeys passed; see [live QA](docs/LIVE_QA_2026-09-24.md). References below to remaining hosted migrations are historical gates now satisfied for these migrations, not evidence that signed-in or email journeys passed. Real test-account validation, EVG policy decisions and representative usability review remain open.
+
 The current local increment implements S01 account UX/recovery, S03 staff circulation, and the learner-owned part of S04 reading/interests. This supersedes the historical prototype-only route descriptions in Section 7 for configured deployments after migrations. It does not mark the full phases production-verified.
 
 | Requirements | Implemented surface | Remaining release evidence |

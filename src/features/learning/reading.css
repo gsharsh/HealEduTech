@@ -4,6 +4,7 @@
 .signed-out-reading__content h1 { font-size: clamp(38px, 6vw, 62px); margin-bottom: 16px; }
 .signed-out-reading__content p { max-width: 420px; margin: 0 auto 28px; font-size: 16px; }
 .signed-out-reading__content .primary { min-width: 150px; }
+.signed-out-reading__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
 .reading-history { display: grid; gap: 18px; }
 .reading-card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(270px, 360px); gap: 26px; }
 .reading-private, .reading-action-muted { font-size: 12px; color: var(--muted); }

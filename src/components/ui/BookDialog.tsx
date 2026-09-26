@@ -24,7 +24,7 @@ export function BookDialog({ book, onClose }: {
     };
   }, []);
   return <dialog ref={ref} onCancel={onClose} aria-labelledby="book-dialog-title">
-    <button className="dialog-close secondary" onClick={onClose}>{t('close')} ×</button>
+    <button type="button" className="dialog-close secondary" onClick={onClose}>{t('close')} ×</button>
     <div className="book-detail">
       <BookCover book={book} />
       <div>

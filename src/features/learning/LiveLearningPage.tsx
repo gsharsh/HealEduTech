@@ -76,7 +76,10 @@ export function LiveLearningPage() {
     <div className="signed-out-reading__content">
       <h1>{copy.signedOutTitle}</h1>
       <p>{copy.signInBody}</p>
-      <Link className="primary" to="/sign-in?next=/learning">{copy.signIn}</Link>
+      <div className="signed-out-reading__actions">
+        <Link className="primary" to="/sign-in?next=/learning">{copy.signIn}</Link>
+        <Link className="secondary" to="/library">{copy.start}</Link>
+      </div>
     </div>
   </section>;
   return <ReadingHistory key={user.id} userId={user.id} />;

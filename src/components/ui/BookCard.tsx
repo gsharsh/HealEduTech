@@ -18,7 +18,7 @@ export function BookCard({ book, onOpen }: {
   onOpen: (book: DemoBook) => void;
 }) {
   const { t, i18n } = useTranslation();
-  return <button className="book-card" onClick={() => onOpen(book)}>
+  return <button type="button" className="book-card" onClick={() => onOpen(book)}>
     <BookCover book={book} />
     <span className="book-meta">{t(`topics.${book.topic}`)} · {t('minutes', { count: book.minutes })}</span>
     <span className="book-title">{book.title[i18n.language === 'vi' ? 'vi' : 'en']}</span>

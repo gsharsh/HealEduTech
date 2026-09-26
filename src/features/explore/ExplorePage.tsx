@@ -26,14 +26,14 @@ export function ExplorePage() {
       <span className="eyebrow">0{index + 1} / {t(`topics.${topic}`)}</span>
       <h2>{t(`activities.${topic}.title`)}</h2>
       <p>{t(`activities.${topic}.body`)}</p>
-      <button className="secondary" aria-expanded={open === topic} onClick={() => setOpen(open === topic ? null : topic)}>{t(open === topic ? 'close' : 'tryActivity')} →</button>{open === topic && <div className="activity-detail">
+      <button type="button" className="secondary" aria-expanded={open === topic} aria-controls={`${topic}-activity`} onClick={() => setOpen(open === topic ? null : topic)}>{t(open === topic ? 'close' : 'tryActivity')} →</button>{open === topic && <div className="activity-detail" id={`${topic}-activity`} role="region">
         <strong>{t('startHere')}</strong>
         <p>{t(`activities.${topic}.instruction`)}</p>
       </div>}</article>)}</div>
     <section className="interests-panel">
       <h2>{t('yourInterests')}</h2>
       <p>{t('interestsBody')}</p>
-      <div className="interest-options">{topics.map(topic => <button key={topic} className={interests.includes(topic) ? 'selected' : ''} aria-pressed={interests.includes(topic)} onClick={() => toggleInterest(topic)}>{interests.includes(topic) ? '✓ ' : '+ '}{t(`topics.${topic}`)}</button>)}</div>
+      <div className="interest-options">{topics.map(topic => <button type="button" key={topic} className={interests.includes(topic) ? 'selected' : ''} aria-pressed={interests.includes(topic)} onClick={() => toggleInterest(topic)}>{interests.includes(topic) ? '✓ ' : '+ '}{t(`topics.${topic}`)}</button>)}</div>
     </section>
     <aside className="future-panel">
       <span className="future-label">{t('later')}</span>
