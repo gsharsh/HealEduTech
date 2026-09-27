@@ -1,5 +1,5 @@
 import { lazy, Suspense, type ReactNode } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "../components/layout/AppShell";
 import { SignInPage } from "../features/auth/SignInPage";
@@ -21,6 +21,7 @@ const AdministratorDashboard = lazy(() => import("../features/admin/Administrato
 const BookManagement = lazy(() => import("../features/admin/BookManagement").then(module => ({ default: module.BookManagement })));
 const CirculationPage = lazy(() => import("../features/circulation/CirculationPage").then(module => ({ default: module.CirculationPage })));
 const CommunityPage = lazy(() => import("../features/community/CommunityPage").then(module => ({ default: module.CommunityPage })));
+const DesignPreview = lazy(() => import("../features/design-preview/DesignPreview").then(module => ({ default: module.DesignPreview })));
 
 function RouteLoading() {
   const { t } = useTranslation();
@@ -37,6 +38,11 @@ function LegacyAdminRoute() {
 }
 
 export function App() {
+  const { pathname } = useLocation();
+  // Isolated visual prototype: never mount account or data providers for this route.
+  if (pathname === '/design-preview' || pathname.startsWith('/design-preview/')) {
+    return <LazyPage><DesignPreview /></LazyPage>;
+  }
   return (<AccountProvider><DemoProvider>
     <Routes>
       <Route path="/sign-in" element={<SignInPage />} />
