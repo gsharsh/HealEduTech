@@ -10,9 +10,10 @@ const emptyBook: NewBook = { title_en: '', title_vi: '', author: '', language: '
 type EditorState = { mode: 'new'; value: NewBook } | { mode: 'edit'; id: string; registeredCopies: number; value: BookUpdate };
 
 function editorFromBook(book: CatalogueBook): EditorState {
-  return { mode: 'edit', id: book.id, registeredCopies: book.book_copies[0]?.count ?? 0, value: {
+  const registeredCopies = book.book_copies[0]?.count ?? 0;
+  return { mode: 'edit', id: book.id, registeredCopies, value: {
     title_en: book.title_en, title_vi: book.title_vi, author: book.author, language: book.language, topic: book.topic,
-    description_en: book.description_en, description_vi: book.description_vi, cover_url: book.cover_url, additionalCopies: 0,
+    description_en: book.description_en, description_vi: book.description_vi, cover_url: book.cover_url, totalCopies: Math.max(1, registeredCopies),
   } };
 }
 
@@ -66,8 +67,8 @@ export function BookManagement() {
     event.preventDefault();
     if (busy || !canManageBooks || !editor) return;
     const value = editor.value;
-    const copyCount = editor.mode === 'new' ? editor.value.copies : editor.value.additionalCopies;
-    if (!value.title_en.trim() || !value.title_vi.trim() || !Number.isInteger(copyCount) || copyCount < (editor.mode === 'new' ? 1 : 0) || copyCount > 100 || (value.cover_url.trim() !== '' && !/^https?:\/\//i.test(value.cover_url.trim()))) { setStatus('error'); return; }
+    const copyCount = editor.mode === 'new' ? editor.value.copies : editor.value.totalCopies;
+    if (!value.title_en.trim() || !value.title_vi.trim() || !Number.isInteger(copyCount) || copyCount < 1 || copyCount > 100 || (value.cover_url.trim() !== '' && !/^https?:\/\//i.test(value.cover_url.trim()))) { setStatus('error'); return; }
     setBusy(true); setStatus('idle');
     try {
       if (editor.mode === 'new') await addBook(requestId, editor.value);
@@ -94,7 +95,7 @@ export function BookManagement() {
                 <label>{t('topic')}<select value={editor.value.topic} onChange={event => setEditor(current => current ? ({ ...current, value: { ...current.value, topic: event.target.value as NewBook['topic'] } } as EditorState) : current)}>{(['nature', 'stories', 'science'] as const).map(topic => <option key={topic} value={topic}>{t(`topics.${topic}`)}</option>)}</select></label>
                 <label className="form-grid__wide">{t('catalogue.coverUrl')}<input type="url" value={editor.value.cover_url} onChange={event => setEditor(current => current ? ({ ...current, value: { ...current.value, cover_url: event.target.value } } as EditorState) : current)} maxLength={1000} placeholder="https://…" /></label>
                 {editor.mode === 'new' ? <label>{t('catalogue.copies')}<input type="number" min={1} max={100} step={1} required value={editor.value.copies} onChange={event => setEditor(current => current?.mode === 'new' ? { ...current, value: { ...current.value, copies: Number(event.target.value) } } : current)} /></label>
-                  : <label>{t('catalogue.addCopies')}<input type="number" min={0} max={100 - editor.registeredCopies} step={1} required value={editor.value.additionalCopies} onChange={event => setEditor(current => current?.mode === 'edit' ? { ...current, value: { ...current.value, additionalCopies: Number(event.target.value) } } : current)} /><small>{t('catalogue.registeredCopies', { count: editor.registeredCopies })}</small></label>}
+                  : <label>{t('catalogue.totalCopies')}<input type="number" min={1} max={100} step={1} required value={editor.value.totalCopies} onChange={event => setEditor(current => current?.mode === 'edit' ? { ...current, value: { ...current.value, totalCopies: Number(event.target.value) } } : current)} /><small>{t('catalogue.registeredCopies', { count: editor.registeredCopies })}</small></label>}
               </div>
               {(['description_en', 'description_vi'] as const).map(field => <label key={field}>{t(`catalogue.${field}`)}<textarea value={editor.value[field]} onChange={event => setEditor(current => current ? ({ ...current, value: { ...current.value, [field]: event.target.value } } as EditorState) : current)} maxLength={2000} rows={4} /></label>)}
               {editor.mode === 'edit' && <p className="admin-editor__note">{t('catalogue.copySafety')}</p>}
