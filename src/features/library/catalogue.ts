@@ -14,7 +14,7 @@ export interface NewBook {
   description_en: string; description_vi: string; cover_url: string; copies: number;
 }
 export interface BookUpdate extends Omit<NewBook, 'copies'> {
-  additionalCopies: number;
+  totalCopies: number;
 }
 export async function listBooks(page: number, signal: AbortSignal, query = '', topic: CatalogueBook['topic'] | 'all' = 'all') {
   if (!supabase) throw new Error('Database is not configured');
@@ -105,7 +105,7 @@ export async function addBook(id: string, book: NewBook) {
 
 export async function updateBook(id: string, book: BookUpdate) {
   if (!supabase) throw new Error('Database is not configured');
-  const { data, error } = await supabase.rpc('update_book_and_add_copies', {
+  const { data, error } = await supabase.rpc('set_book_copy_count', {
     p_id: id,
     p_title_en: book.title_en.trim(),
     p_title_vi: book.title_vi.trim(),
@@ -114,7 +114,7 @@ export async function updateBook(id: string, book: BookUpdate) {
     p_topic: book.topic,
     p_description_en: book.description_en.trim(),
     p_description_vi: book.description_vi.trim(),
-    p_additional_copies: book.additionalCopies,
+    p_total_copies: book.totalCopies,
   });
   if (error) throw error;
   await updateBookCover(id, book.cover_url);

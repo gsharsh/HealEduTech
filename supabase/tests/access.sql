@@ -73,9 +73,14 @@ select public.update_book_and_add_copies(
   'Updated test book', 'Sách thử nghiệm đã sửa', 'EVG', 'bilingual', 'stories',
   'Updated description', 'Mô tả đã sửa', 1
 );
+select public.set_book_copy_count(
+  '20000000-0000-4000-8000-000000000001',
+  'Updated test book', 'Sách thử nghiệm đã sửa', 'EVG', 'bilingual', 'stories',
+  'Updated description', 'Mô tả đã sửa', 2
+);
 do $$ begin
- if (select count(*) from public.book_copies where book_id='20000000-0000-4000-8000-000000000001') <> 3 then
-  raise exception 'Catalogue edit did not append exactly one copy';
+ if (select count(*) from public.book_copies where book_id='20000000-0000-4000-8000-000000000001') <> 2 then
+  raise exception 'Catalogue edit did not correct the total copy count';
  end if;
  if (select title_en from public.books where id='20000000-0000-4000-8000-000000000001') <> 'Updated test book' then
   raise exception 'Catalogue edit did not update book details';
@@ -93,7 +98,7 @@ select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-00000000
 do $$ begin
  if (select count(*) from public.staff_members) <> 0 then raise exception 'Learner can see staff records'; end if;
  if (select count(*) from public.book_copies) <> 0 then raise exception 'Learner can see raw copy inventory without a loan'; end if;
- if (select total_copies from public.book_availability where book_id='20000000-0000-4000-8000-000000000001') <> 3 then
+ if (select total_copies from public.book_availability where book_id='20000000-0000-4000-8000-000000000001') <> 2 then
   raise exception 'Learner cannot see aggregate catalogue availability';
  end if;
  begin
@@ -108,6 +113,13 @@ do $$ begin
   raise exception 'Learner edited a book';
  exception when insufficient_privilege then null; end;
  begin
+  perform public.set_book_copy_count(
+    '20000000-0000-4000-8000-000000000001',
+    'Blocked edit', 'Bị chặn', '', 'vi', 'stories', '', '', 1
+  );
+  raise exception 'Learner corrected a book copy count';
+ exception when insufficient_privilege then null; end;
+ begin
   insert into public.staff_members(user_id,role) values('10000000-0000-4000-8000-000000000002','administrator');
   raise exception 'Learner granted own staff role';
  exception when insufficient_privilege then null; end;
@@ -120,7 +132,7 @@ set local role anon;
 select set_config('request.jwt.claims','{"role":"anon"}',true);
 do $$ begin
  if (select count(*) from public.books where id='20000000-0000-4000-8000-000000000001') <> 1 then raise exception 'Public cannot browse books'; end if;
- if (select total_copies from public.book_availability where book_id='20000000-0000-4000-8000-000000000001') <> 3 then
+ if (select total_copies from public.book_availability where book_id='20000000-0000-4000-8000-000000000001') <> 2 then
   raise exception 'Public cannot see aggregate catalogue availability';
  end if;
  begin
@@ -133,4 +145,4 @@ do $$ begin
  exception when insufficient_privilege then null; end;
 end $$;
 rollback;
-select 'PASS: staff bootstrap, admin grants, last-admin guard, catalogue add/edit, private copy inventory, retry safety, learner isolation, no self-promotion, guest read-only' as result;
+select 'PASS: staff bootstrap, admin grants, last-admin guard, catalogue add/edit/count correction, private copy inventory, retry safety, learner isolation, no self-promotion, guest read-only' as result;
