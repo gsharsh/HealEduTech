@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from '../auth/context';
 import { addBook, listBooks, updateBook, type BookUpdate, type CatalogueBook, type NewBook } from '../library/catalogue';
-import { WorkspaceNavigation } from './WorkspaceNavigation';
+import { PublicCatalogueLink } from './WorkspaceNavigation';
 import './admin.css';
 
 const emptyBook: NewBook = { title_en: '', title_vi: '', author: '', language: 'vi', topic: 'stories', description_en: '', description_vi: '', cover_url: '', copies: 1 };
@@ -19,7 +19,7 @@ function editorFromBook(book: CatalogueBook): EditorState {
 export function BookManagement() {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'vi' ? 'vi' : 'en';
-  const { user, loading, canManageBooks, staffRole } = useAccount();
+  const { user, loading, canManageBooks } = useAccount();
   const [books, setBooks] = useState<CatalogueBook[]>([]);
   const [catalogueState, setCatalogueState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [editor, setEditor] = useState<EditorState | null>(null);
@@ -85,7 +85,7 @@ export function BookManagement() {
     {!user ? <section className="staff-panel admin-access-state"><h2>{t('catalogue.signInTitle')}</h2><p>{t('catalogue.signInRequired')}</p><Link className="primary" to="/sign-in?next=/staff/catalogue">{t('auth.signIn')}</Link></section>
       : !canManageBooks ? <section className="staff-panel admin-access-state"><h2>{t('catalogue.noAccessTitle')}</h2><p>{t('catalogue.staffRequired')}</p><Link className="secondary" to="/library">{t('library')}</Link></section>
         : <>
-          <WorkspaceNavigation staffRole={staffRole} current="catalogue" />
+          <PublicCatalogueLink />
           {editor && <section className="staff-panel admin-editor" aria-labelledby="catalogue-editor">
             <div className="admin-editor__heading"><div><span className="eyebrow">{t(editor.mode === 'new' ? 'catalogue.newEyebrow' : 'catalogue.editEyebrow')}</span><h2 id="catalogue-editor" tabIndex={-1}>{t(editor.mode === 'new' ? 'catalogue.addTitle' : 'catalogue.editTitle')}</h2></div><button className="text-link" type="button" onClick={() => setEditor(null)}>{t('catalogue.cancel')}</button></div>
             <form className="data-form" onSubmit={event => void submit(event)}><fieldset disabled={busy}>

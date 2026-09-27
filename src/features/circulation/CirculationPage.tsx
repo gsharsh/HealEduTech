@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAccount, type StaffRole } from '../auth/context';
-import { WorkspaceNavigation } from '../admin/WorkspaceNavigation';
+import { PublicCatalogueLink } from '../admin/WorkspaceNavigation';
 import { checkoutCopy, configureCirculation, getCirculationPolicy, listBorrowers, listCopies, listLoans, registerBorrower, resolveLoan, type Borrower, type CirculationCopy, type CirculationPolicy, type Loan } from './data';
 import { activeLoanStatus, dateInTimeZone } from './validation';
 import './translations';
@@ -120,7 +120,7 @@ function CirculationDesk({ staffRole }: { staffRole: StaffRole | null }) {
   }
 
   return <>
-    <WorkspaceNavigation staffRole={staffRole} current="circulation" />
+    <PublicCatalogueLink />
     <div className="page-heading"><div><span className="eyebrow">{t('staff')}</span><h1>{t('circulation.title')}</h1><p>{t('circulation.body')}</p></div></div>
     {error && <p role="alert" className="form-error">{t(error)}</p>}
     <div className="circulation-grid">

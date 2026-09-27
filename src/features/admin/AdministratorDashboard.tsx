@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from '../auth/context';
 import { StaffAccessPanel } from './StaffAccessPanel';
-import { WorkspaceNavigation } from './WorkspaceNavigation';
+import { PublicCatalogueLink } from './WorkspaceNavigation';
 import './admin.css';
 
 export function AdministratorDashboard() {
@@ -19,7 +19,7 @@ export function AdministratorDashboard() {
   </section>;
 
   if (staffRole === 'librarian') return <div className="administrator-workspace">
-    <WorkspaceNavigation staffRole={staffRole} current="administration" />
+    <PublicCatalogueLink />
     <section className="staff-panel admin-access-state">
       <span className="eyebrow">{t('workspaces.staffWorkspace')}</span>
       <h1>{t('workspaces.adminOnlyTitle')}</h1>
@@ -42,7 +42,7 @@ export function AdministratorDashboard() {
   </div>;
 
   return <div className="administrator-workspace">
-    <WorkspaceNavigation staffRole={staffRole} current="administration" />
+    <PublicCatalogueLink />
     <header className="administrator-workspace__heading">
       <div>
         <span className="eyebrow">{t('workspaces.administration')}</span>

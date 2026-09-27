@@ -4,12 +4,8 @@
 .admin-catalogue__heading h1, .admin-inventory__heading h2, .admin-editor__heading h2 { margin: 5px 0 6px; }
 .admin-catalogue__heading p { max-width: 620px; margin: 0; color: var(--muted, #65766f); }
 .admin-catalogue__links { display: flex; flex-wrap: wrap; gap: 10px; }
-.workspace-tabs { display: flex; align-items: center; gap: 4px; padding: 5px; border: 1px solid #dce5dd; border-radius: 12px; background: #f5f7f2; overflow-x: auto; }
-.workspace-tabs + .page-heading { margin-top: 24px; }
-.workspace-tab { flex: 0 0 auto; padding: 9px 13px; border-radius: 8px; color: #52655e; font-size: 14px; font-weight: 700; text-decoration: none; }
-.workspace-tab:hover { background: #e9eee7; color: #1f5948; }
-.workspace-tab--active { background: #fff; color: #1f5948; box-shadow: 0 1px 4px rgba(32, 74, 61, .12); }
-.workspace-tab--public { margin-left: auto; font-weight: 600; }
+.workspace-public-link { display: inline-block; color: #52655e; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; }
+.workspace-public-link:hover { color: #1f5948; }
 .admin-access-state { max-width: 680px; }
 .admin-access-state h2 { margin-top: 0; }
 .admin-access-state h1 { margin: 6px 0 10px; }
@@ -50,8 +46,6 @@
   .admin-book-row { grid-template-columns: 48px minmax(0, 1fr); align-items: start; }
   .admin-book-row__cover { width: 48px; }
   .admin-book-row > .secondary { grid-column: 1 / -1; width: 100%; }
-  .workspace-tabs { margin-inline: -4px; }
-  .workspace-tab--public { margin-left: 0; }
   .administrator-workspace__heading { align-items: stretch; flex-direction: column; gap: 12px; }
   .role-badge { align-self: flex-start; }
   .workspace-card-grid { grid-template-columns: 1fr; }

@@ -42,26 +42,54 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   const [staffAccessRevision, setStaffAccessRevision] = useState(0);
   const currentUserId = useRef<string | null>(null);
   const recoveryTokenRef = useRef<string | null>(null);
+  const accessStatusRef = useRef(accessStatus);
+  const mountedRef = useRef(true);
+  const sessionGenerationRef = useRef(0);
+  const staffRequestRef = useRef(0);
 
-  const refreshStaffAccess = useCallback(async () => {
-    if (!user) {
-      setStaffRecord(null);
-      setAccessStatus('ready');
-      return;
-    }
-    const userId = user.id;
-    setAccessStatus('loading');
+  const updateAccessStatus = useCallback((next: 'loading' | 'ready' | 'error') => {
+    accessStatusRef.current = next;
+    setAccessStatus(next);
+  }, []);
+
+  useEffect(() => {
+    // React StrictMode replays effects: restore liveness on the second setup.
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      sessionGenerationRef.current += 1;
+      staffRequestRef.current += 1;
+    };
+  }, []);
+
+  const requestStaffAccess = useCallback(async (userId: string, blocking: boolean) => {
+    const generation = sessionGenerationRef.current;
+    const request = staffRequestRef.current + 1;
+    staffRequestRef.current = request;
+    if (blocking) updateAccessStatus('loading');
     try {
       const record = await loadStaffRecord(userId);
-      if (currentUserId.current !== userId) return;
+      if (!mountedRef.current || currentUserId.current !== userId || sessionGenerationRef.current !== generation || staffRequestRef.current !== request) return;
       setStaffRecord(record);
-      setAccessStatus('ready');
+      updateAccessStatus('ready');
     } catch {
-      if (currentUserId.current !== userId) return;
+      if (!mountedRef.current || currentUserId.current !== userId || sessionGenerationRef.current !== generation || staffRequestRef.current !== request) return;
+      // Clear permissions before exposing the error so guards fail closed.
       setStaffRecord(null);
-      setAccessStatus('error');
+      updateAccessStatus('error');
     }
-  }, [user]);
+  }, [updateAccessStatus]);
+
+  const refreshStaffAccess = useCallback(async () => {
+    const userId = currentUserId.current;
+    if (!userId) {
+      staffRequestRef.current += 1;
+      setStaffRecord(null);
+      updateAccessStatus('ready');
+      return;
+    }
+    await requestStaffAccess(userId, accessStatusRef.current !== 'ready');
+  }, [requestStaffAccess, updateAccessStatus]);
 
   useEffect(() => {
     const client = supabase;
@@ -72,12 +100,22 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       const nextUserId = nextUser?.id ?? null;
       if (currentUserId.current !== nextUserId) {
         currentUserId.current = nextUserId;
+        sessionGenerationRef.current += 1;
+        staffRequestRef.current += 1;
+        // Also invalidate/restart when auth events are batched and the
+        // rendered user id does not visibly change (A -> B -> A).
+        setStaffAccessRevision(value => value + 1);
         setStaffRecord(null);
-        setAccessStatus(nextUser ? 'loading' : 'ready');
+        updateAccessStatus(nextUser ? 'loading' : 'ready');
       } else if (!nextUser) {
-        setAccessStatus('ready');
+        // SIGNED_OUT can arrive more than once; invalidate any pending query.
+        sessionGenerationRef.current += 1;
+        staffRequestRef.current += 1;
+        setStaffRecord(null);
+        updateAccessStatus('ready');
       } else if (event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
-        setAccessStatus('loading');
+        // These are background revalidations. Keep a ready route mounted until
+        // the latest permission result is known.
         setStaffAccessRevision(value => value + 1);
       }
       setUser(nextUser);
@@ -89,31 +127,19 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
     return () => data.subscription.unsubscribe();
-  }, []);
+  }, [updateAccessStatus]);
 
   const userId = user?.id;
   useEffect(() => {
     const client = supabase;
     if (!client || !userId) return;
-    let active = true;
-    void loadStaffRecord(userId)
-      .then(record => {
-        if (!active || currentUserId.current !== userId) return;
-        setStaffRecord(record);
-        setAccessStatus('ready');
-      })
-      .catch(() => {
-        if (!active || currentUserId.current !== userId) return;
-        setStaffRecord(null);
-        setAccessStatus('error');
-      });
-    return () => { active = false; };
-  }, [userId, staffAccessRevision]);
+    void requestStaffAccess(userId, accessStatusRef.current !== 'ready');
+  }, [userId, staffAccessRevision, requestStaffAccess]);
 
   useEffect(() => {
     if (!supabase || !userId) return;
     function refreshOnFocus() {
-      setAccessStatus('loading');
+      // Focus checks must not unmount an in-progress form or draft.
       setStaffAccessRevision(value => value + 1);
     }
     window.addEventListener('focus', refreshOnFocus);
