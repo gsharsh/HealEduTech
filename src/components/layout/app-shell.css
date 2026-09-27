@@ -22,13 +22,17 @@
 .evg-brand { display: inline-flex; flex: 0 0 auto; align-items: baseline; gap: 7px; min-height: 44px; padding: 10px 0; }
 .evg-brand-name { font-size: 18px; font-weight: 700; letter-spacing: .08em; }
 .evg-brand-sub { color: var(--evg-muted); font-size: 10px; letter-spacing: .09em; }
-.evg-primary-nav { display: flex; flex: 1; align-items: center; justify-content: space-evenly; gap: 12px; }
+.evg-primary-nav { display: flex; flex: 0 0 auto; align-items: center; gap: 24px; }
 .evg-primary-nav a, .evg-guide-link, .evg-account-link { display: inline-flex; align-items: center; min-height: 44px; padding: 10px 4px; color: var(--evg-text); font-size: .875rem; font-weight: 500; white-space: nowrap; border-radius: 0; background: transparent; }
 .evg-primary-nav a[aria-current='page'] { color: var(--evg-accent); box-shadow: inset 0 -2px var(--evg-accent); }
 .evg-primary-nav a:hover, .evg-guide-link:hover, .evg-account-link:hover { color: var(--evg-accent); }
-.evg-header-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 18px; }
+.evg-header-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 18px; margin-left: auto; }
 .evg-language { display: inline-flex; align-items: center; min-height: 44px; }
-.evg-language select { min-height: 44px; padding: 6px; color: var(--evg-text); font-size: .875rem; font-weight: 500; background: transparent; border: 0; }
+.evg-language-toggle { position: relative; z-index: 0; display: inline-flex; align-items: center; justify-content: space-between; width: 72px; min-height: 44px; padding: 4px; color: var(--evg-muted); background: var(--evg-canvas); border: 1px solid var(--evg-line); border-radius: 999px; cursor: pointer; isolation: isolate; }
+.evg-language-toggle::before { position: absolute; z-index: 0; top: 4px; left: 4px; width: calc(50% - 4px); height: calc(100% - 8px); background: var(--evg-accent); border-radius: 999px; content: ''; transition: transform 180ms ease; }
+.evg-language-toggle[aria-checked='true']::before { transform: translateX(100%); }
+.evg-language-option { z-index: 1; display: inline-flex; align-items: center; justify-content: center; width: 50%; min-height: 34px; color: inherit; font-size: .75rem; font-weight: 700; line-height: 1; }
+.evg-language-toggle[aria-checked='false'] .evg-language-option:first-child, .evg-language-toggle[aria-checked='true'] .evg-language-option:last-child { color: #fff; }
 .evg-staff-nav { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 4px 24px; color: var(--evg-muted); background: #eef2e8; border-bottom: 1px solid var(--evg-line); overflow-x: auto; }
 .evg-staff-nav a { display: inline-flex; align-items: center; min-height: 40px; padding: 8px 12px; white-space: nowrap; }
 .evg-staff-nav a:hover, .evg-staff-nav a[aria-current='page'] { color: var(--evg-accent); }
@@ -45,7 +49,7 @@
 @media (max-width: 560px) {
   .evg-header { flex-wrap: wrap; gap: 0 12px; padding: 4px 16px 0; }
   .evg-header-actions { margin-left: auto; }
-  .evg-primary-nav { flex-basis: 100%; order: 3; gap: 8px; padding-top: 0; border-top: 1px solid var(--evg-line); }
+  .evg-primary-nav { flex: 0 0 100%; gap: 8px; order: 3; padding-top: 0; border-top: 1px solid var(--evg-line); }
   .evg-primary-nav a { flex: 1; justify-content: center; min-width: 0; font-size: .875rem; text-align: center; white-space: normal; }
   .evg-staff-nav { justify-content: flex-start; padding-inline: 16px; }
   .evg-main, .evg-footer { width: min(100% - 32px, 1160px); }
@@ -55,3 +59,4 @@
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .evg-shell { --evg-glass: #fffdf7; } }
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) { .evg-shell { --evg-glass: #fffdf7; } .evg-header { -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; } }
 @media (prefers-reduced-motion: reduce) { .evg-shell *, .evg-shell *::before, .evg-shell *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+@media (prefers-reduced-motion: reduce) { .evg-language-toggle::before { transition: none; } }

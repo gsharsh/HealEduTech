@@ -33,13 +33,19 @@ export function AppShell() {
         <div className="evg-header-actions">
           <NavLink className="evg-guide-link" to="/start">{isVietnamese ? 'Hướng dẫn nhanh' : 'Quick guide'}</NavLink>
           <NavLink className="evg-account-link" to="/sign-in">{user ? copy.account : copy.signIn}</NavLink>
-          <label className="evg-language">
-            <span className="evg-sr-only">{isVietnamese ? 'Ngôn ngữ' : 'Language'}</span>
-            <select value={i18n.language === 'vi' ? 'vi' : 'en'} onChange={(event) => void i18n.changeLanguage(event.target.value)}>
-              <option value="en">EN</option>
-              <option value="vi">VI</option>
-            </select>
-          </label>
+          <div className="evg-language">
+            <button
+              type="button"
+              className="evg-language-toggle"
+              role="switch"
+              aria-checked={isVietnamese}
+              aria-label="Tiếng Việt / Vietnamese"
+              onClick={() => void i18n.changeLanguage(isVietnamese ? 'en' : 'vi')}
+            >
+              <span className="evg-language-option">EN</span>
+              <span className="evg-language-option">VI</span>
+            </button>
+          </div>
         </div>
       </header>
 
