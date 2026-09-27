@@ -1,6 +1,23 @@
-# EVG reading-table design preview
+# EVG cream-and-glass design
 
-27 September 2026. Local comparison only; no production deployment, no push to main, no Supabase changes.
+27 September 2026. The user approved the cream-and-green design for production. The historical prototype review below is retained as design rationale, not as current release status.
+
+## Production integration
+
+- `/` is now the reading-room homepage, with the approved typography, book-shaped artwork, topic links, and real catalogue cards when Supabase is configured. The hero artwork uses generic topics rather than fictional catalogue titles.
+- `/start` is an optional, skippable bilingual guide. Browsing needs no account; the guide explains why saving reading needs an account and reminds students to sign out on shared devices.
+- The slim glass header replaces the sidebar. Library, reading, account and language controls remain accessible; staff navigation retains its role checks. Explore and Together remain reachable from the footer.
+- Cream is retained regardless of device dark-mode preference, as requested. CSS glass is limited to navigation and controls, with opaque accessibility and unsupported-browser fallbacks.
+- The isolated preview code and obsolete sidebar styles were removed. The approved prototype is recoverable at commit `cec405f`; `/design-preview/*` redirects to the real homepage.
+- No Supabase schema, policies, credentials, auth operations or learner-data behavior were changed in this design integration.
+
+### Verification before release
+
+Build, lint, 17 existing Node tests and whitespace checks passed. Browser checks at 1280px and 320px covered the homepage, real catalogue loading, English/Vietnamese navigation, guide-to-topic filtering, sign-in layout and local invalid-email feedback. No horizontal overflow was found on sampled mobile screens. Body ink/cream contrast is 10.67:1, muted text/cream is 5.35:1, and primary button white/green is 7.36:1.
+
+Real-account login, recovery email receipt and signed-in user journeys remain unverified without a dedicated test account. These are not implied by this visual release. Refer to the existing live QA report for the outstanding release gates.
+
+## Historical preview review
 
 ## Design review: homepage and onboarding
 

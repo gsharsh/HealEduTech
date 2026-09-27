@@ -1,82 +1,75 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import { useAccount } from '../../features/auth/context';
 import { libraryTranslations } from '../../features/library/libraryTranslations';
-const destinations = [['/learning', 'home', '⌂'], ['/library', 'library', '▤'], ['/explore', 'explore', '⌁'], ['/community', 'community', '☷']];
-const staffDestinations = [['/staff/catalogue', 'access.catalogue', '▦'], ['/staff/circulation', 'access.circulation', '⇄']];
+import './app-shell.css';
+
 export function AppShell() {
   const { t, i18n } = useTranslation();
   const { user, accessStatus, staffRole } = useAccount();
   const copy = libraryTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
-  const [help, setHelp] = useState(false);
   const { pathname } = useLocation();
+  const isVietnamese = i18n.language === 'vi';
+
   useEffect(() => {
     document.getElementById('main-content')?.focus({ preventScroll: true });
     window.scrollTo(0, 0);
   }, [pathname]);
+
   return (
-    <div className="app-shell">
-      <a className="skip-link" href="#main-content">{t('skip')}</a>
-      <aside className="sidebar">
-        <NavLink className="brand" to="/learning" aria-label="EVG Learn & Grow">
-          <span className="brand-mark">e.</span>
-          <span>EVG<span className="brand-sub">{t('brandSub')}</span></span>
+    <div className="evg-shell">
+      <a className="evg-skip-link" href="#main-content">{t('skip')}</a>
+      <header className="evg-header">
+        <NavLink className="evg-brand" to="/" aria-label="EVG Learn & Grow">
+          <span className="evg-brand-name">EVG</span>
         </NavLink>
-        <span className="nav-label">{t('yourSpace')}</span>
-        <nav aria-label={t('navigation')}>
-          {destinations.map(([path, key, symbol]) => (
-            <NavLink key={path} to={path}>
-              <span className="nav-icon" aria-hidden="true">{symbol}</span>
-              <span>{t(key)}</span>
-            </NavLink>
-          ))}
+        <nav className="evg-primary-nav" aria-label={t('navigation')}>
+          <NavLink end to="/">{isVietnamese ? 'Trang chủ' : 'Home'}</NavLink>
+          <NavLink to="/library">{t('library')}</NavLink>
+          <NavLink to="/learning">{isVietnamese ? 'Sách của em' : 'My reading'}</NavLink>
         </nav>
-        {accessStatus === 'ready' && staffRole && <div className="staff-navigation">
-          <span className="nav-label">{t('access.staffArea')}</span>
-          <nav aria-label={t('access.navigation')}>
-            {staffDestinations.map(([path, key, symbol]) => <NavLink key={path} to={path}>
-              <span className="nav-icon" aria-hidden="true">{symbol}</span><span>{t(key)}</span>
-            </NavLink>)}
-            {staffRole === 'administrator' && <NavLink to="/admin/settings"><span className="nav-icon" aria-hidden="true">⚙</span><span>{t('access.administration')}</span></NavLink>}
-          </nav>
-        </div>}
-      </aside>
-      <div className="workspace">
-        <header className="topbar">
-          <NavLink className="compact-brand" to="/learning" aria-label="EVG Learn & Grow">
-            <span className="brand-mark">e.</span>
-            <span>EVG</span>
-          </NavLink>
-          <div className="topbar-actions">
-            {accessStatus === 'ready' && staffRole && <NavLink className="topbar-button staff-shortcut" to="/staff/catalogue">{t('access.openDesk')}</NavLink>}
-            <NavLink className="topbar-button" to="/sign-in">{user ? copy.account : copy.signIn}</NavLink>
-            <button type="button" className="topbar-button" onClick={() => void i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')} lang={i18n.language === 'vi' ? 'en' : 'vi'}>
-              {i18n.language === 'vi' ? 'English' : 'Tiếng Việt'}
-            </button>
-            <button type="button" className="help-button" aria-expanded={help} aria-controls="help-panel" onClick={() => setHelp(value => !value)}>
-              {t('help')} <span aria-hidden="true">?</span>
-            </button>
-          </div>
-        </header>
-        {help && (
-          <div className="help-panel" id="help-panel" role="region" aria-label={t('helpTitle')}>
-            <div>
-              <strong>{t('helpTitle')}</strong>
-              <p>{t('helpBody')}</p>
-            </div>
-            <button type="button" className="secondary" onClick={() => setHelp(false)}>{t('close')}</button>
-          </div>
-        )}
-        {!supabase && <div className="demo-banner" role="status">
-          <span className="demo-dot" aria-hidden="true" />
-          <span>{t('demo')}</span>
-        </div>}
-        <main id="main-content" tabIndex={-1}>
-          <Outlet />
-        </main>
-      </div>
+        <div className="evg-header-actions">
+          <NavLink className="evg-guide-link" to="/start">{isVietnamese ? 'Hướng dẫn nhanh' : 'Quick guide'}</NavLink>
+          <NavLink className="evg-account-link" to="/sign-in">{user ? copy.account : copy.signIn}</NavLink>
+          <label className="evg-language">
+            <span className="evg-sr-only">{isVietnamese ? 'Ngôn ngữ' : 'Language'}</span>
+            <select value={i18n.language === 'vi' ? 'vi' : 'en'} onChange={(event) => void i18n.changeLanguage(event.target.value)}>
+              <option value="en">EN</option>
+              <option value="vi">VI</option>
+            </select>
+          </label>
+        </div>
+      </header>
+
+      {accessStatus === 'ready' && staffRole && (
+        <nav className="evg-staff-nav" aria-label={t('access.navigation')}>
+          <span className="evg-staff-label">{t('access.staffArea')}</span>
+          <NavLink to="/staff/catalogue">{t('access.catalogue')}</NavLink>
+          <NavLink to="/staff/circulation">{t('access.circulation')}</NavLink>
+          {staffRole === 'administrator' && <NavLink to="/admin/settings">{t('access.administration')}</NavLink>}
+        </nav>
+      )}
+
+      {!supabase && <div className="evg-demo-banner" role="status">
+        <span className="evg-demo-dot" aria-hidden="true" />
+        <span>{t('demo')}</span>
+      </div>}
+
+      <main className="evg-main" id="main-content" tabIndex={-1}>
+        <Outlet />
+      </main>
+
+      <footer className="evg-footer">
+        <span lang="en">EVG · Learn &amp; grow</span>
+        <nav aria-label={isVietnamese ? 'Liên kết bổ sung' : 'More links'}>
+          <NavLink to="/start">{isVietnamese ? 'Hướng dẫn nhanh' : 'Quick guide'}</NavLink>
+          <NavLink to="/explore">{t('explore')}</NavLink>
+          <NavLink to="/community">{t('community')}</NavLink>
+        </nav>
+        <span>{t('footer')}</span>
+      </footer>
     </div>
   );
 }

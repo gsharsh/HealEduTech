@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
+import { readLibraryRouteState, writeLibraryRouteState } from './libraryState';
 import { books, type DemoBook, type Topic } from '../../demo/catalogue';
 import { useDemo } from '../../demo/context';
 import { BookCard } from '../../components/ui/BookCard';
@@ -7,8 +9,10 @@ import { BookDialog } from '../../components/ui/BookDialog';
 export function LibraryPage() {
   const { t, i18n } = useTranslation();
   const { borrowed } = useDemo();
-  const [query, setQuery] = useState('');
-  const [topic, setTopic] = useState<Topic | 'all'>('all');
+  const [params, setParams] = useSearchParams();
+  const { query, topic } = readLibraryRouteState(params);
+  const setQuery = (value: string) => setParams(writeLibraryRouteState({ page: 0, query: value, topic }), { replace: true });
+  const setTopic = (value: Topic | 'all') => setParams(writeLibraryRouteState({ page: 0, query, topic: value }), { replace: true });
   const [selected, setSelected] = useState<DemoBook | null>(null);
   const normalize = (value: string) => value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
   const matches = books.filter(book => (topic === 'all' || book.topic === topic) && normalize(`${book.title.en} ${book.title.vi}`).includes(normalize(query.trim())));
@@ -33,7 +37,7 @@ export function LibraryPage() {
       <BookCard book={book} onOpen={setSelected} /></div>)}</div>{matches.length === 0 && <div className="empty-state">
         <h2>{t('noBooks')}</h2>
         <p>{t('trySearch')}</p>
-        <button type="button" className="secondary" onClick={() => { setQuery(''); setTopic('all'); }}>{t('clearFilters')}</button>
+        <button type="button" className="secondary" onClick={() => setParams({}, { replace: true })}>{t('clearFilters')}</button>
       </div>}<section className="loan-panel">
       <div>
         <span className="eyebrow">{t('myLoans')}</span>

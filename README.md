@@ -75,9 +75,9 @@ Build and verify one usable workflow at a time. Working recommendations and AI s
 
 ## Current frontend preview
 
-An original community-library interface informed by Khan Academy, Duolingo and Kolibri. Research sources and adaptation choices are recorded in [design research](docs/DESIGN_RESEARCH.md).
+The approved cream-and-green reading-room design uses a slim glass navigation bar, a browse-first homepage at `/`, and an optional bilingual guide at `/start`. Existing live catalogue, account, reading and staff workflows retain their data and access boundaries. The old isolated design preview has been retired. See [design rationale and verification](docs/CREAM_GLASS_DESIGN.md).
 
-- Four student destinations: My learning, Library, Explore, Together; labelled bottom navigation on phones.
+- Primary navigation: Home, Library, My reading. The quick guide, Explore and Together are available through the footer; authorised staff get their own operations links. Compact screens retain labelled top navigation.
 - English/Vietnamese interface and a saved language preference.
 - Six fictional catalogue entries with original CSS/text covers; bilingual search, topic filtering and empty-result recovery.
 - Book detail dialogs, adding to the reading list, marking finished and a derived finished count.

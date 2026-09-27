@@ -1,5 +1,5 @@
 import { lazy, Suspense, type ReactNode } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "../components/layout/AppShell";
 import { SignInPage } from "../features/auth/SignInPage";
@@ -15,13 +15,13 @@ import { LiveExplorePage } from "../features/explore/LiveExplorePage";
 import { RequireAuth, RequireStaff } from "../features/auth/RequireStaff";
 import { useAccount } from "../features/auth/context";
 import { supabase } from "../lib/supabase";
+import { HomePage, QuickGuidePage } from "../features/home/HomePage";
 
 const AdminPage = lazy(() => import("../features/admin/AdminPage").then(module => ({ default: module.AdminPage })));
 const AdministratorDashboard = lazy(() => import("../features/admin/AdministratorDashboard").then(module => ({ default: module.AdministratorDashboard })));
 const BookManagement = lazy(() => import("../features/admin/BookManagement").then(module => ({ default: module.BookManagement })));
 const CirculationPage = lazy(() => import("../features/circulation/CirculationPage").then(module => ({ default: module.CirculationPage })));
 const CommunityPage = lazy(() => import("../features/community/CommunityPage").then(module => ({ default: module.CommunityPage })));
-const DesignPreview = lazy(() => import("../features/design-preview/DesignPreview").then(module => ({ default: module.DesignPreview })));
 
 function RouteLoading() {
   const { t } = useTranslation();
@@ -38,17 +38,13 @@ function LegacyAdminRoute() {
 }
 
 export function App() {
-  const { pathname } = useLocation();
-  // Isolated visual prototype: never mount account or data providers for this route.
-  if (pathname === '/design-preview' || pathname.startsWith('/design-preview/')) {
-    return <LazyPage><DesignPreview /></LazyPage>;
-  }
   return (<AccountProvider><DemoProvider>
     <Routes>
       <Route path="/sign-in" element={<SignInPage />} />
       <Route path="/reset-password" element={<SignInPage />} />
       <Route element={<AppShell />}>
-        <Route index element={<Navigate to="/learning" replace />} />
+        <Route index element={<HomePage />} />
+        <Route path="/start" element={<QuickGuidePage />} />
         <Route path="/learning" element={supabase ? <LiveLearningPage /> : <MyLearningPage />} />
         <Route path="/library" element={supabase ? <LiveLibraryPage /> : <LibraryPage />} />
         {supabase && <Route path="/library/:bookId" element={<BookDetailPage />} />}
@@ -61,7 +57,8 @@ export function App() {
         <Route path="/admin" element={<RequireStaff>{supabase ? <LegacyAdminRoute /> : <AdminPage />}</RequireStaff>} />
         <Route path="/admin/circulation" element={<RequireStaff><Navigate to="/staff/circulation" replace /></RequireStaff>} />
       </Route>
-      <Route path="*" element={<Navigate to="/learning" replace />} />
+      <Route path="/design-preview/*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </DemoProvider></AccountProvider>);
 }
