@@ -8,6 +8,18 @@ import { WeeklyGoalPrototype } from './WeeklyGoalPrototype';
 import './reading.css';
 
 type ReadingActionProps = { bookId: string; onSaved?: (record: ReadingRecord) => void };
+// Verified public-domain cover for the seeded Peter Rabbit record:
+// https://www.gutenberg.org/ebooks/14838
+const PETER_RABBIT_BOOK_ID = '31000000-0000-4000-8000-000000000001';
+const PETER_RABBIT_COVER_URL = 'https://www.gutenberg.org/cache/epub/14838/images/cover.jpg';
+
+function ReadingCover({ book, title }: { book: ReadingBook | undefined; title: string }) {
+  const [failed, setFailed] = useState(false);
+  const coverUrl = book?.cover_url || (book?.id === PETER_RABBIT_BOOK_ID ? PETER_RABBIT_COVER_URL : null);
+  if (!coverUrl || failed) return <div className="reading-cover reading-cover--fallback" role="img" aria-label={title} />;
+  return <img className="reading-cover" src={coverUrl} alt="" onError={() => setFailed(true)} />;
+}
+
 function ReadingAction(props: ReadingActionProps) {
   const { user, loading } = useAccount();
   const { i18n } = useTranslation();
@@ -102,11 +114,21 @@ function ReadingHistory({ userId }: { userId: string }) {
   }, [attempt, userId]);
   const bookById = useMemo(() => new Map(books.map(book => [book.id, book])), [books]);
   return <section className="reading-page">
-    <div className="page-heading"><div><span className="eyebrow">{copy.title}</span><h1>{copy.title}</h1><p>{copy.intro}</p></div></div>
-    <div className="reading-goal"><WeeklyGoalPrototype /></div>
-    {loading ? <p role="status">{copy.loading}</p> : failed ? <div className="reading-empty" role="alert"><p>{copy.loadError}</p><button className="secondary" onClick={() => { setFailed(false); setLoading(true); setAttempt(value => value + 1); }}>{copy.retry}</button></div> : records.length === 0 ? <div className="reading-empty"><h2>{copy.emptyTitle}</h2><p>{copy.empty}</p><Link className="secondary" to="/library">{copy.start}</Link></div> : <div className="reading-history">{records.map(record => {
-      const book = bookById.get(record.book_id);
-      return <article className="reading-card" key={record.book_id}><div><span className="eyebrow">{record.status === 'finished' ? copy.finished : copy.reading}</span><h2>{book ? (i18n.language === 'vi' ? book.title_vi : book.title_en) : copy.unavailableBook}</h2>{record.status === 'finished' && record.reflection && <p className="reading-reflection">“{record.reflection}”</p>}</div><ReadingAction bookId={record.book_id} onSaved={saved => setRecords(current => current.map(item => item.book_id === saved.book_id ? saved : item))} /></article>;
-    })}</div>}
+    <div className="page-heading"><div><h1>{copy.title}</h1><p>{copy.intro}</p></div></div>
+    <div className="reading-dashboard">
+      <WeeklyGoalPrototype />
+      {loading ? <div className="reading-empty" role="status"><p>{copy.loading}</p></div> : failed ? <div className="reading-empty" role="alert"><p>{copy.loadError}</p><button className="secondary" onClick={() => { setFailed(false); setLoading(true); setAttempt(value => value + 1); }}>{copy.retry}</button></div> : records.length === 0 ? <div className="reading-empty"><h2>{copy.emptyTitle}</h2><p>{copy.empty}</p><Link className="secondary" to="/library">{copy.start}</Link></div> : records.map(record => {
+        const book = bookById.get(record.book_id);
+        const title = book ? (i18n.language === 'vi' ? book.title_vi : book.title_en) : copy.unavailableBook;
+        return <article className="reading-card" key={record.book_id}>
+          <span className="eyebrow">{record.status === 'finished' ? copy.finished : copy.reading}</span>
+          <div className="reading-book">
+            <ReadingCover book={book} title={title} />
+            <div className="reading-book-copy"><h2>{title}</h2>{book?.author && <p className="reading-author">{book.author}</p>}{record.status === 'finished' && record.reflection && <p className="reading-reflection">“{record.reflection}”</p>}</div>
+          </div>
+          <ReadingAction bookId={record.book_id} onSaved={saved => setRecords(current => current.map(item => item.book_id === saved.book_id ? saved : item))} />
+        </article>;
+      })}
+    </div>
   </section>;
 }

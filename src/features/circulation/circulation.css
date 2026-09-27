@@ -4,6 +4,8 @@
 .circulation-form { display: grid; gap: .75rem; }
 .circulation-form label { display: grid; gap: .35rem; font-weight: 600; }
 .circulation-form input, .circulation-form select { min-height: 2.75rem; padding: .55rem .7rem; border: 1px solid var(--line, #d8d3c6); border-radius: .5rem; font: inherit; }
+.circulation-form label.circulation-checkbox { display: flex; align-items: center; gap: .55rem; min-height: 2.75rem; }
+.circulation-checkbox input[type="checkbox"] { width: 20px; height: 20px; min-height: 0; flex: none; padding: 0; accent-color: var(--green, #286047); }
 .circulation-form button { justify-self: start; }
 .circulation-table { width: 100%; border-collapse: collapse; }
 .circulation-table th, .circulation-table td { padding: .7rem .4rem; border-bottom: 1px solid var(--line, #d8d3c6); text-align: left; vertical-align: top; }

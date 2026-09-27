@@ -21,6 +21,8 @@ export interface ReadingBook {
   id: string;
   title_en: string;
   title_vi: string;
+  author: string | null;
+  cover_url: string | null;
 }
 
 const MAX_REFLECTION_LENGTH = 2000;
@@ -65,7 +67,7 @@ export async function getMyReading(userId: string, bookId: string): Promise<Read
 export async function listBooksForReading(bookIds: string[], signal?: AbortSignal): Promise<ReadingBook[]> {
   if (bookIds.length === 0) return [];
   const client = requireClient();
-  const { data, error } = await client.from('books').select('id,title_en,title_vi').in('id', bookIds).abortSignal(signal ?? new AbortController().signal);
+  const { data, error } = await client.from('books').select('id,title_en,title_vi,author,cover_url').in('id', bookIds).abortSignal(signal ?? new AbortController().signal);
   if (error) throw error;
   return (data ?? []) as ReadingBook[];
 }

@@ -125,7 +125,7 @@ function CirculationDesk({ staffRole }: { staffRole: StaffRole | null }) {
     {error && <p role="alert" className="form-error">{t(error)}</p>}
     <div className="circulation-grid">
       {policy && <section className="circulation-card circulation-wide"><h2>{t('circulation.policy')}</h2><p className="circulation-muted">{policy.enabled ? t('circulation.enabledNotice', { count: policy.max_active_loans, timezone: policy.timezone }) : t('circulation.disabled')}</p>{staffRole === 'administrator' && <form className="circulation-form" onSubmit={event => void submitPolicy(event)}>
-        <label><input type="checkbox" checked={policyDraft.enabled} onChange={event => setPolicyDraft(value => ({ ...value, enabled: event.target.checked }))} /> {t('circulation.enable')}</label>
+        <label className="circulation-checkbox"><input type="checkbox" checked={policyDraft.enabled} onChange={event => setPolicyDraft(value => ({ ...value, enabled: event.target.checked }))} /> {t('circulation.enable')}</label>
         <label>{t('circulation.maxLoans')}<input type="number" min={1} max={100} step={1} value={policyDraft.maxActiveLoans} onChange={event => setPolicyDraft(value => ({ ...value, maxActiveLoans: Number(event.target.value) }))} required /></label>
         <label>{t('circulation.timezone')}<input value={policyDraft.timezone} onChange={event => setPolicyDraft(value => ({ ...value, timezone: event.target.value }))} required maxLength={80} /></label>
         <button className="primary" disabled={busy}>{t('circulation.savePolicy')}</button>
