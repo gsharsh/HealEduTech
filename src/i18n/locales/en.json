@@ -64,8 +64,8 @@
   "editGoal": "Edit goal",
   "saveGoal": "Save for this preview",
   "cancel": "Cancel",
-  "goalSavedForPreview": "Goal updated for this preview.",
-  "goalPreviewOnly": "Preview only · This goal resets when the page reloads.",
+  "goalSavedForPreview": "Goal updated for this preview. Leaving this page or reloading clears it.",
+  "goalPreviewOnly": "Preview only · Leaving this page or reloading clears this goal. It is not saved to an account.",
   "shelfTitle": "Something for your next chapter",
   "educatorPicks": "Example shelf · In future, chosen by EVG educators",
   "allBooks": "All books",
@@ -102,23 +102,37 @@
   "editorial": "Sample activities for everyone. These are not personalised recommendations.",
   "tryActivity": "Try this activity",
   "startHere": "Your first step",
+  "activityMaterials": "Materials",
+  "activityReflect": "When you finish",
+  "activityRelatedBooks": "Next: browse {{topic}} books",
   "yourInterests": "What do you enjoy?",
   "interestsBody": "Choose any topics you like. You can change your mind whenever you want.",
   "later": "PLANNED",
   "recommendationsTitle": "Suggestions that grow with you",
   "recommendationsBody": "For now, browse freely. Later, EVG can use your interests to suggest reviewed topics. AI will only be considered after simple recommendations prove insufficient.",
   "communityTitle": "A little inspiration, together.",
-  "communityBody": "Discover what sharing our learning could look like. These are fictional examples.",
+  "communityBody": "See fictional student examples, then try a short project preview on this page. Use made-up information only.",
+  "communityNextStep": {
+    "title": "Start with a small activity",
+    "body": "Pick one sample activity in Explore. It will suggest a related book to browse next.",
+    "action": "Explore activities"
+  },
+  "staffTraining": {
+    "nav": "Community training",
+    "kicker": "STAFF TRAINING PREVIEW",
+    "title": "Community review examples",
+    "body": "Fictional training screens only. Actions stay in this page preview; there are no real submissions, awards, comments or access controls."
+  },
   "sampleProject": "A SMALL DISCOVERY",
   "exampleOnly": "EXAMPLE SHOWCASE",
   "fictionalWork": "Example work · Not a real student submission",
   "sharingLater": "A kind, supported space",
-  "sharingBody": "The private project form above is only a preview. Publishing, comments, and rewards come later, with an EVG review process and a named moderator.",
+  "sharingBody": "The project form above is only a preview. Publishing, comments, and rewards come later, with an EVG review process and a named moderator.",
   "projectPrototype": {
     "kicker": "PROJECT PREVIEW",
     "title": "Record a small discovery",
-    "intro": "Try the future private project flow with made-up information only.",
-    "privatePreview": "Private preview",
+    "intro": "Try this sample project form with made-up information only. Your changes stay in this page preview.",
+    "privatePreview": "This page only",
     "titleLabel": "Project title",
     "titleRequired": "Write a short project title.",
     "summaryLabel": "What did you discover?",
@@ -132,16 +146,16 @@
     },
     "statusLabel": "What happens next?",
     "status": {
-      "draft": "Keep as private draft",
-      "ready_for_feedback": "Ready for facilitator feedback"
+      "draft": "Keep as a draft in this preview",
+      "ready_for_feedback": "Show sample facilitator feedback"
     },
     "save": "Save in this preview",
     "edit": "Edit project",
-    "saved": "Project updated in this preview. Nothing was sent.",
-    "notice": "Preview only · This project resets on reload and is never published.",
+    "saved": "Project updated in this preview. Leaving this page or reloading clears it; nothing was sent or published.",
+    "notice": "Preview only · Leaving this page or reloading clears this project. Nothing is sent or published.",
     "notPublished": "Not published",
     "visibilityLabel": "Who can see it?",
-    "visibility": "Only this preview. Future private records require authorised access.",
+    "visibility": "Only on this page until you leave or reload. It is not sent to an account.",
     "feedbackKicker": "FICTIONAL PRIVATE FEEDBACK",
     "feedbackTitle": "How facilitator feedback could look",
     "feedbackIntro": "This example shows the planned structure. No facilitator has reviewed this project.",
@@ -276,17 +290,23 @@
     "nature": {
       "title": "How does a seed grow?",
       "body": "Notice the small changes in the plants around you.",
-      "instruction": "Look at a plant with a volunteer. Draw its leaves and describe one thing you notice. Do not taste unknown plants."
+      "materials": "Paper and pencil. Ask a volunteer to join you outdoors or look at a potted plant.",
+      "steps": ["Look closely at one plant without picking it.", "Draw one leaf and note its shape or colour.", "Compare your drawing with what you can see."],
+      "reflection": "What detail did you notice first? Next, browse a nature book or tell a volunteer what you observed. Do not taste plants or touch unknown plants."
     },
     "stories": {
       "title": "Every place has a story.",
       "body": "Imagine a new adventure in a familiar place.",
-      "instruction": "Choose an imaginary character. Tell a volunteer where they go, who they meet, and one kind thing they do."
+      "materials": "No special materials. You can tell the story aloud or use paper and pencil.",
+      "steps": ["Choose an imaginary character and a familiar place.", "Imagine one person they meet and one kind thing they do.", "Tell or sketch what happens next."],
+      "reflection": "Which part would you like to change or continue? Next, browse a story book or share your idea with a volunteer."
     },
     "science": {
       "title": "What makes a bridge strong?",
       "body": "Explore shapes using a little paper and curiosity.",
-      "instruction": "With a volunteer, fold a sheet of paper and rest it across two books. Compare a flat sheet with a folded sheet. Use only light paper objects."
+      "materials": "One sheet of paper, two books, and a few small paper pieces. Ask a volunteer to help set up.",
+      "steps": ["Place a flat sheet across two books set close together.", "Add one small paper piece at a time and notice what happens.", "Fold a fresh sheet into a simple fan shape and compare using the same light paper pieces."],
+      "reflection": "Which shape held more paper, and what might explain that? Next, browse a science book or tell a volunteer what changed. Keep the books on a table and use only light paper."
     }
   },
   "showcases": {
@@ -421,7 +441,8 @@
     "coverUrl": "Cover image URL (optional)",
     "save": "Save book and copies",
     "saved": "Catalogue saved.",
-    "saveError": "The book could not be saved. Check the titles, copy count, connection and staff access. If editing still does not work, ask the site owner to finish enabling catalogue management."
+    "saveError": "The book could not be saved. Check the titles, copy count, connection and staff access. If editing still does not work, ask the site owner to finish enabling catalogue management.",
+    "coverSaveError": "The book details and copies were saved, but the cover could not be updated. Check the cover URL and save again; the book is already in the catalogue."
   },
   "workspaces": {
     "navigation": "Staff workspace navigation",

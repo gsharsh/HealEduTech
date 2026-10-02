@@ -1,0 +1,124 @@
+classDiagram
+    direction LR
+    class AuthUser {
+        <<SupabaseManaged>>
+        UUID id
+        string email
+        timestamp email_confirmed_at
+        JSON raw_user_meta_data
+    }
+    class ProfileMetadata {
+        <<AuthMetadata>>
+        string display_name
+        string preferred_language
+    }
+    class StaffMember {
+        UUID user_id
+        string role
+        UUID granted_by
+        timestamp created_at
+        timestamp updated_at
+    }
+    class AdminBootstrap {
+        string email
+        string note
+        timestamp used_at
+        UUID used_by
+    }
+    class Book {
+        UUID id
+        string title_en
+        string title_vi
+        string author
+        string language
+        string topic
+        string description_en
+        string description_vi
+        string cover_url
+    }
+    class PhysicalCopy {
+        UUID id
+        UUID book_id
+        string inventory_code
+        string condition
+        string shelf_location
+    }
+    class Borrower {
+        UUID user_id
+        string display_name
+        boolean eligible
+        UUID registered_by
+    }
+    class CirculationPolicy {
+        smallint id
+        boolean enabled
+        int max_active_loans
+        string timezone
+        UUID updated_by
+    }
+    class Loan {
+        UUID id
+        UUID request_id
+        UUID borrower_user_id
+        UUID copy_id
+        date due_date
+        timestamp checked_out_at
+        timestamp resolved_at
+        string resolution
+        string return_condition
+        UUID checked_out_by
+        UUID resolved_by
+    }
+    class CirculationEvent {
+        UUID id
+        UUID request_id
+        UUID loan_id
+        UUID actor_user_id
+        string event_type
+        JSON payload
+    }
+    class ReadingRecord {
+        UUID user_id
+        UUID book_id
+        string status
+        string reflection
+        timestamp created_at
+        timestamp updated_at
+    }
+    class LearnerInterest {
+        UUID user_id
+        string topic
+        timestamp created_at
+    }
+    class BookAvailability {
+        <<AggregateView>>
+        UUID book_id
+        int total_copies
+        int available_copies
+    }
+    AuthUser "1" *-- "0..1" ProfileMetadata : optional metadata fields
+    AuthUser "1" -- "0..1" StaffMember : user_id
+    AuthUser "0..1" -- "0..*" AdminBootstrap : used_by
+    AuthUser "1" -- "0..1" Borrower : user_id
+    Book "1" -- "0..*" PhysicalCopy : book_id
+    Borrower "1" -- "0..*" Loan : borrower_user_id
+    PhysicalCopy "1" -- "0..*" Loan : copy_id
+    Loan "1" -- "0..*" CirculationEvent : loan_id
+    AuthUser "1" -- "0..*" ReadingRecord : user_id
+    Book "1" -- "0..*" ReadingRecord : book_id
+    AuthUser "1" -- "0..*" LearnerInterest : user_id
+    AuthUser "0..1" -- "0..*" StaffMember : granted_by
+    AuthUser "1" -- "0..*" Borrower : registered_by
+    AuthUser "1" -- "0..*" Loan : checked_out_by
+    AuthUser "1" -- "0..*" CirculationEvent : actor_user_id
+    CirculationPolicy ..> Loan : checkout gate and limits
+    BookAvailability ..> Book : aggregates
+    BookAvailability ..> PhysicalCopy : usable copies
+    BookAvailability ..> Loan : excludes active loans
+    note for ProfileMetadata "JSON fields on auth.users; no public.profiles table. Never a staff-role authority."
+    note for StaffMember "PK=user_id. Roles=librarian or administrator. No cohort/facilitator role."
+    note for ReadingRecord "PK=(user_id,book_id). Owner-only RLS. Reflection at most 2000 characters."
+    note for LearnerInterest "PK=(user_id,topic). Topics=nature,stories,science. Owner-only RLS."
+    note for Loan "request_id unique; partial unique index permits one active loan per copy."
+    note for CirculationEvent "RPC checkout writes an event. FK alone permits zero events. Append-only to clients; not a general staff-role audit."
+    note for CirculationPolicy "Singleton id=1; enabled defaults false."

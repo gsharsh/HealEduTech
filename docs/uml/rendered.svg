@@ -1,0 +1,391 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1840" height="2892" viewBox="0 0 1840 2892" role="img" aria-labelledby="uml-title uml-desc">
+<title id="uml-title">EVG — implemented domain class model</title>
+<desc id="uml-desc">Current implemented model, selected fields, and all nineteen canonical relationships with endpoint cardinalities. Four groups distinguish managed authentication and staff authority, catalogue and public aggregate availability, circulation, and owner-only learner records. Planned models are separate. Source SHA-256: 1414bb966b84b5823f7e53638fb0ec0b51aa1798ee082091dc89bf505ff67a20.</desc>
+<defs>
+<filter id="card-shadow" x="-10%" y="-10%" width="120%" height="125%"><feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#233e32" flood-opacity=".065"/></filter>
+<marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#657d70" stroke-width="1.3"/></marker>
+<style>
+text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; fill: #233e32; }
+.field { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 15px; }
+.small { font-size: 14px; fill: #53665a; }
+.relation { fill: none; stroke: #657d70; stroke-width: 2; }
+.dependency { stroke-dasharray: 6 5; }
+.node rect.card { fill: #fffefa; stroke: #c9d3c9; stroke-width: 1.2; }
+.node.highlight rect.card { stroke: #286047; stroke-width: 4; }
+.node:hover rect.card { stroke: #286047; stroke-width: 2; }
+</style>
+</defs>
+<rect width="1840" height="2892" fill="#faf8f2"/>
+<rect x="40" y="40" width="108" height="30" rx="15" fill="#e4ece2"/>
+<text x="94" y="61" text-anchor="middle" font-size="12" font-weight="700" letter-spacing="1">IMPLEMENTED</text>
+<text x="40" y="117" font-size="39" font-weight="700" letter-spacing="-1">EVG domain class model</text>
+<text x="40" y="150" font-size="18" fill="#53665a">Current schema · selected fields · cardinalities and privacy boundaries · 2 October 2026</text>
+<text x="1800" y="114" text-anchor="end" font-size="16" font-weight="600">13 classes / 15 associations / 4 dependencies</text>
+<text x="1800" y="146" text-anchor="end" class="small">Definitive source: implemented-domain.mmd</text>
+
+<rect x="40" y="185" width="390" height="1552" rx="22" fill="#edf3ee"/>
+<text x="65" y="223" font-size="19" font-weight="700" style="fill:#35624e">Authentication &amp; access</text>
+<rect x="490" y="185" width="390" height="1552" rx="22" fill="#f6efe3"/>
+<text x="515" y="223" font-size="19" font-weight="700" style="fill:#80603b">Catalogue &amp; availability</text>
+<rect x="940" y="185" width="390" height="1552" rx="22" fill="#edf2f7"/>
+<text x="965" y="223" font-size="19" font-weight="700" style="fill:#365f83">Circulation operations</text>
+<rect x="1390" y="185" width="390" height="1552" rx="22" fill="#f1eef7"/>
+<text x="1415" y="223" font-size="19" font-weight="700" style="fill:#65558a">Private learner records</text>
+<path class="relation" d="M 235.0 455 L 235.0 517"/>
+<path d="M 235.0 455 l 6 9 l -6 9 l -6 -9 Z" fill="#657d70"/>
+<rect x="249.0" y="474.0" width="38" height="25" rx="8" fill="#faf8f2" stroke="#d8dfd5"/>
+<text x="268.0" y="492.0" text-anchor="middle" font-size="12" font-weight="700">R01</text>
+<path class="relation" d="M 685.0 590 L 685.0 652"/>
+<rect x="699.0" y="609.0" width="38" height="25" rx="8" fill="#faf8f2" stroke="#d8dfd5"/>
+<text x="718.0" y="627.0" text-anchor="middle" font-size="12" font-weight="700">R05</text>
+<path class="relation" d="M 1305 358.5 L 1347 358.5 L 1347 1056.0 L 1305 1056.0"/>
+<rect x="1337" y="690.25" width="38" height="25" rx="8" fill="#faf8f2" stroke="#d8dfd5"/>
+<text x="1356" y="708.25" text-anchor="middle" font-size="12" font-weight="700">R06</text>
+<path class="relation" d="M 855 762.0 L 910.0 762.0 L 910.0 1056.0 L 965 1056.0"/>
+<rect x="914.0" y="892.0" width="38" height="25" rx="8" fill="#faf8f2" stroke="#d8dfd5"/>
+<text x="933.0" y="910.0" text-anchor="middle" font-size="12" font-weight="700">R07</text>
+<path class="relation" d="M 1135.0 1276 L 1135.0 1338"/>
+<rect x="1149.0" y="1295.0" width="38" height="25" rx="8" fill="#faf8f2" stroke="#d8dfd5"/>
+<text x="1168.0" y="1313.0" text-anchor="middle" font-size="12" font-weight="700">R08</text>
+<path class="relation dependency" d="M 1135.0 774 L 1135.0 836" marker-end="url(#arrow)"/>
+<rect x="1149.0" y="793.0" width="38" height="25" rx="8" fill="#faf8f2" stroke="#d8dfd5"/>
+<text x="1168.0" y="811.0" text-anchor="middle" font-size="12" font-weight="700">R16</text>
+<g class="node" id="class-AuthUser" data-node="AuthUser"><title>AuthUser: UUID id, string email, timestamp email_confirmed_at, JSON raw_user_meta_data</title>
+<rect class="card" x="65" y="262" width="340" height="193" rx="13" filter="url(#card-shadow)"/>
+<rect x="65" y="262" width="340" height="51" rx="13" fill="#35624e"/>
+<rect x="65" y="297" width="340" height="16" fill="#35624e"/>
+<text x="82" y="294" font-size="21" font-weight="700" style="fill:#fff">AuthUser</text>
+<text x="392" y="330" text-anchor="end" font-size="11" fill="#53665a">«SupabaseManaged»</text>
+<text x="82" y="350" class="field">UUID id</text>
+<text x="82" y="377" class="field">string email</text>
+<text x="82" y="404" class="field">timestamp email_confirmed_at</text>
+<text x="82" y="431" class="field">JSON raw_user_meta_data</text>
+</g>
+<g class="node" id="class-ProfileMetadata" data-node="ProfileMetadata"><title>ProfileMetadata: string display_name, string preferred_language. JSON fields on auth.users; no public.profiles table. Never a staff-role authority.</title>
+<rect class="card" x="65" y="517" width="340" height="218" rx="13" filter="url(#card-shadow)"/>
+<rect x="65" y="517" width="340" height="51" rx="13" fill="#35624e"/>
+<rect x="65" y="552" width="340" height="16" fill="#35624e"/>
+<text x="82" y="549" font-size="21" font-weight="700" style="fill:#fff">ProfileMetadata</text>
+<text x="392" y="585" text-anchor="end" font-size="11" fill="#53665a">«AuthMetadata»</text>
+<text x="82" y="605" class="field">string display_name</text>
+<text x="82" y="632" class="field">string preferred_language</text>
+<path d="M81 645H389" stroke="#dfe3d9"/>
+<text x="82" y="670" font-size="13" fill="#53665a">JSON fields on auth.users; no</text>
+<text x="82" y="691" font-size="13" fill="#53665a">public.profiles table. Never a staff-</text>
+<text x="82" y="712" font-size="13" fill="#53665a">role authority.</text>
+</g>
+<g class="node" id="class-StaffMember" data-node="StaffMember"><title>StaffMember: UUID user_id, string role, UUID granted_by, timestamp created_at, timestamp updated_at. PK=user_id. Roles=librarian or administrator. No cohort/facilitator role.</title>
+<rect class="card" x="65" y="797" width="340" height="299" rx="13" filter="url(#card-shadow)"/>
+<rect x="65" y="797" width="340" height="51" rx="13" fill="#35624e"/>
+<rect x="65" y="832" width="340" height="16" fill="#35624e"/>
+<text x="82" y="829" font-size="21" font-weight="700" style="fill:#fff">StaffMember</text>
+<text x="82" y="885" class="field">UUID user_id</text>
+<text x="82" y="912" class="field">string role</text>
+<text x="82" y="939" class="field">UUID granted_by</text>
+<text x="82" y="966" class="field">timestamp created_at</text>
+<text x="82" y="993" class="field">timestamp updated_at</text>
+<path d="M81 1006H389" stroke="#dfe3d9"/>
+<text x="82" y="1031" font-size="13" fill="#53665a">PK=user_id. Roles=librarian or</text>
+<text x="82" y="1052" font-size="13" fill="#53665a">administrator. No cohort/facilitator</text>
+<text x="82" y="1073" font-size="13" fill="#53665a">role.</text>
+</g>
+<g class="node" id="class-AdminBootstrap" data-node="AdminBootstrap"><title>AdminBootstrap: string email, string note, timestamp used_at, UUID used_by</title>
+<rect class="card" x="65" y="1158" width="340" height="193" rx="13" filter="url(#card-shadow)"/>
+<rect x="65" y="1158" width="340" height="51" rx="13" fill="#35624e"/>
+<rect x="65" y="1193" width="340" height="16" fill="#35624e"/>
+<text x="82" y="1190" font-size="21" font-weight="700" style="fill:#fff">AdminBootstrap</text>
+<text x="82" y="1246" class="field">string email</text>
+<text x="82" y="1273" class="field">string note</text>
+<text x="82" y="1300" class="field">timestamp used_at</text>
+<text x="82" y="1327" class="field">UUID used_by</text>
+</g>
+<g class="node" id="class-Book" data-node="Book"><title>Book: UUID id, string title_en, string title_vi, string author, string language, string topic, string description_en, string description_vi, string cover_url</title>
+<rect class="card" x="515" y="262" width="340" height="328" rx="13" filter="url(#card-shadow)"/>
+<rect x="515" y="262" width="340" height="51" rx="13" fill="#80603b"/>
+<rect x="515" y="297" width="340" height="16" fill="#80603b"/>
+<text x="532" y="294" font-size="21" font-weight="700" style="fill:#fff">Book</text>
+<text x="532" y="350" class="field">UUID id</text>
+<text x="532" y="377" class="field">string title_en</text>
+<text x="532" y="404" class="field">string title_vi</text>
+<text x="532" y="431" class="field">string author</text>
+<text x="532" y="458" class="field">string language</text>
+<text x="532" y="485" class="field">string topic</text>
+<text x="532" y="512" class="field">string description_en</text>
+<text x="532" y="539" class="field">string description_vi</text>
+<text x="532" y="566" class="field">string cover_url</text>
+</g>
+<g class="node" id="class-PhysicalCopy" data-node="PhysicalCopy"><title>PhysicalCopy: UUID id, UUID book_id, string inventory_code, string condition, string shelf_location</title>
+<rect class="card" x="515" y="652" width="340" height="220" rx="13" filter="url(#card-shadow)"/>
+<rect x="515" y="652" width="340" height="51" rx="13" fill="#80603b"/>
+<rect x="515" y="687" width="340" height="16" fill="#80603b"/>
+<text x="532" y="684" font-size="21" font-weight="700" style="fill:#fff">PhysicalCopy</text>
+<text x="532" y="740" class="field">UUID id</text>
+<text x="532" y="767" class="field">UUID book_id</text>
+<text x="532" y="794" class="field">string inventory_code</text>
+<text x="532" y="821" class="field">string condition</text>
+<text x="532" y="848" class="field">string shelf_location</text>
+</g>
+<g class="node" id="class-BookAvailability" data-node="BookAvailability"><title>BookAvailability: UUID book_id, int total_copies, int available_copies</title>
+<rect class="card" x="515" y="934" width="340" height="166" rx="13" filter="url(#card-shadow)"/>
+<rect x="515" y="934" width="340" height="51" rx="13" fill="#80603b"/>
+<rect x="515" y="969" width="340" height="16" fill="#80603b"/>
+<text x="532" y="966" font-size="21" font-weight="700" style="fill:#fff">BookAvailability</text>
+<text x="842" y="1002" text-anchor="end" font-size="11" fill="#53665a">«AggregateView»</text>
+<text x="532" y="1022" class="field">UUID book_id</text>
+<text x="532" y="1049" class="field">int total_copies</text>
+<text x="532" y="1076" class="field">int available_copies</text>
+</g>
+<g class="node" id="class-Borrower" data-node="Borrower"><title>Borrower: UUID user_id, string display_name, boolean eligible, UUID registered_by</title>
+<rect class="card" x="965" y="262" width="340" height="193" rx="13" filter="url(#card-shadow)"/>
+<rect x="965" y="262" width="340" height="51" rx="13" fill="#365f83"/>
+<rect x="965" y="297" width="340" height="16" fill="#365f83"/>
+<text x="982" y="294" font-size="21" font-weight="700" style="fill:#fff">Borrower</text>
+<text x="982" y="350" class="field">UUID user_id</text>
+<text x="982" y="377" class="field">string display_name</text>
+<text x="982" y="404" class="field">boolean eligible</text>
+<text x="982" y="431" class="field">UUID registered_by</text>
+</g>
+<g class="node" id="class-CirculationPolicy" data-node="CirculationPolicy"><title>CirculationPolicy: smallint id, boolean enabled, int max_active_loans, string timezone, UUID updated_by. Singleton id=1; enabled defaults false.</title>
+<rect class="card" x="965" y="517" width="340" height="257" rx="13" filter="url(#card-shadow)"/>
+<rect x="965" y="517" width="340" height="51" rx="13" fill="#365f83"/>
+<rect x="965" y="552" width="340" height="16" fill="#365f83"/>
+<text x="982" y="549" font-size="21" font-weight="700" style="fill:#fff">CirculationPolicy</text>
+<text x="982" y="605" class="field">smallint id</text>
+<text x="982" y="632" class="field">boolean enabled</text>
+<text x="982" y="659" class="field">int max_active_loans</text>
+<text x="982" y="686" class="field">string timezone</text>
+<text x="982" y="713" class="field">UUID updated_by</text>
+<path d="M981 726H1289" stroke="#dfe3d9"/>
+<text x="982" y="751" font-size="13" fill="#53665a">Singleton id=1; enabled defaults false.</text>
+</g>
+<g class="node" id="class-Loan" data-node="Loan"><title>Loan: UUID id, UUID request_id, UUID borrower_user_id, UUID copy_id, date due_date, timestamp checked_out_at, timestamp resolved_at, string resolution, string return_condition, UUID checked_out_by, UUID resolved_by. request_id unique; partial unique index permits one active loan per copy.</title>
+<rect class="card" x="965" y="836" width="340" height="440" rx="13" filter="url(#card-shadow)"/>
+<rect x="965" y="836" width="340" height="51" rx="13" fill="#365f83"/>
+<rect x="965" y="871" width="340" height="16" fill="#365f83"/>
+<text x="982" y="868" font-size="21" font-weight="700" style="fill:#fff">Loan</text>
+<text x="982" y="924" class="field">UUID id</text>
+<text x="982" y="951" class="field">UUID request_id</text>
+<text x="982" y="978" class="field">UUID borrower_user_id</text>
+<text x="982" y="1005" class="field">UUID copy_id</text>
+<text x="982" y="1032" class="field">date due_date</text>
+<text x="982" y="1059" class="field">timestamp checked_out_at</text>
+<text x="982" y="1086" class="field">timestamp resolved_at</text>
+<text x="982" y="1113" class="field">string resolution</text>
+<text x="982" y="1140" class="field">string return_condition</text>
+<text x="982" y="1167" class="field">UUID checked_out_by</text>
+<text x="982" y="1194" class="field">UUID resolved_by</text>
+<path d="M981 1207H1289" stroke="#dfe3d9"/>
+<text x="982" y="1232" font-size="13" fill="#53665a">request_id unique; partial unique index</text>
+<text x="982" y="1253" font-size="13" fill="#53665a">permits one active loan per copy.</text>
+</g>
+<g class="node" id="class-CirculationEvent" data-node="CirculationEvent"><title>CirculationEvent: UUID id, UUID request_id, UUID loan_id, UUID actor_user_id, string event_type, JSON payload. RPC checkout writes an event. FK alone permits zero events. Append-only to clients; not a general staff-role audit.</title>
+<rect class="card" x="965" y="1338" width="340" height="347" rx="13" filter="url(#card-shadow)"/>
+<rect x="965" y="1338" width="340" height="51" rx="13" fill="#365f83"/>
+<rect x="965" y="1373" width="340" height="16" fill="#365f83"/>
+<text x="982" y="1370" font-size="21" font-weight="700" style="fill:#fff">CirculationEvent</text>
+<text x="982" y="1426" class="field">UUID id</text>
+<text x="982" y="1453" class="field">UUID request_id</text>
+<text x="982" y="1480" class="field">UUID loan_id</text>
+<text x="982" y="1507" class="field">UUID actor_user_id</text>
+<text x="982" y="1534" class="field">string event_type</text>
+<text x="982" y="1561" class="field">JSON payload</text>
+<path d="M981 1574H1289" stroke="#dfe3d9"/>
+<text x="982" y="1599" font-size="13" fill="#53665a">RPC checkout writes an event. FK alone</text>
+<text x="982" y="1620" font-size="13" fill="#53665a">permits zero events. Append-only to</text>
+<text x="982" y="1641" font-size="13" fill="#53665a">clients; not a general staff-role</text>
+<text x="982" y="1662" font-size="13" fill="#53665a">audit.</text>
+</g>
+<g class="node" id="class-ReadingRecord" data-node="ReadingRecord"><title>ReadingRecord: UUID user_id, UUID book_id, string status, string reflection, timestamp created_at, timestamp updated_at. PK=(user_id,book_id). Owner-only RLS. Reflection at most 2000 characters.</title>
+<rect class="card" x="1415" y="262" width="340" height="305" rx="13" filter="url(#card-shadow)"/>
+<rect x="1415" y="262" width="340" height="51" rx="13" fill="#65558a"/>
+<rect x="1415" y="297" width="340" height="16" fill="#65558a"/>
+<text x="1432" y="294" font-size="21" font-weight="700" style="fill:#fff">ReadingRecord</text>
+<text x="1432" y="350" class="field">UUID user_id</text>
+<text x="1432" y="377" class="field">UUID book_id</text>
+<text x="1432" y="404" class="field">string status</text>
+<text x="1432" y="431" class="field">string reflection</text>
+<text x="1432" y="458" class="field">timestamp created_at</text>
+<text x="1432" y="485" class="field">timestamp updated_at</text>
+<path d="M1431 498H1739" stroke="#dfe3d9"/>
+<text x="1432" y="523" font-size="13" fill="#53665a">PK=(user_id,book_id). Owner-only RLS.</text>
+<text x="1432" y="544" font-size="13" fill="#53665a">Reflection at most 2000 characters.</text>
+</g>
+<g class="node" id="class-LearnerInterest" data-node="LearnerInterest"><title>LearnerInterest: UUID user_id, string topic, timestamp created_at. PK=(user_id,topic). Topics=nature,stories,science. Owner-only RLS.</title>
+<rect class="card" x="1415" y="629" width="340" height="245" rx="13" filter="url(#card-shadow)"/>
+<rect x="1415" y="629" width="340" height="51" rx="13" fill="#65558a"/>
+<rect x="1415" y="664" width="340" height="16" fill="#65558a"/>
+<text x="1432" y="661" font-size="21" font-weight="700" style="fill:#fff">LearnerInterest</text>
+<text x="1432" y="717" class="field">UUID user_id</text>
+<text x="1432" y="744" class="field">string topic</text>
+<text x="1432" y="771" class="field">timestamp created_at</text>
+<path d="M1431 784H1739" stroke="#dfe3d9"/>
+<text x="1432" y="809" font-size="13" fill="#53665a">PK=(user_id,topic).</text>
+<text x="1432" y="830" font-size="13" fill="#53665a">Topics=nature,stories,science. Owner-</text>
+<text x="1432" y="851" font-size="13" fill="#53665a">only RLS.</text>
+</g>
+<rect x="1415" y="939" width="340" height="126" rx="13" fill="#fffefa" stroke="#d9d3e5"/>
+<text x="1432" y="969" font-size="16" font-weight="700">Private by ownership</text>
+<text x="1432" y="996" font-size="14" fill="#53665a">ReadingRecord and LearnerInterest use</text>
+<text x="1432" y="1017" font-size="14" fill="#53665a">owner-only RLS. No assigned-facilitator</text>
+<text x="1432" y="1038" font-size="14" fill="#53665a">role exists in this implemented model.</text>
+<rect x="1415" y="1085" width="340" height="126" rx="13" fill="#fffefa" stroke="#d9d3e5"/>
+<text x="1432" y="1115" font-size="16" font-weight="700">Staff authority</text>
+<text x="1432" y="1142" font-size="14" fill="#53665a">StaffMember carries librarian or</text>
+<text x="1432" y="1163" font-size="14" fill="#53665a">administrator authority. Editable</text>
+<text x="1432" y="1184" font-size="14" fill="#53665a">profile metadata is not a role source.</text>
+<rect x="1415" y="1231" width="340" height="126" rx="13" fill="#fffefa" stroke="#d9d3e5"/>
+<text x="1432" y="1261" font-size="16" font-weight="700">Public availability</text>
+<text x="1432" y="1288" font-size="14" fill="#53665a">BookAvailability is an aggregate. Public</text>
+<text x="1432" y="1309" font-size="14" fill="#53665a">availability does not disclose borrower</text>
+<text x="1432" y="1330" font-size="14" fill="#53665a">identity.</text>
+<rect x="1415" y="1377" width="340" height="126" rx="13" fill="#fffefa" stroke="#d9d3e5"/>
+<text x="1432" y="1407" font-size="16" font-weight="700">Planning stays separate</text>
+<text x="1432" y="1434" font-size="14" fill="#53665a">Future models are in planned-learning-</text>
+<text x="1432" y="1455" font-size="14" fill="#53665a">domain.mmd. They are not implemented</text>
+<text x="1432" y="1476" font-size="14" fill="#53665a">tables in this diagram.</text>
+<text x="40" y="1797" font-size="28" font-weight="700">Complete relationship register</text>
+<text x="40" y="1827" font-size="16" fill="#53665a">R-numbers match the local overview links. Cross-group owner, actor, and grant references remain explicit here.</text>
+<rect x="40" y="1849" width="1760" height="44" rx="10" fill="#e4ece2"/>
+<text x="52" y="1877" font-size="14" font-weight="700">Ref</text>
+<text x="130" y="1877" font-size="14" font-weight="700">Source class</text>
+<text x="327" y="1877" font-size="14" font-weight="700">Source end</text>
+<text x="477" y="1877" font-size="14" font-weight="700">Target class</text>
+<text x="702" y="1877" font-size="14" font-weight="700">Target end</text>
+<text x="847" y="1877" font-size="14" font-weight="700">Relationship / meaning</text>
+<rect x="40" y="1893" width="1760" height="43" fill="#fffefa"/>
+<text x="52" y="1921" font-size="15">R01</text>
+<text x="130" y="1921" font-size="15">AuthUser</text>
+<text x="327" y="1921" font-size="15" font-weight="600">1</text>
+<text x="477" y="1921" font-size="15">ProfileMetadata</text>
+<text x="702" y="1921" font-size="15" font-weight="600">0..1</text>
+<text x="847" y="1921" font-size="15">Composition · optional metadata fields</text>
+<rect x="40" y="1936" width="1760" height="43" fill="#f1f3ed"/>
+<text x="52" y="1964" font-size="15">R02</text>
+<text x="130" y="1964" font-size="15">AuthUser</text>
+<text x="327" y="1964" font-size="15" font-weight="600">1</text>
+<text x="477" y="1964" font-size="15">StaffMember</text>
+<text x="702" y="1964" font-size="15" font-weight="600">0..1</text>
+<text x="847" y="1964" font-size="15">Association · user_id</text>
+<rect x="40" y="1979" width="1760" height="43" fill="#fffefa"/>
+<text x="52" y="2007" font-size="15">R03</text>
+<text x="130" y="2007" font-size="15">AuthUser</text>
+<text x="327" y="2007" font-size="15" font-weight="600">0..1</text>
+<text x="477" y="2007" font-size="15">AdminBootstrap</text>
+<text x="702" y="2007" font-size="15" font-weight="600">0..*</text>
+<text x="847" y="2007" font-size="15">Association · used_by</text>
+<rect x="40" y="2022" width="1760" height="43" fill="#f1f3ed"/>
+<text x="52" y="2050" font-size="15">R04</text>
+<text x="130" y="2050" font-size="15">AuthUser</text>
+<text x="327" y="2050" font-size="15" font-weight="600">1</text>
+<text x="477" y="2050" font-size="15">Borrower</text>
+<text x="702" y="2050" font-size="15" font-weight="600">0..1</text>
+<text x="847" y="2050" font-size="15">Association · user_id</text>
+<rect x="40" y="2065" width="1760" height="43" fill="#fffefa"/>
+<text x="52" y="2093" font-size="15">R05</text>
+<text x="130" y="2093" font-size="15">Book</text>
+<text x="327" y="2093" font-size="15" font-weight="600">1</text>
+<text x="477" y="2093" font-size="15">PhysicalCopy</text>
+<text x="702" y="2093" font-size="15" font-weight="600">0..*</text>
+<text x="847" y="2093" font-size="15">Association · book_id</text>
+<rect x="40" y="2108" width="1760" height="43" fill="#f1f3ed"/>
+<text x="52" y="2136" font-size="15">R06</text>
+<text x="130" y="2136" font-size="15">Borrower</text>
+<text x="327" y="2136" font-size="15" font-weight="600">1</text>
+<text x="477" y="2136" font-size="15">Loan</text>
+<text x="702" y="2136" font-size="15" font-weight="600">0..*</text>
+<text x="847" y="2136" font-size="15">Association · borrower_user_id</text>
+<rect x="40" y="2151" width="1760" height="43" fill="#fffefa"/>
+<text x="52" y="2179" font-size="15">R07</text>
+<text x="130" y="2179" font-size="15">PhysicalCopy</text>
+<text x="327" y="2179" font-size="15" font-weight="600">1</text>
+<text x="477" y="2179" font-size="15">Loan</text>
+<text x="702" y="2179" font-size="15" font-weight="600">0..*</text>
+<text x="847" y="2179" font-size="15">Association · copy_id</text>
+<rect x="40" y="2194" width="1760" height="43" fill="#f1f3ed"/>
+<text x="52" y="2222" font-size="15">R08</text>
+<text x="130" y="2222" font-size="15">Loan</text>
+<text x="327" y="2222" font-size="15" font-weight="600">1</text>
+<text x="477" y="2222" font-size="15">CirculationEvent</text>
+<text x="702" y="2222" font-size="15" font-weight="600">0..*</text>
+<text x="847" y="2222" font-size="15">Association · loan_id</text>
+<rect x="40" y="2237" width="1760" height="43" fill="#fffefa"/>
+<text x="52" y="2265" font-size="15">R09</text>
+<text x="130" y="2265" font-size="15">AuthUser</text>
+<text x="327" y="2265" font-size="15" font-weight="600">1</text>
+<text x="477" y="2265" font-size="15">ReadingRecord</text>
+<text x="702" y="2265" font-size="15" font-weight="600">0..*</text>
+<text x="847" y="2265" font-size="15">Association · user_id</text>
+<rect x="40" y="2280" width="1760" height="43" fill="#f1f3ed"/>
+<text x="52" y="2308" font-size="15">R10</text>
+<text x="130" y="2308" font-size="15">Book</text>
+<text x="327" y="2308" font-size="15" font-weight="600">1</text>
+<text x="477" y="2308" font-size="15">ReadingRecord</text>
+<text x="702" y="2308" font-size="15" font-weight="600">0..*</text>
+<text x="847" y="2308" font-size="15">Association · book_id</text>
+<rect x="40" y="2323" width="1760" height="43" fill="#fffefa"/>
+<text x="52" y="2351" font-size="15">R11</text>
+<text x="130" y="2351" font-size="15">AuthUser</text>
+<text x="327" y="2351" font-size="15" font-weight="600">1</text>
+<text x="477" y="2351" font-size="15">LearnerInterest</text>
+<text x="702" y="2351" font-size="15" font-weight="600">0..*</text>
+<text x="847" y="2351" font-size="15">Association · user_id</text>
+<rect x="40" y="2366" width="1760" height="43" fill="#f1f3ed"/>
+<text x="52" y="2394" font-size="15">R12</text>
+<text x="130" y="2394" font-size="15">AuthUser</text>
+<text x="327" y="2394" font-size="15" font-weight="600">0..1</text>
+<text x="477" y="2394" font-size="15">StaffMember</text>
+<text x="702" y="2394" font-size="15" font-weight="600">0..*</text>
+<text x="847" y="2394" font-size="15">Association · granted_by</text>
+<rect x="40" y="2409" width="1760" height="43" fill="#fffefa"/>
+<text x="52" y="2437" font-size="15">R13</text>
+<text x="130" y="2437" font-size="15">AuthUser</text>
+<text x="327" y="2437" font-size="15" font-weight="600">1</text>
+<text x="477" y="2437" font-size="15">Borrower</text>
+<text x="702" y="2437" font-size="15" font-weight="600">0..*</text>
+<text x="847" y="2437" font-size="15">Association · registered_by</text>
+<rect x="40" y="2452" width="1760" height="43" fill="#f1f3ed"/>
+<text x="52" y="2480" font-size="15">R14</text>
+<text x="130" y="2480" font-size="15">AuthUser</text>
+<text x="327" y="2480" font-size="15" font-weight="600">1</text>
+<text x="477" y="2480" font-size="15">Loan</text>
+<text x="702" y="2480" font-size="15" font-weight="600">0..*</text>
+<text x="847" y="2480" font-size="15">Association · checked_out_by</text>
+<rect x="40" y="2495" width="1760" height="43" fill="#fffefa"/>
+<text x="52" y="2523" font-size="15">R15</text>
+<text x="130" y="2523" font-size="15">AuthUser</text>
+<text x="327" y="2523" font-size="15" font-weight="600">1</text>
+<text x="477" y="2523" font-size="15">CirculationEvent</text>
+<text x="702" y="2523" font-size="15" font-weight="600">0..*</text>
+<text x="847" y="2523" font-size="15">Association · actor_user_id</text>
+<rect x="40" y="2538" width="1760" height="43" fill="#f1f3ed"/>
+<text x="52" y="2566" font-size="15">R16</text>
+<text x="130" y="2566" font-size="15">CirculationPolicy</text>
+<text x="327" y="2566" font-size="15" font-weight="600">—</text>
+<text x="477" y="2566" font-size="15">Loan</text>
+<text x="702" y="2566" font-size="15" font-weight="600">—</text>
+<text x="847" y="2566" font-size="15">Dependency · checkout gate and limits</text>
+<rect x="40" y="2581" width="1760" height="43" fill="#fffefa"/>
+<text x="52" y="2609" font-size="15">R17</text>
+<text x="130" y="2609" font-size="15">BookAvailability</text>
+<text x="327" y="2609" font-size="15" font-weight="600">—</text>
+<text x="477" y="2609" font-size="15">Book</text>
+<text x="702" y="2609" font-size="15" font-weight="600">—</text>
+<text x="847" y="2609" font-size="15">Dependency · aggregates</text>
+<rect x="40" y="2624" width="1760" height="43" fill="#f1f3ed"/>
+<text x="52" y="2652" font-size="15">R18</text>
+<text x="130" y="2652" font-size="15">BookAvailability</text>
+<text x="327" y="2652" font-size="15" font-weight="600">—</text>
+<text x="477" y="2652" font-size="15">PhysicalCopy</text>
+<text x="702" y="2652" font-size="15" font-weight="600">—</text>
+<text x="847" y="2652" font-size="15">Dependency · usable copies</text>
+<rect x="40" y="2667" width="1760" height="43" fill="#fffefa"/>
+<text x="52" y="2695" font-size="15">R19</text>
+<text x="130" y="2695" font-size="15">BookAvailability</text>
+<text x="327" y="2695" font-size="15" font-weight="600">—</text>
+<text x="477" y="2695" font-size="15">Loan</text>
+<text x="702" y="2695" font-size="15" font-weight="600">—</text>
+<text x="847" y="2695" font-size="15">Dependency · excludes active loans</text>
+<text x="40" y="2752" font-size="15" font-weight="600">Cardinality: 1 = exactly one · 0..1 = optional one · 0..* = zero or more · — = dependency without cardinality</text>
+<text x="40" y="2781" font-size="14" fill="#53665a">Composition uses a filled diamond. Dashed arrows are dependencies. A foreign key does not require a child row.</text>
+<text x="40" y="2810" font-size="12" fill="#53665a">Source SHA-256: 1414bb966b84b5823f7e53638fb0ec0b51aa1798ee082091dc89bf505ff67a20</text>
+</svg>

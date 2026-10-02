@@ -1,0 +1,35 @@
+sequenceDiagram
+    actor Visitor as Guest or learner
+    participant UI as Library and My reading
+    participant Client as Supabase JS
+    participant API as PostgREST
+    participant DB as PostgreSQL
+    Visitor->>UI: Browse, search or filter topic
+    UI->>Client: listBooks with bounded page and abort signal
+    alt Nonempty query
+        Client->>API: search_books with literal query
+        API->>DB: Invoker search; unaccent and Vietnamese d normalization
+    else Browse
+        Client->>API: Select public books
+        API->>DB: Public catalogue SELECT policy
+    end
+    DB-->>UI: Book metadata page
+    Client->>API: Select book_availability for visible book IDs
+    API->>DB: Read aggregate availability view
+    DB-->>UI: Total and available counts without borrower identities
+    Note over Client,UI: Availability error yields unknown availability, never an invented count
+    alt Authenticated learner saves reading
+        Visitor->>UI: Mark reading/finished; optional finished-book review
+        UI->>Client: saveReading with preserved reflection
+        Client->>API: UPSERT reading_records on user_id,book_id
+        API->>DB: Owner RLS and status/reflection constraints
+        DB->>DB: Update updated_at trigger
+        DB-->>UI: Saved row or failure; retain draft on failure
+    else Guest
+        UI-->>Visitor: Sign-in path; no private write
+    end
+    Visitor->>UI: Replace own interest choices
+    Client->>API: replace_my_interests
+    API->>DB: Own-user transaction and topic constraints
+    DB-->>UI: Complete saved selection or error
+    Note over API,DB: Concurrent whole-set replacement must serialize per user

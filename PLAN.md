@@ -1,8 +1,8 @@
 # EVG Vietnam — System Requirements and Delivery Plan
 
-**Version:** 0.3 · **Status:** working requirements baseline · **Updated:** 10 September 2026
+**Version:** 0.5 · **Status:** source-aligned requirements baseline; hosted release gates remain open · **Updated:** 2 October 2026
 
-**Delivery policy:** frontend first, followed by the authorised Supabase accounts/catalogue pilot. Lending, reading persistence and recommendations remain later increments.
+**Delivery policy:** preserve the frontend and authorised Supabase accounts/catalogue/reading implementation, verify the core learner journey, then expand private learning workflows. Lending activation, project/goal persistence and working recommendations retain their individual release gates.
 
 **11 September 2026 scope update:** implement real email/password registration with hosted email-link confirmation, optional magic-link sign-in, and staff-only book/copy creation. See [pilot implementation and release gates](docs/SUPABASE_PILOT.md). The initial database migration is applied; email delivery, staff bootstrap and end-to-end release checks must pass before claiming these flows are operational.
 
@@ -22,7 +22,7 @@
 
 Use [README](README.md) for setup and the system map, and [design research](docs/DESIGN_RESEARCH.md) for reference platforms and our original design decisions. IDs are stable: **S** = system, **UC** = use case, **FR** = functional requirement, **NFR** = quality requirement, **BR** = business rule. Reference IDs in issues and pull requests.
 
-This structure follows common software requirements specification (SRS) practice: scope, actors, observable requirements, constraints, traceability, and acceptance. It is informed by the public overview of [ISO/IEC/IEEE 29148:2018](https://www.iso.org/standard/72089.html); it does not claim formal compliance with the complete paid standard. Diagrams use Mermaid's UML class, sequence, and state notation, informed by [OMG UML 2.5.1](https://www.omg.org/spec/UML/2.5.1/About-UML). They describe proposed behaviour, not implemented infrastructure.
+This structure follows common software requirements specification (SRS) practice: scope, actors, observable requirements, constraints, traceability, and acceptance. It is informed by the public overview of [ISO/IEC/IEEE 29148:2018](https://www.iso.org/standard/72089.html); it does not claim formal compliance with the complete paid standard. Diagrams use Mermaid's UML class, sequence, and state notation, informed by [OMG UML 2.5.1](https://www.omg.org/spec/UML/2.5.1/About-UML). The conceptual models describe proposed behaviour. The separate [implementation UML and backend audit](docs/SYSTEM_UML_2026-10-02.md) maps the current migrations, frontend contracts and access boundaries; its planned diagrams are explicitly labelled.
 
 ## Implementation update — September 2026
 
@@ -33,11 +33,19 @@ The current local increment implements S01 account UX/recovery, S03 staff circul
 | Requirements | Implemented surface | Remaining release evidence |
 |---|---|---|
 | FR01, FR23 | Default login; registration/confirmation; resend; magic link; password recovery and safe return navigation | Real hosted email receipt, expiry and recovery walkthrough; invitation/account-management remains deferred |
-| FR06–09, BR01–06 | Staff circulation, own loans, derived availability; database gate disabled by default | EVG lending rules, hosted migration, operator walkthrough, paper reconciliation |
-| FR10–11 | Private persisted reading/reflections and editable interests | Hosted migration and actual refresh/cross-account walkthrough; assigned-facilitator access remains deferred |
+| FR06–09, BR01–06 | Staff circulation, own loans, derived availability; database gate disabled by default | EVG lending rules, operator walkthrough and paper reconciliation; September migration evidence recorded below |
+| FR10–11 | Private persisted reading/reflections and editable interests | Actual hosted refresh/cross-account walkthrough; assigned-facilitator access remains deferred |
 | FR03, FR23 | EN/VI loading, save, validation and retry states | Representative learner/staff language and accessibility review |
 
 No goals, rewards, AI, recommendations, or peer publication are represented as complete. See README and `docs/SUPABASE_PILOT.md` for setup and verification limits.
+
+### 2 October 2026 priorities and schedule correction
+
+The latest user instruction supersedes the earlier estimated November 2026 pilot/December handover. Recommendation planning begins the week of **5 October 2026**; real student rollout and new learner preference/recommendation data collection begin no earlier than **January 2027 in Vietnam**, after the relevant acceptance gates. Survey responses will inform subsequent changes; no primary student findings are assumed today.
+
+Current work prioritises restoring Explore/Together to navigation, accessible homepage topic storytelling, preserving saved reviews when a book is reopened, and a guided temporary presentation/rehearsal outline. Book reviews remain optional and editable after a book is marked finished. Reopening a book must preserve its existing reflection. A presentation preview, a facilitator review and publication are separate states; no local preview completes FR13.
+
+Next week's recommendation work is a preferences-page/data-contract design and synthetic baseline evaluation, reusing existing private interests. No model training or automatic tracking is required. Scope, evidence and ordered release tasks live in [the readiness review](docs/PRODUCTION_READINESS_2026-10-02.md), with supporting [education research](docs/EDTECH_RESEARCH_2026-10-02.md) and [history audit](docs/PROJECT_HISTORY_AUDIT_2026-10-02.md).
 
 ## 1. Purpose, scope, and constraints
 
@@ -49,7 +57,7 @@ The learning journey is **read → record → explore → create → receive fee
 
 - React and TypeScript; maintain one application and a small set of reusable components.
 - English and Vietnamese; English starts a new browser session unless Vietnamese was previously selected. Interface language is independent of the language a resource teaches or contains.
-- Individual email-based accounts remain the proposed production direction. Validate student email access and recovery support before backend work; the frontend preview asks for no credentials.
+- Individual email-based accounts remain the proposed production direction. Validate student email access and recovery support before backend work; the disconnected frontend preview asks for no credentials; configured account workflows use Supabase Auth.
 - Daily operation must be possible for nontechnical EVG staff. Assign a funded technical successor for maintenance and recovery.
 - No production student data during frontend evaluation. Sample records reset on refresh; language preference alone persists locally.
 - Recommendations begin as honest placeholders. Working rules-based suggestions are Phase 6; AI is conditional Phase 7.
@@ -105,33 +113,35 @@ These are target production workflows. Section 7 identifies which parts can curr
 
 ## 4. Functional requirements
 
-**Priority:** Must = required for its stated release, Should = valuable after validation, Conditional = requires the listed evidence. A later-phase Must does not enter the current frontend scope automatically. All rows are planned production requirements; a demo is not completion.
+**Priority:** Must = required for its stated release, Should = valuable after validation, Conditional = requires the listed evidence. A later-phase Must does not enter the current frontend scope automatically. **Status:** Local = source implemented with local evidence, Gated = implemented but activation needs approval/rehearsal, Partial = only part of the requirement exists, Preview = fictional/page-state interaction, Planned = no working backend. None of these labels means the hosted release or representative learner acceptance has passed. Existing IDs remain stable.
 
-| ID | System / use case | Requirement: the system shall… | Priority / phase | Acceptance criterion |
-|---|---|---|---|---|
-| FR01 | S01 / UC01 | Support invitation, sign-in, sign-out and account recovery | Must / 2A | Invited user can recover access; expired links fail safely |
-| FR02 | S01 / all | Enforce learner/cohort/staff permissions server-side | Must / 2A onward | Cross-learner and unauthorised staff requests are denied in direct API tests |
-| FR03 | Shared / all | Provide EN/VI controls and messages and retain selected interface language | Must / 1 onward | Language changes cover navigation, forms, errors and empty states; saved VI survives reload |
-| FR04 | S02 / UC02 | Search book titles and filter by topic without mandatory typing | Must / 2B | Browse works with empty query; no matches offers recovery |
-| FR05 | S02 / UC02 | Store one catalogue entry per edition/language with multiple labelled copies | Must / 2B | Two physical copies share metadata and retain distinct IDs/location/condition |
-| FR06 | S03 / UC03 | Issue a specific copy to an eligible borrower with due date | Must / 2B | Competing checkout requests produce exactly one active loan |
-| FR07 | S03 / UC04 | Record usable returns, damaged/lost handling and traceable corrections | Must / 2B | Return restores availability only if usable; retry does not duplicate resolution |
-| FR08 | S03 / UC02–04 | Derive availability and show own loans or authorised staff loan views | Must / 2B | Counts agree with copy condition and active loans; peers' identities never appear |
-| FR09 | S03 / UC04 | Identify overdue loans in the centre's configured timezone | Must / 2B | Boundary dates produce expected overdue results using agreed policy |
-| FR10 | S04 / UC05 | Save, correct and revisit reading status and optional reflection | Must / 2C | Personal/in-centre reading works without a loan; return does not finish reading |
-| FR11 | S04 / UC06 | Allow interests to be selected, removed and changed | Must / 2C | No selection is valid; changing interests does not erase history |
-| FR12 | S05 / UC06 | Save a weekly goal and its progress with facilitator support | Should / 3 | Student resumes and updates the same goal in a new session |
-| FR13 | S06 / UC07 | Save project summaries and private facilitator feedback | Should / 3 | Assigned reviewer and author can view feedback; peers cannot |
-| FR14 | S07 / UC08 | Award recognition using published, reviewed criteria | Conditional / 3 | EVG approves fair criteria; duplicate awards are prevented and corrections logged |
-| FR15 | S08 / UC09 | Moderate work before cohort publication and support withdrawal | Conditional / 4 | Draft/pending/rejected/hidden work is absent from peer responses |
-| FR16 | S09 / UC10 | Moderate comments and provide reporting/hiding and a disable control | Conditional / 4 | Named moderator exists; pending text never reaches peers; disabled comments reject submissions |
-| FR17 | S10 / UC06 | Manage bilingual topic labels, approved resources and educator picks | Must / 2C | Staff publish/withdraw content; withdrawn resources disappear from discovery |
-| FR18 | S11 / UC11 | Label editorial examples and avoid simulated personalisation claims | Must / 1 onward | Current cards are identified as examples; no AI or ranking request occurs |
-| FR19 | S11 / UC11 | Recommend approved, usable material through explainable rules and fallbacks | Conditional / 6 | Baseline comparison justifies work; synthetic edge cases and educator review pass |
-| FR20 | S11 / UC11 | Introduce AI only for a measured limitation, with review, budget and fallback | Conditional / 7 | Document benefit versus rules; no unreviewed generated material reaches learners |
-| FR21 | S12 / UC12 | Provide authorised routine content/account management and exports | Must / incremental | Staff perform operations through UI; export is permission-checked |
-| FR22 | S12 / UC12 | Support documented backup, restore and ownership transfer | Must / before pilot; rehearse in 5 | Successor independently restores test data and verifies loan/permission integrity |
-| FR23 | Shared / all | Make submission status and failure recovery explicit | Must / each backend increment | Failed save is never reported as saved; retry preserves entered data and avoids duplicates |
+| ID | System / use case | Requirement: the system shall… | Priority / phase | Current status / remaining scope | Acceptance criterion |
+|---|---|---|---|---|---|
+| FR01 | S01 / UC01 | Support invitation, sign-in, sign-out and account recovery | Must / 2A | Partial: registration, confirmation, login, recovery and sign-out; invitations deferred | Real hosted email receipt and expired-link recovery pass; sign-out removes private records; staff can operate the approved invitation process |
+| FR02 | S01 / all | Enforce learner/cohort/staff permissions server-side | Must / 2A onward | Partial: owner RLS and librarian/administrator roles; cohort/facilitator/moderator access deferred | Cross-learner and unauthorised staff requests are denied in database and direct hosted API tests; future assigned access has explicit tests |
+| FR03 | Shared / all | Provide EN/VI controls and messages and retain selected interface language | Must / 1 onward | Local: bilingual controls/browser preference; EVG terminology review open | Navigation, forms, errors and empty states change language; saved VI survives reload; learning-content language remains independent |
+| FR04 | S02 / UC02 | Search titles/authors and filter by topic without mandatory typing | Must / 2B | Local: public catalogue, accent-insensitive literal search and three topic filters | Empty query browses; Vietnamese diacritic variants find the same title; `%`/`_` are literal input; no matches offers recovery |
+| FR05 | S02 / UC02 | Store one catalogue entry per edition/language with multiple labelled copies | Must / 2B | Partial: metadata and distinct copies; edition uniqueness and routine shelf/condition editing unfinished | Copies retain distinct IDs/location/condition; changing total preserves every loan-history copy; staff can reconcile actual stock without SQL |
+| FR06 | S03 / UC03 | Issue a specific copy to an eligible borrower with due date | Must / 2B | Gated: checkout RPC, request IDs and copy/borrower locks | Competing checkouts produce one active loan; concurrent borrower limits hold; repeated identical request creates one operation; disabled policy rejects checkout |
+| FR07 | S03 / UC04 | Record usable returns, damaged/lost handling and traceable corrections | Must / 2B | Partial/Gated: resolution and correction RPCs; correction interface unfinished | Only usable return restores availability; retry does not duplicate events; correction waits for the copy lock and rejects a newly loaned copy; operator completes correction through UI |
+| FR08 | S03 / UC02–04 | Derive availability and show own loans or authorised staff loan views | Must / 2B | Local/Gated: aggregate availability and own/staff views | Counts agree with condition and active loans; public catalogue exposes no borrower identities or raw inventory; failed availability request is shown as unknown |
+| FR09 | S03 / UC04 | Identify overdue loans in the centre's configured timezone | Must / 2B | Partial: timezone helpers/policy; EVG overdue rules pending | Agreed boundary dates produce expected results in Asia/Ho_Chi_Minh or the approved centre zone; staff rehearse due-date handling |
+| FR10 | S04 / UC05 | Save, correct and revisit reading status and optional reflection | Must / 2C | Local: owner-only persisted records, guided finished-book review | Reading works without a loan; return does not finish reading; review is optional after finishing; reopening preserves saved reflection; cross-account/stale responses never show another learner's text |
+| FR11 | S04 / UC06 | Allow interests to be selected, removed and changed | Must / 2C | Local: owner-only set replacement; concurrency migration awaiting hosted release | Empty selection is valid; changing interests preserves reading history; overlapping saves result in one complete submitted set, never a merged set |
+| FR12 | S05 / UC06 | Save a weekly goal and its progress with facilitator support | Should / 3 | Preview only: page-state goals; no goal table or assigned review | Student resumes the same goal in a new session; assigned facilitator access and denied peer access pass before claiming persistence |
+| FR13 | S06 / UC07 | Save project summaries and private facilitator feedback | Should / 3 | Preview only: guided presentation/rehearsal outline; no project/feedback tables | Author and assigned reviewer revisit private feedback across sessions; rehearsal, submission, review and publication remain separate states |
+| FR14 | S07 / UC08 | Award recognition using published, reviewed criteria | Conditional / 3 | Preview only: draft training examples | EVG approves fair criteria; duplicate awards are prevented and authorised corrections logged |
+| FR15 | S08 / UC09 | Moderate work before cohort publication and support withdrawal | Conditional / 4 | Preview only: fictional showcases and moderation exercise | Draft/pending/rejected/hidden work is absent from peer responses; approved work is accessible only to the intended cohort |
+| FR16 | S09 / UC10 | Moderate comments and provide reporting/hiding and a disable control | Conditional / 4 | Preview only: fictional comment moderation | Named moderator exists; pending text never reaches peers; disabled comments reject submissions |
+| FR17 | S10 / UC06 | Manage bilingual topic labels, approved resources and educator picks | Must / 2C | Planned backend: current topics and activities are static editorial content | Staff publish/withdraw reviewed content; withdrawn resources disappear from discovery; current static examples are not labelled managed resources |
+| FR18 | S11 / UC11 | Label editorial examples and avoid simulated personalisation claims | Must / 1 onward | Local: explicit example/preview boundaries | Current cards identify editorial examples; no AI/ranking request or invented learner evidence occurs |
+| FR19 | S11 / UC11 | Recommend approved, usable material through explainable rules and fallbacks | Conditional / 6 | Planned: preferences/data-contract design week of 5 October 2026; real learner collection no earlier than January 2027 in Vietnam | Synthetic cold-start cases, diversity/safety filters and educator review pass; baseline comparison justifies ranking; student can edit preferences and ignore suggestions |
+| FR20 | S11 / UC11 | Introduce AI only for a measured limitation, with review, budget and fallback | Conditional / 7 | Planned/conditional; no runtime AI | Document benefit versus rules; no unreviewed generated material reaches learners; separate budget and educator fallback exist |
+| FR21 | S12 / UC12 | Provide authorised routine content/account management and exports | Must / incremental | Partial: book/copy counts and staff roles; invites, exports, borrower eligibility/corrections UI unfinished | Nontechnical staff operate routine tasks through UI; account lookup requires no UUID hunting; exports and role changes are permission-checked and auditable |
+| FR22 | S12 / UC12 | Support documented backup, restore and ownership transfer | Must / before pilot; rehearse in 5 | Planned operational evidence: runbook draft exists; restore/handover unverified | Successor independently restores test data/files and verifies loans, roles and private access; exact owners and recovery targets are approved |
+| FR23 | Shared / all | Make submission status and failure recovery explicit | Must / each backend increment | Local: explicit save/error/partial-save recovery and request-safe RPCs; metadata/cover remain two transactions | Cover-only failure states that details/copies saved, retains the draft and retries the same committed book ID without another create; delayed responses cannot apply after user/account changes; repeat with real hosted failures before release |
+| FR24 | Shared / UC01–02, UC06–07 | Expose Home, Library, My reading, Explore and Together in primary navigation | Must / 1 onward | Local: desktop links and mobile disclosure menu | All five destinations remain reachable at 320px and 200% text; active route is announced; Escape, route changes and resize close/reset the menu with usable keyboard focus |
+| FR25 | S10 / UC06 | Provide understandable editorial activities with optional motion | Must / 1 onward | Local: materials, ordered steps, reflection prompts and related books | Activities work with touch and keyboard, expose disclosure state, preserve navigation semantics and stay readable without motion; opening an activity does not claim saved progress |
 
 ## 5. Non-functional requirements
 
@@ -139,20 +149,23 @@ Targets below are proposed release gates. Record measured evidence; do not mark 
 
 | ID | Quality / measurable target | Verification | Applies |
 |---|---|---|---|
-| NFR01 | Four primary student destinations; primary book flow takes at most three selections from home | Walkthrough: Library → title → add reading | Frontend |
+| NFR01 | Five labelled primary destinations; primary book flow takes at most three selections from home | Walkthrough: Library → title → add reading; mobile menu and active route checks | Frontend |
 | NFR02 | At least 4 of 5 representative learners complete finding/recording a book without step-by-step help after one orientation | Observed formative usability session; revise and repeat if missed | Before backend expansion |
 | NFR03 | Target applicable WCAG 2.2 AA; visible keyboard focus; primary controls ≥44×44 CSS px; no colour-only status | Keyboard and screen-reader review, contrast measurement, automated audit plus manual checks | Every release |
-| NFR04 | No horizontal page scrolling at 360 CSS px; usable at 200% zoom and long VI labels | Browser checks on home, library, dialog, explore, staff | Frontend onward |
+| NFR04 | No horizontal page scrolling at 320 CSS px; usable at 200% zoom/text and long VI labels, including short-height landscape viewports | Browser checks on home, navigation, library, dialog, Explore, Together, auth and staff; inspect clipping/focus as well as overflow | Frontend onward |
 | NFR05 | All owned UI strings in EN/VI; no exposed translation keys; Vietnamese reviewed by EVG | Key parity check and bilingual task walkthrough | Each increment |
 | NFR06 | Initial first-party transfer target ≤500 KB compressed before optional content; target LCP ≤2.5 s on agreed pilot device/network | Record build sizes and throttled browser measurements; confirm with actual devices | Before pilot; prototype has no performance certification |
 | NFR07 | No autoplay video or required remote font; saved content clearly distinguished from unsaved content | Network inspection; simulate outage during writes once backend exists | Frontend / backend respectively |
 | NFR08 | No credentials, private student records or service secrets in client fixtures/logs; all production private reads/writes authorised | Repository inspection plus API permission tests | Frontend / 2A onward |
-| NFR09 | One active loan per copy and idempotent retries across concurrent clients | Transaction/concurrency and retry tests against real database | 2B; cannot be proven by local demo |
+| NFR09 | One active loan per copy, borrower limit, idempotent retries, correction/checkout coherence and whole-set interest replacement across concurrent clients | Multi-session PostgreSQL tests and direct hosted API repetition; copy-before-loan lock ordering for resolution/correction | 2B/2C; local database evidence is not hosted verification |
 | NFR10 | Proposed daily recoverable backup, RPO ≤24h and RTO ≤1 working day, subject to EVG funding approval | Restore drill including stored files and permissions | Before real pilot |
 | NFR11 | No new runtime library without an explained need; cohesive feature modules, typed data and repeatable lint/build | Review, clean-install build, documented environment | Every increment |
 | NFR12 | Named primary and backup for library/moderation/technical duties; Vietnamese runbook; successor deploys and restores unaided | Observed handover exercise and signed ownership checklist | Phase 5; basic owners before pilot |
 | NFR13 | Monthly infrastructure ceiling approved before provisioning; AI disabled by default; usage alerts have an owner | Review actual vendor estimate, billing and usage controls | Before backend; separate AI budget in 7 |
 | NFR14 | Agree retention, consent/safeguarding, account removal and export rules before collecting learner data | EVG policy review and deletion/export acceptance scenarios | 2A discovery and each data expansion |
+| NFR15 | Cohesive heading/body/control hierarchy; locally served EN/VI fonts with system fallback; no clipped words or lost controls at 320px and 200% text | Check typography tokens, diacritics, loading failure, EN/VI reflow and functional screens; font files count toward NFR06 | Every design release |
+| NFR16 | Translucent materials limited to useful navigation/controls; reading/forms have stable surfaces; opaque fallback without backdrop filtering | Contrast and legibility over actual backgrounds; disable backdrop-filter; keyboard focus remains visible in both languages | Every material change |
+| NFR17 | Scroll motion is optional, follows normal scrolling and does not delay tasks; reduced motion and content-fit failure produce a readable static layout | Test prefers-reduced-motion, keyboard focus, touch, resize, short viewport and large text; no scroll hijacking or automatic advance; measure on pilot device | Home/Explore motion |
 
 See [WCAG 2.2](https://www.w3.org/TR/WCAG22/) for the accessibility reference. Targets are engineering and pilot criteria, not a legal-compliance determination.
 
@@ -161,7 +174,7 @@ See [WCAG 2.2](https://www.w3.org/TR/WCAG22/) for the accessibility reference. T
 | ID | Rule |
 |---|---|
 | BR01 | A book entry describes an edition/language. A physical copy is one lendable item. A loan records circulation. A reading record describes learning. These are separate records. |
-| BR02 | A copy has at most one active loan. Enforce this atomically in the future backend; a disabled button is insufficient. |
+| BR02 | A copy has at most one active loan. The current backend enforces a partial unique index and copy lock; a disabled button is insufficient. Corrections must acquire the copy lock before rechecking active loans. |
 | BR03 | Available count = usable copies with no active loan. Never maintain an independently editable count. |
 | BR04 | Checkout and return neither mark reading finished nor award recognition. In-centre and personally owned books may be logged without borrowing. |
 | BR05 | Lost resolution does not mean returned. A found copy must be inspected and corrected by staff before becoming available. |
@@ -170,6 +183,12 @@ See [WCAG 2.2](https://www.w3.org/TR/WCAG22/) for the accessibility reference. T
 | BR08 | Resource safety, language and practical usability filters run before recommendation ranking. No data means reviewed fallbacks, not invented preferences. |
 | BR09 | Loan duration, limits, overdue boundaries, privacy retention and award criteria are EVG decisions to resolve before the relevant release. |
 | BR10 | Keep a paper circulation fallback during outages. Staff reconcile it before resuming digital transactions; the first release does not sync offline writes. |
+
+### 6.0 Implemented model and validation boundary
+
+The [current UML and backend audit](docs/SYSTEM_UML_2026-10-02.md) is the authoritative source map for the configured application. It records managed Auth users and profile metadata, staff roles, books/copies, borrower registration, gated circulation, private reading/interests and circulation events. There is **no `public.profiles`, cohort, goal, project, feedback, award, showcase, managed-resource or recommendation table** today. The diagrams below remain future conceptual models where labelled; do not infer implemented columns or access rights from them.
+
+The October corrective migration serialises interest replacement per learner and locks copies before loan correction/resolution. Its local SQL and concurrent-client evidence is recorded separately from historical hosted releases. No hosted migration, policy activation or student data collection is authorised by a local test result.
 
 ### 6.1 Conceptual class diagram — future domain model
 
@@ -227,7 +246,9 @@ classDiagram
     note for Loan "BR02: at most one active loan per copy"
 ```
 
-### 6.2 Sequence diagram — production checkout, deferred
+### 6.2 Sequence diagram — implemented checkout, activation gated
+
+The simplified sequence below is backed by `checkout_circulation_copy` and a private staff-authorised transaction helper. The full [circulation sequence source](docs/uml/circulation-sequence.mmd) includes request-ID retry/conflict checks, policy/borrower/copy locks, the partial unique index, resolution and safe correction. Lending remains disabled until EVG policy and operator/paper reconciliation acceptance pass.
 
 ```mermaid
 sequenceDiagram
@@ -254,7 +275,7 @@ sequenceDiagram
     Note over API,DB: Same request ID must not create a second operation
 ```
 
-### 6.3 State diagram — loan resolution, deferred
+### 6.3 State diagram — implemented loan resolution, activation gated
 
 ```mermaid
 stateDiagram-v2
@@ -273,7 +294,7 @@ stateDiagram-v2
     end note
 ```
 
-A later found-copy correction is recorded separately against the lost resolution; it does not rewrite history into a normal return.
+A later found-copy correction updates the resolved loan outcome and copy condition through an authorised correction RPC, while appending a separate immutable circulation event. It refuses to rewrite the copy while a new active loan exists. The staff correction interface remains unfinished.
 
 ### 6.4 State diagram — moderated showcase, deferred
 
@@ -291,22 +312,39 @@ stateDiagram-v2
 
 ## 7. Frontend increment and interface contract
 
-### Current reviewable prototype
+### Current configured application
+
+| Route | Current source-backed data boundary | Outstanding gate |
+|---|---|---|
+| `/sign-in` | Supabase registration/login/confirmation/recovery; browser-tab session storage | Hosted email and recovery walkthrough, invite operations |
+| `/library`, `/library/:bookId` | Public books/search and aggregate availability; signed-in reading mutation | EVG content/stock review and hosted permission walkthrough |
+| `/learning` | Owner-only persisted reading/interests and own loans; goal preview stays page-only | Hosted cross-account/session review; goals are deferred |
+| `/explore` | Static editorial activities and related catalogue books; private interests use existing owner-only storage | Approved managed-resource backend and future recommendations |
+| `/community` | Fictional examples and page-only presentation/feedback preview | Private project/cohort/feedback persistence and moderation |
+| `/staff/catalogue`, `/staff/circulation`, `/admin/settings` (legacy `/admin` routes redirect) | Staff-guarded catalogue/circulation and checked administrator RPCs; server role checks, lending default disabled | Nontechnical correction/eligibility tools, policy/rehearsal, backup and export |
+| `/staff/training` | Staff guard when configured; fictional recognition/moderation exercise | Approved criteria and actual protected moderation workflows |
+
+The current implementation has only learner ownership and librarian/administrator authorisation. The target facilitator/moderator/cohort responsibilities in Section 2 are future access design, not current roles. See [the source-aligned access matrix](docs/SYSTEM_UML_2026-10-02.md).
+
+### Disconnected reviewable prototype
 
 | Route | What can be tried now | What remains deferred |
 |---|---|---|
 | `/learning` | Current-book details, finished count, editable weekly-goal preview with progress, sample shelf | Persisted goals, facilitator support, actual reward logic, personalised home data |
 | `/library` | Bilingual title search, topic filter, no-results recovery, book dialog, reading list/status, sample borrowed-book view | Real catalogue, metadata editing, full loan history/due dates and lost-copy handling |
-| `/explore` | Three expandable activities, editable demo interests | Managed resources and working recommendations |
-| `/community` | Fictional private project/feedback, draft recognition criteria, showcase/comment moderation states and example showcases | Persistent submissions, real facilitator access/feedback, approved rewards and protected moderation |
+| `/explore` | Three expandable activities with materials, steps, reflection and related-book links; editable demo interests | Managed resources and working recommendations |
+| `/community` | Fictional example showcases, activity next step and a temporary private project/feedback preview | Persistent submissions and real facilitator access/feedback |
+| `/staff/training` | Draft recognition criteria and fictional showcase/comment moderation exercises; staff-guarded when Supabase is configured | Approved rewards and protected production moderation |
 | `/admin` | One reversible sample checkout/return, linked sample availability | Protected access, production circulation, catalogue/accounts/queues/exports |
 | `/sign-in` | Preview entry and language switching | Authentication and recovery |
 
-All interactions use in-memory React state. Reload resets them; no student data is saved. The staff preview is intentionally open and contains fictional records only. Neither screen completeness nor a local-state demonstration satisfies a production FR.
+In disconnected demo mode, interactions use in-memory React state and reload resets them. The goal and project previews also reset when leaving their pages. Staff previews are open in disconnected demo mode and contain fictional records only; configured sites require staff access to `/staff/training`. This table describes the prototype boundary, not the persisted account/catalogue/reading workflows described in README. Neither screen completeness nor a local-state demonstration satisfies a production FR.
+
+**29 September local fixes:** see [verification and scope](docs/STUDENT_FIXES_2026-09-29.md). Content suitability and physical-stock reconciliation remain deferred until access to EVG's library is available.
 
 ### Design and engineering rules
 
-1. Keep four labelled student destinations and one obvious primary action per task; staff tools remain separate.
+1. Keep the five labelled top-level destinations Home, Library, My reading, Explore and Together discoverable in the primary navigation. Use one obvious primary action per task; staff tools remain separate.
 2. Use a shared shell, book card/dialog, spacing/colour styles and language resources. Use native labelled inputs and focus-trapping native dialogs.
 3. Keep sample catalogue data in `src/demo/catalogue.ts` and state in `src/demo/`. Components consume typed values; later replace this boundary with authorised application operations.
 4. Add loading, saving, success, validation and recoverable-error states when connecting each operation. Do not pretend the current synchronous fixture demonstrates those states.
@@ -354,6 +392,8 @@ Do not build all of 1B in one pass. Start with the physical-library task EVG ope
 | V06 | FR17/19–20 | Published-resource filtering, cold-start fallback and comparison with educator baseline |
 | V07 | FR21–22, NFR10–14 | Ownership/runbook, cost review, privacy decisions, export and restore drill |
 | V08 | NFR02–07/11 | Student observation, accessibility review, device/network measurements, lint and build |
+| V09 | FR02/05–08/10–11/23, BR01–06, NFR08–09 | Isolated PostgreSQL migration replay; existing access/circulation/reading/search/seed suites; multi-client copy, borrower-limit, retry, correction and interest-set probes. Record auth-shim/hosted limitations in [backend audit](docs/SYSTEM_UML_2026-10-02.md) |
+| V10 | FR03/24–25, NFR01/03–07/15–17 | EN/VI desktop/mobile keyboard navigation, 320px/200% reflow, transparent-material fallback, reduced-motion/content-fit fallback and activity disclosure; record actual browser evidence separately from source inspection |
 
 **Issue template:** `Sxx / FRxx: observable outcome`; include owner, reviewer, phase, dependencies, UI states, acceptance examples, verification evidence and documentation impact. Statuses: Backlog → Ready → In progress → In review → Verified. “Prototype verified” and “Production verified” must be distinct labels.
 
@@ -569,17 +609,17 @@ Physical reading spaces and optional dance activities remain part of EVG’s pro
 
 ## Appendix B. Future architecture and data guidance
 
-This is a proposed backend direction for Phase 2 onward; no database work is part of the current frontend increment.
+This appendix originated as the proposed Phase 2 architecture. Accounts, catalogue, private reading/interests and gated circulation now have source implementations and September hosted migration evidence. The remaining records and staff workflows below are proposed additions; their implementation and acceptance must be tracked separately.
 
 
 ### Architecture
 
-Retain the proposed small managed architecture:
+Retain the small managed architecture:
 
 | Component | Choice |
 |---|---|
 | Frontend | React, TypeScript, Vite |
-| Hosting | Cloudflare Pages |
+| Hosting | Vercel for the current deployment; Cloudflare Pages configuration remains an alternative |
 | Database, authentication, storage | Managed Supabase |
 | Privileged account operations | Server-side functions |
 | Authentication email | Production SMTP provider |

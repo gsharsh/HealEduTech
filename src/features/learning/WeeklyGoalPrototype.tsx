@@ -52,6 +52,7 @@ export function WeeklyGoalPrototype() {
     </div>
     <h2 id={`${titleId}-heading`}>{t('oneSmallDiscovery')}</h2>
     <p>{t('goalBody')}</p>
+    <p className="goal-preview-note">{t('goalPreviewOnly')}</p>
     {editing ? <div className="goal-editor">
       <label htmlFor={titleId}>{t('goalTitleLabel')}</label>
       <input
@@ -81,7 +82,6 @@ export function WeeklyGoalPrototype() {
       <p className="goal-title">{goalTitle}</p>
       <button type="button" className="secondary" onClick={beginEditing}>{t('editGoal')}</button>
     </div>}
-    <p className="goal-preview-note">{t('goalPreviewOnly')}</p>
     <p className="goal-result" role="status">{showSavedMessage ? t('goalSavedForPreview') : t(goal.progress === 'completed' ? 'goalDone' : 'goalEncourage')}</p>
   </section>;
 }

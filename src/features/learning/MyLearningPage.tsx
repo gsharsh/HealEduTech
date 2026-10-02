@@ -6,6 +6,7 @@ import { useDemo } from '../../demo/context';
 import { BookCard, BookCover } from '../../components/ui/BookCard';
 import { BookDialog } from '../../components/ui/BookDialog';
 import { WeeklyGoalPrototype } from './WeeklyGoalPrototype';
+import './reading.css';
 export function MyLearningPage() {
   const { t, i18n } = useTranslation();
   const { reading } = useDemo();

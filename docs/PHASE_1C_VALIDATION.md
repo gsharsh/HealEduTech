@@ -27,6 +27,8 @@ Ask at least five representative learners to try the tasks. Read the task aloud 
 | L6 Interests | Choose and remove an interest | Understands that interests can change and are not a test |
 | L7 Project | Create a fictional project draft, fix an empty-field error, and choose whether it is ready for feedback | Can recover from validation; understands that nothing was sent or published |
 | L8 Sharing boundary | Explain whether draft work, private feedback, and approved showcase work are the same | Understands that finishing, review, and publication are separate actions |
+| L9 Presentation | Add an optional outline, rehearse a fictional discovery, edit/cancel and print it | Understands the prompts and what the printed sheet contains; knows the temporary preview has not been sent for real review |
+| L10 Navigation and motion | Find Explore and Together from the header; browse each home topic at their own pace | Can use the site with or without animation; notices no hidden action or forced scrolling |
 
 Target for the main learner flow: at least four of five learners complete L2–L5 without step-by-step help after one orientation. Record where learners hesitate even when they eventually pass.
 
@@ -63,6 +65,8 @@ Record the exact replacement wording requested. Do not silently machine-translat
 - Test at 200% browser zoom.
 - Test the smallest actual device in both languages with no horizontal page scrolling.
 - Check that status is never communicated by colour alone.
+- Check the homepage with reduced motion and on a short landscape viewport; every topic link remains usable. Test header reflow with enlarged English and Vietnamese text.
+- After saving, editing or cancelling a presentation, check where keyboard/screen-reader focus moves. Check long text and the actual print preview without unrelated page content.
 - With the available screen reader, confirm form labels, errors, status messages, navigation landmarks, and heading order.
 - Test on the centre network and record slow or failed page loads.
 

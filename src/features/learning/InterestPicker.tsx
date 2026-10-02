@@ -61,7 +61,7 @@ function InterestPickerForUser({ userId }: { userId: string }) {
     <h2>{copy.interests}</h2><p>{copy.interestsBody}</p>
     {!loaded ? <p role="status">{copy.interestsLoading}</p> : failed ? <div role="alert"><p>{copy.interestsError}</p><button type="button" className="secondary" onClick={() => { setLoaded(false); setFailed(false); setAttempt(value => value + 1); }}>{copy.retry}</button></div> : <>
       <div className="interest-options">{topics.map(topic => <button key={topic} type="button" disabled={saving} className={selected.includes(topic) ? 'selected' : ''} aria-pressed={selected.includes(topic)} onClick={() => toggle(topic)}>{selected.includes(topic) ? '✓ ' : '+ '}{t(`topics.${topic}`)}</button>)}</div>
-      <div className="reading-interest-actions"><button type="button" className="primary" disabled={saving} onClick={() => void save()}>{saving ? copy.saving : copy.save}</button><button type="button" className="secondary" disabled={saving} onClick={() => { setSelected([]); setSaved(false); }}>{copy.clearInterests}</button>{saved && <span className="reading-saved" role="status">{copy.interestsSaved}</span>}</div>
+      <div className="reading-interest-actions"><button type="button" className="primary" disabled={saving} onClick={() => void save()}>{saving ? copy.savingInterests : copy.saveInterests}</button><button type="button" className="secondary" disabled={saving} onClick={() => { setSelected([]); setSaved(false); }}>{copy.clearInterests}</button>{saved && <span className="reading-saved" role="status">{copy.interestsSaved}</span>}</div>
       {saveFailed && <p role="alert">{copy.interestsError}</p>}
     </>}
   </section>;

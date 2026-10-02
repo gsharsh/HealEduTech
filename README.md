@@ -10,12 +10,17 @@ Bilingual library, reading, exploration, and peer-learning platform for EVG Viet
 - **[Phase 1C validation guide](./docs/PHASE_1C_VALIDATION.md):** simple learner/staff walkthroughs, Vietnamese review, accessibility checks, and decision record.
 - **[Design research](./docs/DESIGN_RESEARCH.md):** reference platforms, EVG design decisions, and usability validation.
 - **[Recommendation design](./PLAN.md#6-topic-discovery-with-little-initial-data):** the later recommendation system and its approach to limited data.
+- **[October improvement and readiness review](./docs/PRODUCTION_READINESS_2026-10-02.md):** current work, remaining release gates and the January 2027 rollout boundary.
+- **[Project-history audit](./docs/PROJECT_HISTORY_AUDIT_2026-10-02.md):** available project conversations, Git history and unfinished requirements.
+- **[Education research](./docs/EDTECH_RESEARCH_2026-10-02.md)** and **[design research](./docs/DESIGN_RESEARCH_2026-10-02.md):** source-backed improvements and the preferences-first recommendation plan.
+- **[Typography, glass and verification](./docs/VERIFICATION_2026-10-02.md):** the refined type/material system, browser coverage and local backend regression results.
+- **[Current system UML and access matrix](./docs/SYSTEM_UML_2026-10-02.md):** implemented versus planned models, transaction boundaries and remaining production gates. [Open the interactive domain diagram](./docs/uml/rendered.html).
 
 System IDs are shared with the plan. Use them in tasks and pull requests, for example `S03: record a book return`. These systems are parts of one application, not separate services.
 
 ## Systems we will build
 
-The table below describes the full roadmap. The current implementation includes accounts, catalogue persistence, private reading/interests, and a staff circulation workflow gated by an approved lending policy. The new circulation and reading migrations are not yet applied to the hosted project; remaining systems are planned or demonstrated with fictional data. See [Supabase pilot setup and release gates](docs/SUPABASE_PILOT.md) for configuration, permissions and verification status.
+The table below describes the full roadmap. The current implementation includes accounts, catalogue persistence, private reading/interests, and a staff circulation workflow gated by an approved lending policy. September release evidence records the reading and circulation migrations as hosted; successful real-account journeys remain to be verified. Remaining systems are planned or demonstrated with fictional data. See [Supabase pilot setup and release gates](docs/SUPABASE_PILOT.md) for configuration, permissions and verification status.
 
 | ID | System | Main functions | First working phase |
 |---|---|---|---|
@@ -77,16 +82,15 @@ Build and verify one usable workflow at a time. Working recommendations and AI s
 
 The approved cream-and-green reading-room design uses a slim glass navigation bar, a browse-first homepage at `/`, and an optional bilingual guide at `/start`. Existing live catalogue, account, reading and staff workflows retain their data and access boundaries. The old isolated design preview has been retired. See [design rationale and verification](docs/CREAM_GLASS_DESIGN.md).
 
-- Primary navigation: Home, Library, My reading. The quick guide, Explore and Together are available through the footer; authorised staff get their own operations links. Compact screens retain labelled top navigation.
+- Primary navigation: Home, Library, My reading, Explore and Together. Home also links directly to activities. The quick guide and footer links remain available; authorised staff get their own operations links. Compact screens retain all five labelled student destinations.
 - English/Vietnamese interface and a saved language preference.
 - Six fictional catalogue entries with original CSS/text covers; bilingual search, topic filtering and empty-result recovery.
 - Book detail dialogs, adding to the reading list, marking finished and a derived finished count.
-- One editable weekly-goal preview with progress, plus editable topic interests. The goal is explicitly non-persistent and resets on reload.
-- Three expandable sample activities; no personalised ranking or AI calls.
+- One editable weekly-goal preview with progress, plus editable topic interests. The goal is explicitly non-persistent and resets when leaving its page or reloading; the warning appears before editing and after saving.
+- Three expandable sample activities with materials, steps, a completion reflection and a related-book link; no personalised ranking or AI calls.
 - One reversible staff checkout/return demo that updates sample availability independently of reading history.
-- A fictional private project/feedback workflow and example community showcases; nothing can be published from the preview.
-- Draft recognition criteria with explicit evidence and fairness boundaries; no badges are awarded and there is no leaderboard.
-- A fictional moderation queue covering showcase approval/rejection/hiding/withdrawal, comment approval/hiding and temporary comment shutdown.
+- Together starts with fictional example showcases, followed by an activity link and a project preview. The project warns before entry and after saving that leaving or reloading clears it; nothing is sent or published.
+- `/staff/training` contains draft recognition criteria and fictional showcase/comment moderation exercises. On a configured site, the route requires staff access. It awards no badges and publishes no content.
 - Account entry now has registration, email verification and sign-in forms when Supabase is configured.
 
 **Without Supabase, demo learning records reset on refresh.** With Supabase configured and the relevant migrations applied:
@@ -102,7 +106,11 @@ The configured site is deployed at [heal-edu-tech.vercel.app](https://heal-edu-t
 
 See PLAN Section 7 for the route-by-route boundary and next frontend increments. The existing optional backend configuration remains untouched.
 
-All listed Phase 1B interface slices are deployed as explicitly labelled previews. They still require Phase 1C review with EVG students and staff; this does not approve persistent social features, reward rules, lending policy, or collection of real student data.
+The earlier Phase 1B slices were deployed as explicitly labelled previews. The [29 September student-experience fixes](docs/STUDENT_FIXES_2026-09-29.md), including the staff-training split above, are verified locally and have not been deployed as part of this task. The previews still require Phase 1C review with EVG students and staff; this does not approve persistent social features, reward rules, lending policy, or collection of real student data.
+
+Content suitability and matching the catalogue to physical stock will be reviewed once the project has access to EVG's library. The [EVG handover plan](docs/EVG_HANDOVER.md) records future operational ownership and the creator's retained administrator and agreed recovery access.
+
+**2 October 2026 scope update:** this working checkout builds on the unreleased September fixes with homepage topic storytelling, restored navigation and presentation/reflection improvements. Its release and verification status is recorded in the [dated readiness review](docs/PRODUCTION_READINESS_2026-10-02.md). Recommendation engineering planning starts the week of **5 October 2026**. Real learner rollout and new preference/recommendation data collection wait until **January 2027 in Vietnam**, after EVG decisions, relevant release gates and student feedback. The upcoming survey will inform later revisions; neither simulated personas nor website research replace that primary evidence.
 
 ## Team task format
 

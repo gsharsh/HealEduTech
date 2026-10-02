@@ -13,4 +13,12 @@
 .circulation-muted { color: var(--muted, #716d64); }
 .loan-status { display: inline-flex; border-radius: 999px; background: #edf2eb; color: #3f5e45; font-size: .75rem; font-weight: 750; padding: .3rem .5rem; white-space: nowrap; }
 .loan-status--overdue { background: #f8e8e4; color: #8a3328; }
+.circulation-card { padding: clamp(22px, 3vw, 30px); border-radius: 22px; box-shadow: 0 5px 18px #17392c04; min-width: 0; }
+.circulation-form { gap: 16px; }
+.circulation-form label { font-size: .875rem; gap: 8px; }
+.circulation-form input:not([type=checkbox]), .circulation-form select { min-height: 48px; border-radius: 12px; padding: 12px 14px; background: #fff; color: var(--ink); }
+.circulation-table { font-size: .875rem; }
+.circulation-table th { color: var(--muted); font-size: .8125rem; }
+.circulation-table th, .circulation-table td { padding: 14px 10px; }
+.loan-status { padding: 5px 9px; border-radius: 8px; }
 @media (min-width: 760px) { .circulation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .circulation-wide { grid-column: 1 / -1; } }

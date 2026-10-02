@@ -1,0 +1,45 @@
+.book-card,
+.catalogue-book-link {
+  position: relative;
+  height: 100%;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--paper);
+  box-shadow: 0 2px 3px #17392c03, 0 8px 22px #17392c04;
+  transition: border-color .22s ease, box-shadow .22s ease, transform .28s cubic-bezier(.22, 1, .36, 1);
+}
+.book-card .book-cover,
+.catalogue-book-link .book-cover {
+  width: min(100%, 220px);
+  margin-inline: auto;
+  aspect-ratio: .72;
+  border-radius: 4px 10px 10px 4px;
+  box-shadow: -2px 2px 0 #fff8, 4px 6px 0 #1b382812, 8px 16px 24px #1b382817;
+  transform-origin: 50% 90%;
+  transition: transform .35s cubic-bezier(.22, 1, .36, 1), box-shadow .25s ease;
+}
+.book-card .book-meta,
+.catalogue-book-link .book-meta { font-size: .75rem; line-height: 1.5; margin: 22px 0 7px; }
+.book-card .book-title,
+.catalogue-book-link .book-title { font-size: 1.0625rem; letter-spacing: -.02em; line-height: 1.4; }
+.book-card .text-link,
+.catalogue-book-link .text-link { min-height: 44px; margin-top: auto; padding-top: 12px; font-size: .8125rem; }
+.catalogue-book-link .availability { align-self: flex-start; padding: 4px 9px; border-radius: 7px; font-size: .75rem; background: var(--accent); }
+.catalogue-book-link .catalogue-author { font-size: .8125rem; }
+.book-card:focus-visible,
+.catalogue-book-link:focus-visible { outline-offset: 5px; }
+@media (hover: hover) and (pointer: fine) {
+  .book-card:hover,
+  .catalogue-book-link:hover { border-color: #a8bdae; transform: translateY(-4px); box-shadow: 0 5px 8px #17392c05, 0 18px 34px #17392c0d; }
+  .book-card:hover .book-cover,
+  .catalogue-book-link:hover .book-cover { transform: translateY(-3px) rotate(-1.5deg); box-shadow: 5px 8px 0 #1b382812, 10px 20px 28px #1b382821; }
+}
+@media (max-width: 600px) {
+  .book-card, .catalogue-book-link { padding: 16px; border-radius: 18px; }
+  .book-card .book-title, .catalogue-book-link .book-title { font-size: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .book-card, .catalogue-book-link, .book-card .book-cover, .catalogue-book-link .book-cover { transition: none; transform: none; }
+  .book-card:hover, .catalogue-book-link:hover, .book-card:hover .book-cover, .catalogue-book-link:hover .book-cover { transform: none; }
+}

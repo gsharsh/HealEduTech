@@ -1,0 +1,34 @@
+sequenceDiagram
+    actor Operator as Library operator
+    participant UI as CirculationDesk
+    participant API as Public RPC and private helper
+    participant DB as PostgreSQL transaction
+    Operator->>UI: Select eligible borrower, usable copy, due date
+    UI->>API: checkout_circulation_copy with retry-stable request_id
+    API->>DB: Verify Auth-backed librarian/admin membership
+    API->>DB: Acquire request advisory lock
+    alt Matching request already exists
+        DB-->>UI: Return existing loan
+    else Conflicting request payload
+        DB-->>UI: Reject without another loan
+    else New request
+        API->>DB: Lock policy row; check enabled gate
+        alt Lending disabled
+            DB-->>UI: Reject checkout
+        else Lending enabled
+            API->>DB: Lock eligible borrower and physical copy
+            API->>DB: Validate local due date, copy condition, borrower limit
+            API->>DB: Insert loan and circulation event atomically
+            DB->>DB: Enforce one active loan per physical copy
+            DB-->>UI: Saved loan or conflict
+        end
+    end
+    Operator->>UI: Record usable/damaged return or loss
+    UI->>API: resolve_circulation_loan with retry-stable request_id
+    API->>DB: Verify staff and validate matching retry
+    API->>DB: Lock and revalidate physical copy and loan
+    API->>DB: Set resolution, update condition, append event
+    DB-->>UI: Saved resolution; refresh aggregate availability
+    Note over API,DB: Old-resolution correction must lock the copy before rechecking later active loans
+    Note over UI,DB: Checkout and return do not change reading status or award recognition
+    Note over UI,DB: Lending activation still requires EVG policy and operational rehearsal

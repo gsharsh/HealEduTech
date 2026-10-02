@@ -1,11 +1,24 @@
 .project-prototype {
   border:1px solid var(--line);
-  border-radius:16px;
+  border-radius:26px;
   background:#fff;
   box-shadow:0 8px 30px rgba(29,56,47,.04);
   margin-bottom:34px;
-  padding:clamp(22px,3vw,34px);
+  padding:clamp(24px,4vw,44px);
 }
+.community-next-step {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  margin: 24px 0 34px;
+  padding: 22px clamp(20px, 3vw, 30px);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #f2f5ed;
+}
+.community-next-step h2 { margin: 0; font-size: 20px; }
+.community-next-step p { max-width: 660px; margin: 0; }
+.community-next-step a { display: inline-flex; align-items: center; min-height: 44px; }
 .project-prototype__heading {
   display:flex;
   align-items:flex-start;
@@ -32,12 +45,12 @@
 }
 .project-form {
   display:grid;
-  gap:8px;
+  gap:10px;
 }
 .project-form label {
   color:#354a39;
-  font-size:13px;
-  font-weight:750;
+  font-size:.875rem;
+  font-weight:650;
 }
 .project-form input,
 .project-form textarea,
@@ -45,11 +58,11 @@
   width:100%;
   min-height:44px;
   border:1px solid #cdd8ca;
-  border-radius:8px;
+  border-radius:12px;
   background:#fff;
   color:var(--ink);
   font:inherit;
-  padding:10px 12px;
+  padding:13px 15px;
 }
 .project-form textarea {
   min-height:120px;
@@ -77,6 +90,34 @@
   gap:10px;
   margin-top:12px;
 }
+.project-outline {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 10px 22px 22px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #f6f8f3;
+}
+.project-outline summary {
+  min-height: 44px;
+  padding: 14px 0;
+  color: var(--green);
+  cursor: pointer;
+  font-weight: 750;
+}
+.project-outline > div { display: grid; gap: 12px; padding-top: 8px; }
+.project-checklist {
+  display: grid;
+  gap: 4px;
+  margin: 20px 0 4px;
+  padding: 14px 22px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+.project-checklist legend { padding: 0 6px; color: #354a39; font-size: 13px; font-weight: 750; }
+.project-checklist label { display: flex; align-items: flex-start; gap: 9px; min-height: 44px; padding-block: 10px; color: var(--ink); font-size: 13px; font-weight: 500; }
+.project-checklist input[type='checkbox'] { width: 18px; min-width: 18px; height: 18px; min-height: 18px; flex: 0 0 auto; margin: 1px 0 0; padding: 0; accent-color: var(--green); }
 .field-help,
 .field-error,
 .project-prototype__notice {
@@ -92,9 +133,9 @@
 }
 .project-saved {
   border:1px solid #dfe5db;
-  border-radius:12px;
+  border-radius:18px;
   background:#fafbf8;
-  padding:20px;
+  padding:26px;
 }
 .project-saved__status {
   display:flex;
@@ -114,6 +155,13 @@
 .project-saved h3 {
   font-size:21px;
   margin:16px 0 8px;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+.project-saved p,
+.project-saved dd {
+  overflow-wrap:anywhere;
+  word-break:break-word;
 }
 .project-saved dl {
   display:grid;
@@ -125,6 +173,21 @@
   grid-template-columns:minmax(130px,180px) 1fr;
   gap:12px;
 }
+.project-saved__outline {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #f8faf6;
+}
+.project-saved__outline h4 { margin: 0 0 2px; font-size: 16px; }
+.project-saved__outline > dl { display: grid; gap: 10px; margin: 0; }
+.project-saved__outline > dl > div { display: grid; grid-template-columns: minmax(150px, 210px) 1fr; gap: 12px; }
+.project-saved__outline dt { color: #657064; font-size: 12px; font-weight: 750; }
+.project-saved__outline dd { margin: 0; font-size: 13px; white-space: pre-wrap; }
+.project-saved__actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .project-saved dt {
   color:#657064;
   font-size:12px;
@@ -182,6 +245,36 @@
     grid-template-columns:1fr;
     gap:2px;
   }
+  .project-saved__outline > dl > div { grid-template-columns: 1fr; gap: 2px; }
+}
+@media print {
+  @page { size: A4; margin: 16mm; }
+  body:has(.project-prototype--saved) { background: #fff; }
+  body:has(.project-prototype--saved) .evg-shell,
+  body:has(.project-prototype--saved) .evg-main { min-height: auto; background: #fff; border-radius: 0; }
+  body:has(.project-prototype--saved) .evg-header,
+  body:has(.project-prototype--saved) .evg-staff-nav,
+  body:has(.project-prototype--saved) .evg-demo-banner,
+  body:has(.project-prototype--saved) .evg-footer,
+  body:has(.project-prototype--saved) .evg-main > *:not(.project-prototype) { display: none !important; }
+  body:has(.project-prototype--saved) .evg-main { width: auto; max-width: none; margin: 0; padding: 0; }
+  .project-prototype--saved,
+  .project-prototype--saved .project-saved,
+  .project-prototype--saved .project-saved__outline { border-radius: 0; }
+  .project-prototype--saved { display: block !important; margin: 0; padding: 0; border: 0; box-shadow: none; background: #fff; }
+  .project-prototype--saved .project-prototype__heading { display: block; margin-bottom: 18px; }
+  .project-prototype--saved .project-prototype__heading h2 { font-size: 24px; }
+  .project-prototype--saved .project-prototype__privacy { display: inline-flex; margin-top: 8px; }
+  .project-prototype--saved .project-form,
+  .project-prototype--saved .project-saved__actions,
+  .project-prototype--saved .project-saved > .field-help,
+  .project-prototype--saved .feedback-example { display: none !important; }
+  .project-prototype--saved .project-prototype__notice { margin: 8px 0; }
+  .project-prototype--saved .project-saved,
+  .project-prototype--saved .project-saved__outline { border: 0; box-shadow: none; background: #fff; padding: 0; }
+  .project-prototype--saved .project-saved__outline { margin-top: 18px; }
+  .project-prototype--saved .project-saved__outline > dl { gap: 7px; }
+  .project-prototype--saved .project-saved__outline > dl > div { grid-template-columns: 180px 1fr; gap: 10px; }
 }
 .moderation-preview {
   border:1px solid var(--line);
@@ -451,6 +544,42 @@
 .recognition-boundary p {
   font-size:12px;
   margin:4px 0 0;
+}
+@media screen {
+  .showcase-grid { gap: 26px; }
+  .showcase-card { border-radius: 24px; background: var(--paper); box-shadow: 0 5px 18px #17392c04; }
+  .showcase-art { position: relative; height: clamp(220px, 26vw, 310px); padding: 20px; overflow: hidden; }
+  .showcase-art .topic-art { width: 100%; height: 100%; max-width: 380px; }
+  .showcase-art > span { position: absolute; bottom: 16px; left: 20px; padding: 6px 10px; border-radius: 7px; background: #ffffffdb; color: #294635; font-size: .6875rem; font-weight: 650; letter-spacing: .08em; }
+  .showcase-copy { padding: 28px; }
+  .showcase-copy h2 { font-size: 1.5rem; letter-spacing: -.03em; }
+  .showcase-copy p { font-size: .9375rem; }
+  .showcase-copy .muted { font-size: .8125rem; }
+  .community-next-step { padding: 26px 30px; border-radius: 20px; margin-block: 30px 44px; grid-template-columns: 1fr auto; align-items: center; gap: 8px 28px; }
+  .community-next-step h2, .community-next-step p { grid-column: 1; }
+  .community-next-step a { grid-column: 2; grid-row: 1 / 3; }
+  .project-prototype__privacy { font-size: .75rem; background: #e5efe5; border-radius: 8px; padding: 8px 12px; }
+  .project-form > label:not(:first-child) { margin-top: 10px; }
+  .project-checklist label, .project-checklist legend { font-size: .875rem; }
+  .field-help, .project-prototype__notice { font-size: .8125rem; line-height: 1.6; }
+  .project-saved h3 { font-size: 1.625rem; }
+  .project-saved dt, .project-saved__outline dt { font-size: .8125rem; }
+  .project-saved dd, .project-saved__outline dd { font-size: .9375rem; }
+  .project-saved__outline { padding: 22px; border-radius: 16px; }
+  .feedback-example { margin-top: 30px; padding: 24px 26px; }
+  .feedback-example li { font-size: .9375rem; }
+  .feedback-example__boundary { font-size: .8125rem; }
+  .moderation-preview, .recognition-preview { border-radius: 24px; }
+  .moderation-item, .recognition-card { border-radius: 18px; padding: 24px; }
+  .moderation-item > p, .recognition-card > p, .recognition-card dd { font-size: .875rem; }
+  .recognition-card > p { min-height: 0; }
+}
+@media screen and (max-width: 700px) {
+  .community-next-step { grid-template-columns: 1fr; padding: 24px; }
+  .community-next-step a { grid-column: 1; grid-row: auto; justify-self: start; }
+  .showcase-copy { padding: 24px; }
+  .project-outline, .project-checklist { padding-inline: 16px; }
+  .project-saved, .project-saved__outline { padding: 18px; }
 }
 @media(max-width:900px) {
   .recognition-grid {

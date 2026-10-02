@@ -7,7 +7,7 @@ export function validPassword(value: string): boolean {
   return value.length >= 12 && value.length <= 128;
 }
 
-const appPaths = new Set(['/learning', '/library', '/explore', '/community', '/staff', '/staff/catalogue', '/staff/circulation', '/admin', '/admin/circulation', '/admin/settings']);
+const appPaths = new Set(['/learning', '/library', '/explore', '/community', '/staff', '/staff/catalogue', '/staff/circulation', '/staff/training', '/admin', '/admin/circulation', '/admin/settings']);
 export function safeNextPath(value: string | null): string {
   if (!value || !value.startsWith('/') || value.startsWith('//')) return '/learning';
   const hasUnsafeCharacter = value.split('').some(character => {
@@ -46,8 +46,19 @@ export function authErrorKey(error: { code?: string; status?: number }): string 
   if (error.code === 'email_not_confirmed') return 'auth.unconfirmed';
   if (error.code === 'otp_expired' || error.code === 'otp_disabled' || error.code === 'access_denied') return 'auth.linkExpired';
   if (error.code === 'weak_password') return 'auth.passwordHelp';
+  if (error.code === 'email_address_invalid' || error.code === 'invalid_email') return 'auth.invalidEmail';
   if (error.code === 'invalid_credentials') return 'auth.invalidCredentials';
   return 'auth.failed';
+}
+
+export type AuthField = 'name' | 'email' | 'password' | 'confirmation';
+
+// Only map backend errors to a field when their meaning identifies that field.
+// Combined credential and general request errors stay in the form-level alert.
+export function authErrorField(error: { code?: string }): AuthField | null {
+  if (error.code === 'weak_password') return 'password';
+  if (error.code === 'email_address_invalid' || error.code === 'invalid_email') return 'email';
+  return null;
 }
 
 export function recoveryTokenMatches(sessionToken: string | null, inMemoryToken: string | null, storedToken: string | null): boolean {

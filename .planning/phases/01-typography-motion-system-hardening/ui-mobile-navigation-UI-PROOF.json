@@ -1,0 +1,125 @@
+{
+  "proof_bundle_version": 1,
+  "scope": {
+    "work_item": "01-typography-motion-system-hardening",
+    "requirement_ids": [
+      "FR24-NAV"
+    ],
+    "slot_ids": [
+      "ui-mobile-navigation"
+    ],
+    "claim": "A learner can reach the five primary destinations through the narrow-screen disclosure with keyboard-safe focus and reset behavior."
+  },
+  "route_state": "Home, Library, My reading, Explore, and Together at 320px and 390px in EN and VI; signed-out or synthetic local fixture state.",
+  "environment": {
+    "app_url": "http://127.0.0.1:4193",
+    "data_state": "disconnected built demo; no real account"
+  },
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "notes": "Add a 320px observation for narrow-label coverage."
+  },
+  "evidence_inputs": {
+    "kinds": [
+      "code",
+      "test",
+      "runtime"
+    ],
+    "tools_used": [
+      "cua",
+      "node",
+      "python",
+      "postgresql"
+    ]
+  },
+  "commands_or_manual_steps": [
+    {
+      "manual_step": "Read the linked fresh/inherited observation report; execute recorded scoped commands and CUA steps. Screenshot file retention remains unavailable in the exposed capture API.",
+      "result": "passed"
+    }
+  ],
+  "observations": [
+    {
+      "observation": "Five destinations, disclosure state and focus/close handlers are wired in AppShell.",
+      "claim": "A learner can reach the five primary destinations through the narrow-screen disclosure with keyboard-safe focus and reset behavior.",
+      "route_state": "Home, Library, My reading, Explore, and Together at 320px and 390px in EN and VI; signed-out or synthetic local fixture state.",
+      "evidence_kind": "code",
+      "artifact_refs": [
+        ".planning/.local/verification-01/browser-and-source-report.md"
+      ],
+      "privacy": {
+        "data_classification": "synthetic",
+        "raw_artifacts_safe_to_publish": false,
+        "retention": "temporary_review"
+      },
+      "result": "passed",
+      "claim_limit": "Supporting observation only; does not satisfy missing screenshots or unexecuted states. Historical runtime is explicitly marked."
+    },
+    {
+      "observation": "20 bilingual route geometry checks and targeted keyboard disclosure-state assertions pass.",
+      "claim": "A learner can reach the five primary destinations through the narrow-screen disclosure with keyboard-safe focus and reset behavior.",
+      "route_state": "Home, Library, My reading, Explore, and Together at 320px and 390px in EN and VI; signed-out or synthetic local fixture state.",
+      "evidence_kind": "test",
+      "artifact_refs": [
+        ".planning/.local/verification-01/browser-and-source-report.md"
+      ],
+      "privacy": {
+        "data_classification": "synthetic",
+        "raw_artifacts_safe_to_publish": false,
+        "retention": "temporary_review"
+      },
+      "result": "passed",
+      "claim_limit": "Supporting observation only; does not satisfy missing screenshots or unexecuted states. Historical runtime is explicitly marked."
+    },
+    {
+      "observation": "Disclosure opens with Explore and Together present and focus enters the link set. Escape, route selection, outside click, browser back and breakpoint reset were observed; targeted desktop-anchor to mobile resize restored the menu trigger. Document width does not exceed the target viewport. This fresh built-demo environment differs from the planned fixture port.",
+      "claim": "A learner can reach the five primary destinations through the narrow-screen disclosure with keyboard-safe focus and reset behavior.",
+      "route_state": "Home, Library, My reading, Explore, and Together at 320px and 390px in EN and VI; signed-out or synthetic local fixture state.",
+      "evidence_kind": "runtime",
+      "artifact_refs": [
+        ".planning/.local/verification-01/browser-and-source-report.md"
+      ],
+      "privacy": {
+        "data_classification": "synthetic",
+        "raw_artifacts_safe_to_publish": false,
+        "retention": "temporary_review"
+      },
+      "result": "passed",
+      "claim_limit": "Supporting observation only; does not satisfy missing screenshots or unexecuted states. Historical runtime is explicitly marked."
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".planning/.local/verification-01/browser-and-source-report.md",
+      "type": "report",
+      "visibility": "local_only",
+      "retention": "temporary_review",
+      "sensitivity": "possible",
+      "safe_to_publish": false
+    }
+  ],
+  "privacy": {
+    "data_classification": "synthetic",
+    "raw_artifacts_safe_to_publish": false,
+    "retention": "temporary_review"
+  },
+  "manual_acceptance": {
+    "required": true,
+    "reviewer": null,
+    "result": "deferred"
+  },
+  "result": {
+    "claim_status": "partial",
+    "comparison_status_by_slot": {
+      "ui-mobile-navigation": "partial"
+    },
+    "failure_classification": "missing_infra"
+  },
+  "claim_limits": [
+    "Local EN/VI browser behavior only; no native zoom, screen-reader, Safari, or hosted route-guard claim.",
+    "agent-browser unavailable; CUA was the supported browser equivalent. Native captures were displayed but not persisted to local screenshot paths.",
+    "No human acceptance, hosted validation, delivery or publication claim.",
+    "Viewport metadata records the planned reference; the linked report is authoritative for actual sampled dimensions, settled states and historical-only observations."
+  ]
+}

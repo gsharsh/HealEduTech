@@ -64,8 +64,8 @@
   "editGoal": "Sửa mục tiêu",
   "saveGoal": "Lưu trong bản xem thử",
   "cancel": "Hủy",
-  "goalSavedForPreview": "Đã cập nhật mục tiêu trong bản xem thử.",
-  "goalPreviewOnly": "Chỉ là bản xem thử · Mục tiêu sẽ đặt lại khi tải lại trang.",
+  "goalSavedForPreview": "Đã cập nhật mục tiêu trong bản xem thử. Mục tiêu sẽ mất khi em rời trang này hoặc tải lại.",
+  "goalPreviewOnly": "Chỉ là bản xem thử · Rời trang này hoặc tải lại sẽ xóa mục tiêu. Mục tiêu chưa được lưu vào tài khoản.",
   "shelfTitle": "Cho chương tiếp theo của em",
   "educatorPicks": "Kệ sách mẫu · Sau này do giáo viên EVG chọn",
   "allBooks": "Tất cả sách",
@@ -102,23 +102,37 @@
   "editorial": "Hoạt động mẫu cho mọi người. Đây không phải gợi ý cá nhân hóa.",
   "tryActivity": "Thử hoạt động này",
   "startHere": "Bước đầu tiên",
+  "activityMaterials": "Vật liệu",
+  "activityReflect": "Sau khi làm xong",
+  "activityRelatedBooks": "Tiếp theo: xem sách về {{topic}}",
   "yourInterests": "Em thích điều gì?",
   "interestsBody": "Chọn chủ đề em thích. Em có thể thay đổi bất cứ lúc nào.",
   "later": "DỰ KIẾN",
   "recommendationsTitle": "Gợi ý cùng em trưởng thành",
   "recommendationsBody": "Hiện tại, em hãy tự do khám phá. Sau này, EVG có thể dùng sở thích của em để gợi ý chủ đề đã duyệt. Chỉ cân nhắc AI khi gợi ý đơn giản chưa đáp ứng được nhu cầu.",
   "communityTitle": "Cùng nhau tìm cảm hứng.",
-  "communityBody": "Khám phá cách chúng ta có thể chia sẻ việc học. Đây là những ví dụ hư cấu.",
+  "communityBody": "Xem các ví dụ học sinh hư cấu, rồi thử biểu mẫu dự án trên trang này. Chỉ dùng thông tin tưởng tượng.",
+  "communityNextStep": {
+    "title": "Bắt đầu bằng một hoạt động nhỏ",
+    "body": "Chọn một hoạt động mẫu trong mục Khám phá. Em sẽ thấy gợi ý sách liên quan để xem tiếp.",
+    "action": "Khám phá hoạt động"
+  },
+  "staffTraining": {
+    "nav": "Đào tạo cộng đồng",
+    "kicker": "XEM THỬ ĐÀO TẠO NHÂN VIÊN",
+    "title": "Ví dụ xem xét bài chia sẻ",
+    "body": "Chỉ là màn hình đào tạo hư cấu. Thao tác chỉ lưu trong bản xem thử này; không có bài gửi, phần thưởng, bình luận hay kiểm soát truy cập thật."
+  },
   "sampleProject": "MỘT KHÁM PHÁ NHỎ",
   "exampleOnly": "BÀI CHIA SẺ MẪU",
   "fictionalWork": "Bài mẫu · Không phải bài của học sinh thật",
   "sharingLater": "Một không gian thân thiện",
-  "sharingBody": "Biểu mẫu dự án riêng tư phía trên chỉ là bản xem thử. Đăng bài, bình luận và phần thưởng sẽ có sau, với quy trình duyệt của EVG và người kiểm duyệt phụ trách.",
+  "sharingBody": "Biểu mẫu dự án phía trên chỉ là bản xem thử. Việc đăng bài, bình luận và phần thưởng sẽ có sau, cùng quy trình duyệt của EVG và người kiểm duyệt phụ trách.",
   "projectPrototype": {
     "kicker": "XEM THỬ DỰ ÁN",
     "title": "Ghi lại một khám phá nhỏ",
-    "intro": "Thử quy trình dự án riêng tư trong tương lai và chỉ dùng thông tin hư cấu.",
-    "privatePreview": "Bản xem thử riêng tư",
+    "intro": "Thử biểu mẫu dự án mẫu này và chỉ dùng thông tin hư cấu. Thay đổi chỉ nằm trong bản xem thử trên trang này.",
+    "privatePreview": "Chỉ trên trang này",
     "titleLabel": "Tên dự án",
     "titleRequired": "Hãy viết tên dự án ngắn.",
     "summaryLabel": "Em đã khám phá điều gì?",
@@ -132,16 +146,16 @@
     },
     "statusLabel": "Bước tiếp theo là gì?",
     "status": {
-      "draft": "Giữ bản nháp riêng tư",
-      "ready_for_feedback": "Sẵn sàng nhận góp ý từ tình nguyện viên"
+      "draft": "Giữ bản nháp trong bản xem thử này",
+      "ready_for_feedback": "Xem ví dụ góp ý từ tình nguyện viên"
     },
     "save": "Lưu trong bản xem thử",
     "edit": "Sửa dự án",
-    "saved": "Đã cập nhật dự án trong bản xem thử. Chưa gửi đi đâu.",
-    "notice": "Chỉ là bản xem thử · Dự án sẽ đặt lại khi tải lại trang và không bao giờ được đăng.",
+    "saved": "Đã cập nhật dự án trong bản xem thử. Dự án sẽ mất khi em rời trang này hoặc tải lại; nội dung chưa gửi hay đăng đi đâu.",
+    "notice": "Chỉ là bản xem thử · Rời trang này hoặc tải lại sẽ xóa dự án. Nội dung không được gửi hay đăng.",
     "notPublished": "Chưa đăng",
     "visibilityLabel": "Ai có thể xem?",
-    "visibility": "Chỉ bản xem thử này. Hồ sơ riêng tư trong tương lai cần quyền truy cập phù hợp.",
+    "visibility": "Chỉ trên trang này cho đến khi em rời đi hoặc tải lại. Nội dung không được gửi vào tài khoản.",
     "feedbackKicker": "GÓP Ý RIÊNG TƯ HƯ CẤU",
     "feedbackTitle": "Góp ý của tình nguyện viên có thể như thế nào",
     "feedbackIntro": "Ví dụ này cho thấy cấu trúc dự kiến. Chưa có tình nguyện viên nào xem dự án này.",
@@ -276,17 +290,23 @@
     "nature": {
       "title": "Hạt mầm lớn lên thế nào?",
       "body": "Quan sát những thay đổi nhỏ của cây quanh em.",
-      "instruction": "Cùng tình nguyện viên quan sát một cây. Vẽ lá và mô tả một điều em nhận thấy. Không nếm cây lạ."
+      "materials": "Giấy và bút chì. Nhờ tình nguyện viên đi cùng em ra ngoài hoặc cùng xem một chậu cây.",
+      "steps": ["Nhìn kỹ một cây mà không ngắt cây.", "Vẽ một chiếc lá và ghi lại hình dạng hoặc màu sắc.", "So sánh hình vẽ với điều em nhìn thấy."],
+      "reflection": "Em nhận ra chi tiết nào đầu tiên? Tiếp theo, xem một cuốn sách về thiên nhiên hoặc kể với tình nguyện viên điều em quan sát được. Không nếm cây hay chạm vào cây lạ."
     },
     "stories": {
       "title": "Mỗi nơi có một câu chuyện.",
       "body": "Tưởng tượng một chuyến phiêu lưu ở nơi quen thuộc.",
-      "instruction": "Chọn một nhân vật tưởng tượng. Kể với tình nguyện viên nơi nhân vật đến, người họ gặp và một việc tốt họ làm."
+      "materials": "Không cần vật liệu đặc biệt. Em có thể kể thành lời hoặc dùng giấy và bút chì.",
+      "steps": ["Chọn một nhân vật tưởng tượng và một nơi quen thuộc.", "Tưởng tượng một người nhân vật gặp và một việc tốt họ làm.", "Kể hoặc vẽ điều xảy ra tiếp theo."],
+      "reflection": "Em muốn thay đổi hoặc kể tiếp phần nào? Tiếp theo, xem một cuốn truyện hoặc chia sẻ ý tưởng với tình nguyện viên."
     },
     "science": {
       "title": "Điều gì làm cây cầu vững?",
       "body": "Khám phá hình dạng với chút giấy và sự tò mò.",
-      "instruction": "Cùng tình nguyện viên gấp tờ giấy và đặt lên hai cuốn sách. So sánh tờ giấy phẳng với giấy đã gấp. Chỉ dùng vật nhẹ bằng giấy."
+      "materials": "Một tờ giấy, hai cuốn sách và vài mẩu giấy nhỏ. Nhờ tình nguyện viên giúp em chuẩn bị.",
+      "steps": ["Đặt tờ giấy phẳng lên hai cuốn sách đặt gần nhau.", "Thêm từng mẩu giấy nhỏ và quan sát điều xảy ra.", "Gấp một tờ giấy khác thành hình quạt đơn giản rồi so sánh với cùng các mẩu giấy nhẹ."],
+      "reflection": "Hình dạng nào đỡ được nhiều giấy hơn? Vì sao em nghĩ vậy? Tiếp theo, xem một cuốn sách khoa học hoặc kể với tình nguyện viên điều đã thay đổi. Đặt sách trên bàn và chỉ dùng giấy nhẹ."
     }
   },
   "showcases": {
@@ -419,7 +439,8 @@
     "coverUrl": "Đường dẫn ảnh bìa (không bắt buộc)",
     "save": "Lưu sách và các bản",
     "saved": "Đã lưu danh mục.",
-    "saveError": "Chưa thể lưu sách. Hãy kiểm tra tên sách, số bản, kết nối và quyền nhân viên. Nếu vẫn không chỉnh sửa được, hãy nhờ người quản lý trang hoàn tất bật chức năng quản lý danh mục."
+    "saveError": "Chưa thể lưu sách. Hãy kiểm tra tên sách, số bản, kết nối và quyền nhân viên. Nếu vẫn không chỉnh sửa được, hãy nhờ người quản lý trang hoàn tất bật chức năng quản lý danh mục.",
+    "coverSaveError": "Thông tin sách và số bản đã được lưu, nhưng chưa thể cập nhật ảnh bìa. Hãy kiểm tra đường dẫn ảnh rồi lưu lại; sách đã có trong danh mục."
   },
   "workspaces": {
     "navigation": "Điều hướng khu vực làm việc của nhân viên",

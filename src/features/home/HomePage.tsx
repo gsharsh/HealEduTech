@@ -7,36 +7,11 @@ import { listBooks, type CatalogueBook } from '../library/catalogue';
 import { libraryTranslations } from '../library/libraryTranslations';
 import { supabase } from '../../lib/supabase';
 import { homeCopy, type HomeLanguage } from './homeCopy';
+import { TopicArtwork } from './TopicArtwork';
+import { useScrollStack } from '../../components/ui/ScrollStack';
 import './home.css';
 
 const topics: Topic[] = ['nature', 'stories', 'science'];
-
-function TopicIllustration({ topic }: { topic: Topic }) {
-  if (topic === 'nature') {
-    return <svg className="home-topic__illustration" viewBox="0 0 180 120" fill="none" aria-hidden="true">
-      <path d="M88 105c-1-25 1-51 14-77" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-      <path d="M101 42C77 38 61 25 57 8c20 1 38 10 44 28M94 59c21-2 37-12 44-28-18-4-35 2-45 17M90 76C70 75 55 65 47 50c19-1 35 7 44 22" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M39 104h101" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity=".45" />
-      <circle cx="52" cy="91" r="4" fill="currentColor" opacity=".5" /><circle cx="133" cy="83" r="3" fill="currentColor" opacity=".45" />
-    </svg>;
-  }
-  if (topic === 'stories') {
-    return <svg className="home-topic__illustration" viewBox="0 0 180 120" fill="none" aria-hidden="true">
-      <path d="M90 91c-17-12-34-14-54-9V35c20-5 37-2 54 10v46Z" fill="currentColor" opacity=".17" />
-      <path d="M90 91c17-12 34-14 54-9V35c-20-5-37-2-54 10v46Z" fill="currentColor" opacity=".11" />
-      <path d="M90 91c-17-12-34-14-54-9V35c20-5 37-2 54 10m0 55c17-12 34-14 54-9V35c-20-5-37-2-54 10m0 0v46" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="m126 15 2.5 6 6.5.5-5 4.2 1.6 6.3-5.6-3.5-5.6 3.5 1.6-6.3-5-4.2 6.5-.5 2.5-6Z" fill="currentColor" opacity=".75" />
-      <path d="M47 54h28M47 64h25M105 54h28M105 64h22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity=".45" />
-    </svg>;
-  }
-  return <svg className="home-topic__illustration" viewBox="0 0 180 120" fill="none" aria-hidden="true">
-    <ellipse cx="90" cy="60" rx="58" ry="24" stroke="currentColor" strokeWidth="2" opacity=".55" transform="rotate(-18 90 60)" />
-    <ellipse cx="90" cy="60" rx="58" ry="24" stroke="currentColor" strokeWidth="2" opacity=".35" transform="rotate(42 90 60)" />
-    <circle cx="90" cy="60" r="13" fill="currentColor" opacity=".2" stroke="currentColor" strokeWidth="2.5" />
-    <circle cx="140" cy="44" r="5" fill="currentColor" /><circle cx="53" cy="76" r="4" fill="currentColor" opacity=".75" />
-    <path d="M87 32v-8M87 96v-8M58 44l-6-5M120 84l6 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity=".5" />
-  </svg>;
-}
 
 function DemoFeaturedCard({ book, language }: { book: DemoBook; language: HomeLanguage }) {
   return (
@@ -52,6 +27,43 @@ function DemoFeaturedCard({ book, language }: { book: DemoBook; language: HomeLa
         <span className="home-text-link">{language === 'vi' ? 'Xem chủ đề' : 'Browse topic'} <span aria-hidden="true">↗</span></span>
       </Link>
     </article>
+  );
+}
+
+function TopicStory({ copy }: { copy: typeof homeCopy[HomeLanguage] }) {
+  const { stackRef, itemRefs: chapterRefs } = useScrollStack<HTMLElement>();
+
+  return (
+    <div className="home-stack" ref={stackRef} aria-label={copy.topicsTitle}>
+      {topics.map((topic, index) => (
+        <section
+          key={topic}
+          ref={element => { chapterRefs.current[index] = element; }}
+          className={`home-stack__chapter home-stack__chapter--${topic}`}
+          aria-labelledby={`home-stack-${topic}-title`}
+        >
+          <div data-scroll-stack-card className={`home-stack__card home-stack__card--${topic}`}>
+            <div className="home-stack__content">
+              <div className="home-stack__eyebrow">
+                <span>{String(index + 1).padStart(2, '0')} / 03</span>
+                <span>{copy.kicker}</span>
+              </div>
+              <h3 id={`home-stack-${topic}-title`}>{copy.topics[topic]}</h3>
+              <p>{copy.topicDescription[topic]}</p>
+              <Link to={`/library?topic=${topic}`} className="home-stack__link">
+                {copy.topicAction} <span aria-hidden="true">↗</span>
+              </Link>
+            </div>
+            <div className="home-stack__art" aria-hidden="true">
+              <span className="home-stack__art-ring home-stack__art-ring--one" />
+              <span className="home-stack__art-ring home-stack__art-ring--two" />
+              <TopicArtwork topic={topic} />
+              <span className="home-stack__art-note">{copy.topics[topic]}</span>
+            </div>
+          </div>
+        </section>
+      ))}
+    </div>
   );
 }
 
@@ -96,20 +108,32 @@ export function HomePage() {
           </form>
           <div className="home-actions">
             <Link to="/library">{copy.browse} <span aria-hidden="true">→</span></Link>
+            <Link to="/explore">{copy.tryActivity} <span aria-hidden="true">→</span></Link>
             <Link to="/start">{copy.guide}</Link>
           </div>
+        </div>
+        <div className="home-hero__art" aria-hidden="true">
+          <div className="home-hero__art-grid" />
+          <span className="home-hero__art-orbit home-hero__art-orbit--one" />
+          <span className="home-hero__art-orbit home-hero__art-orbit--two" />
+          <div className="home-hero__field-card home-hero__field-card--back">
+            <span>{copy.heroArtLabel}</span>
+            <strong>{copy.heroArtTitle}</strong>
+          </div>
+          <div className="home-hero__field-card home-hero__field-card--front">
+            <span>EVG / 2026</span>
+            <div className="home-hero__field-mark"><TopicArtwork topic="stories" /></div>
+            <strong>{copy.heroArtMeta}</strong>
+            <small>{copy.topics.nature} · {copy.topics.stories} · {copy.topics.science}</small>
+          </div>
+          <span className="home-hero__art-caption">READ / ASK / MAKE</span>
         </div>
       </section>
 
       <section className="home-section home-topics" aria-labelledby="home-topics-title">
-        <div className="home-section-heading"><div><h2 id="home-topics-title">{copy.topicsTitle}</h2></div><Link to="/library">{copy.allTopics} <span aria-hidden="true">→</span></Link></div>
-        <div className="home-topic-grid">
-          {topics.map(topic => <Link key={topic} className={`home-topic home-topic--${topic}`} to={`/library?topic=${topic}`}>
-            <span className="home-topic__art"><TopicIllustration topic={topic} /></span>
-            <span className="home-topic__content"><strong>{copy.topics[topic]}</strong><span>{copy.topicDescription[topic]}</span></span>
-            <b aria-hidden="true">↗</b>
-          </Link>)}
-        </div>
+        <div className="home-section-heading"><div><span className="home-eyebrow">{copy.topicsKicker}</span><h2 id="home-topics-title">{copy.topicsTitle}</h2></div><Link to="/library">{copy.allTopics} <span aria-hidden="true">→</span></Link></div>
+        <p className="home-story-intro">{copy.storyIntro}</p>
+        <TopicStory copy={copy} />
       </section>
 
       <section className="home-section home-shelf" aria-labelledby="home-featured-title">

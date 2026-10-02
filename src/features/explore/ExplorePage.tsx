@@ -1,12 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
 import { useDemo } from '../../demo/context';
-import type { Topic } from '../../demo/catalogue';
-const topics: Topic[] = ['nature', 'stories', 'science'];
+import { ActivityStack } from './ActivityStack';
 export function ExplorePage() {
   const { t } = useTranslation();
   const { interests, toggleInterest } = useDemo();
-  const [open, setOpen] = useState<Topic | null>(null);
   return <>
     <div className="page-heading">
       <div>
@@ -21,19 +18,11 @@ export function ExplorePage() {
         <p>{t('editorial')}</p>
       </div>
     </div>
-    <div className="topic-grid">{topics.map((topic, index) => <article key={topic} className={`topic-card topic-${topic}`}>
-      <span className="topic-symbol" aria-hidden="true">{['✳', '≈', '△'][index]}</span>
-      <span className="eyebrow">0{index + 1} / {t(`topics.${topic}`)}</span>
-      <h2>{t(`activities.${topic}.title`)}</h2>
-      <p>{t(`activities.${topic}.body`)}</p>
-      <button type="button" className="secondary" aria-expanded={open === topic} aria-controls={`${topic}-activity`} onClick={() => setOpen(open === topic ? null : topic)}>{t(open === topic ? 'close' : 'tryActivity')} →</button>{open === topic && <div className="activity-detail" id={`${topic}-activity`} role="region">
-        <strong>{t('startHere')}</strong>
-        <p>{t(`activities.${topic}.instruction`)}</p>
-      </div>}</article>)}</div>
+    <ActivityStack />
     <section className="interests-panel">
       <h2>{t('yourInterests')}</h2>
       <p>{t('interestsBody')}</p>
-      <div className="interest-options">{topics.map(topic => <button type="button" key={topic} className={interests.includes(topic) ? 'selected' : ''} aria-pressed={interests.includes(topic)} onClick={() => toggleInterest(topic)}>{interests.includes(topic) ? '✓ ' : '+ '}{t(`topics.${topic}`)}</button>)}</div>
+      <div className="interest-options">{(['nature', 'stories', 'science'] as const).map(topic => <button type="button" key={topic} className={interests.includes(topic) ? 'selected' : ''} aria-pressed={interests.includes(topic)} onClick={() => toggleInterest(topic)}>{interests.includes(topic) ? '✓ ' : '+ '}{t(`topics.${topic}`)}</button>)}</div>
     </section>
     <aside className="future-panel">
       <span className="future-label">{t('later')}</span>

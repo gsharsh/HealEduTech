@@ -17,14 +17,15 @@ type DetailState = {
   failed: boolean;
 };
 
-function BookReadingAction({ bookId }: { bookId: string }) {
+function BookReadingAction({ bookId, returnTo }: { bookId: string; returnTo: string }) {
   const { user, loading } = useAccount();
   const { i18n } = useTranslation();
   const copy = libraryTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
   if (loading) return <p className="muted" role="status">{copy.readingLoading}</p>;
   if (!user) {
-    const next = encodeURIComponent(`/library/${encodeURIComponent(bookId)}`);
-    return <Link className="primary" to={`/sign-in?next=${next}`}>{copy.signInToAdd}</Link>;
+    const bookPath = `/library/${encodeURIComponent(bookId)}?${new URLSearchParams({ returnTo }).toString()}`;
+    const signInQuery = new URLSearchParams({ next: bookPath });
+    return <Link className="primary" to={`/sign-in?${signInQuery.toString()}`}>{copy.signInToAdd}</Link>;
   }
   return <SignedInReadingAction key={`${user.id}:${bookId}`} bookId={bookId} userId={user.id} />;
 }
@@ -94,7 +95,7 @@ export function BookDetailPage() {
   return <article className="book-detail-page">
     <Link className="book-detail-back" to={returnTo}>← {copy.back}</Link>
     <div className="book-detail-hero">
-      <div className="book-detail-cover"><CatalogueBookCover book={book} title={title} /></div>
+      <div className="book-detail-cover"><CatalogueBookCover book={book} title={title} size="detail" /></div>
       <div className="book-detail-copy">
         <span className="eyebrow">{t(`topics.${book.topic}`)}</span>
         <h1>{title}</h1>
@@ -106,7 +107,7 @@ export function BookDetailPage() {
           <p>{deskMessage}</p>
           <p className="muted">{copy.borrowingPaused}</p>
           <p className="book-reading-prompt">{copy.readingPrompt}</p>
-          <BookReadingAction bookId={book.id} />
+          <BookReadingAction bookId={book.id} returnTo={returnTo} />
         </section>
       </div>
     </div>

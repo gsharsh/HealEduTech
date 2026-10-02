@@ -1,0 +1,27 @@
+flowchart LR
+    Person[Guest / learner / library staff]
+    Web[React and Vite website]
+    Tab[Tab session storage<br/>Memory fallback]
+    Auth[Supabase Auth<br/>Credentials and hosted email links]
+    API[PostgREST<br/>Session-scoped requests]
+    DB[(PostgreSQL<br/>Constraints / RLS / RPC)]
+    Public[Public books and aggregate availability]
+    Own[Own reading / interests / loan summary]
+    Staff[Staff catalogue / circulation]
+    Admin[Admin-only staff and policy management]
+    Preview[Page-only goals / projects / feedback examples]
+    Future[Planned resources / facilitator access / recommendations]
+    Person --> Web
+    Web <--> Tab
+    Web <--> Auth
+    Web <--> API
+    API <--> DB
+    DB --> Public
+    DB --> Own
+    DB --> Staff
+    DB --> Admin
+    Web --> Preview
+    Future -. future contract .-> API
+    Auth -. authenticated identity .-> API
+    Note[No service-role key in browser<br/>Auth metadata never grants staff access]
+    Note -. security boundary .-> Web

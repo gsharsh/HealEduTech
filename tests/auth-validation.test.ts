@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validEmail, validPassword, authCallbackErrorFromUrl, authErrorKey, recoveryTokenMatches, safeBrowseTarget, safeNextPath, buildAuthRedirectUrl } from '../src/features/auth/validation.ts';
+import { validEmail, validPassword, authCallbackErrorFromUrl, authErrorField, authErrorKey, recoveryTokenMatches, safeBrowseTarget, safeNextPath, buildAuthRedirectUrl } from '../src/features/auth/validation.ts';
 test('email validation permits normal aliases and rejects malformed input', () => {
   assert.ok(validEmail('learner+evg@example.com'));
   assert.ok(validEmail(' student@example.com '));
@@ -20,6 +20,14 @@ test('link errors provide safe actionable messages without revealing backend det
   assert.equal(authErrorKey({code:'access_denied'}), 'auth.linkExpired');
   assert.equal(authErrorKey({code:'unexpected_internal_error'}), 'auth.failed');
 });
+test('only backend errors with a clear field meaning are attached to an input', () => {
+  assert.equal(authErrorField({code:'weak_password'}), 'password');
+  assert.equal(authErrorField({code:'email_address_invalid'}), 'email');
+  assert.equal(authErrorKey({code:'email_address_invalid'}), 'auth.invalidEmail');
+  assert.equal(authErrorField({code:'email_exists'}), null);
+  assert.equal(authErrorField({code:'invalid_credentials'}), null);
+  assert.equal(authErrorField({code:'unexpected_internal_error'}), null);
+});
 test('password recovery requires the exact recovery access token', () => {
   assert.equal(recoveryTokenMatches('recovery-token', 'recovery-token', null), true);
   assert.equal(recoveryTokenMatches('recovery-token', null, 'recovery-token'), true);
@@ -38,6 +46,7 @@ test('next redirect only allows known local pages with safe characters', () => {
   assert.equal(safeNextPath('/admin/circulation'), '/admin/circulation');
   assert.equal(safeNextPath('/staff/catalogue'), '/staff/catalogue');
   assert.equal(safeNextPath('/staff/circulation'), '/staff/circulation');
+  assert.equal(safeNextPath('/staff/training'), '/staff/training');
   assert.equal(safeNextPath('/admin/settings'), '/admin/settings');
   for (const value of [null, '', 'https://evil.example', '//evil.example', '/unknown', '/library\\evil', '/library%5cevil', '/library%0aevil', '/admin/%2f..']) {
     assert.equal(safeNextPath(value), '/learning');
@@ -54,4 +63,11 @@ test('auth callback URLs preserve only sanitized local next paths', () => {
   assert.equal(buildAuthRedirectUrl('https://evg.example', 'https://evil.example'), 'https://evg.example/sign-in?next=%2Flearning');
   assert.equal(buildAuthRedirectUrl('https://evg.example'), 'https://evg.example/sign-in');
   assert.equal(buildAuthRedirectUrl('https://evg.example', '/library', 'recovery'), 'https://evg.example/sign-in?mode=recovery&next=%2Flibrary');
+});
+test('book return context survives the sign-in redirect and browse link sanitizers', () => {
+  const bookPath = '/library/31000000-0000-4000-8000-000000000001?returnTo=%2Flibrary%3Fq%3DPeter%26topic%3Dnature%26page%3D2';
+  assert.equal(safeNextPath(bookPath), bookPath);
+  assert.equal(safeBrowseTarget(bookPath), bookPath);
+  const callback = new URL(buildAuthRedirectUrl('https://evg.example', bookPath));
+  assert.equal(callback.searchParams.get('next'), bookPath);
 });

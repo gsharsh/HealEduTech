@@ -1,5 +1,7 @@
 import { supabase } from '../../lib/supabase';
 import { isValidBookId } from './libraryState';
+import { CatalogueCoverSaveError } from './catalogueErrors';
+export { CatalogueCoverSaveError } from './catalogueErrors';
 export interface CatalogueBook {
   id: string; title_en: string; title_vi: string; author: string;
   language: 'en' | 'vi' | 'bilingual'; topic: 'nature' | 'stories' | 'science';
@@ -99,7 +101,10 @@ export async function addBook(id: string, book: NewBook) {
     p_copy_count: book.copies,
   });
   if (error) throw error;
-  if (book.cover_url.trim()) await updateBookCover(id, book.cover_url);
+  if (book.cover_url.trim()) {
+    try { await updateBookCover(id, book.cover_url); }
+    catch (error) { throw new CatalogueCoverSaveError(id, error); }
+  }
   return data as string;
 }
 
@@ -117,7 +122,8 @@ export async function updateBook(id: string, book: BookUpdate) {
     p_total_copies: book.totalCopies,
   });
   if (error) throw error;
-  await updateBookCover(id, book.cover_url);
+  try { await updateBookCover(id, book.cover_url); }
+  catch (error) { throw new CatalogueCoverSaveError(id, error); }
   return data as string;
 }
 

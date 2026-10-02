@@ -2,9 +2,9 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import en from "./locales/en.json";
 import vi from "./locales/vi.json";
+import { persistLanguage, readSavedLanguage } from "./languageStorage";
 
-const savedLanguage = window.localStorage.getItem("evg-language");
-const initialLanguage = savedLanguage === "vi" ? "vi" : "en";
+const initialLanguage = readSavedLanguage();
 
 document.documentElement.lang = initialLanguage;
 
@@ -16,8 +16,8 @@ void i18n.use(initReactI18next).init({
 });
 
 i18n.on("languageChanged", (language) => {
-  document.documentElement.lang = language;
-  window.localStorage.setItem("evg-language", language);
+  document.documentElement.lang = language === "vi" ? "vi" : "en";
+  persistLanguage(language);
 });
 
 export default i18n;

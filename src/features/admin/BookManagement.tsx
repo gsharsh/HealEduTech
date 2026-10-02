@@ -2,12 +2,13 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from '../auth/context';
-import { addBook, listBooks, updateBook, type BookUpdate, type CatalogueBook, type NewBook } from '../library/catalogue';
+import { addBook, CatalogueCoverSaveError, listBooks, updateBook, type CatalogueBook, type NewBook } from '../library/catalogue';
+import { recoverCatalogueEditorAfterCoverSave, type CatalogueEditorState } from './catalogueEditorRecovery';
 import { PublicCatalogueLink } from './WorkspaceNavigation';
 import './admin.css';
 
 const emptyBook: NewBook = { title_en: '', title_vi: '', author: '', language: 'vi', topic: 'stories', description_en: '', description_vi: '', cover_url: '', copies: 1 };
-type EditorState = { mode: 'new'; value: NewBook } | { mode: 'edit'; id: string; registeredCopies: number; value: BookUpdate };
+type EditorState = CatalogueEditorState;
 
 function editorFromBook(book: CatalogueBook): EditorState {
   const registeredCopies = book.book_copies[0]?.count ?? 0;
@@ -26,16 +27,18 @@ export function BookManagement() {
   const [editor, setEditor] = useState<EditorState | null>(null);
   const [requestId, setRequestId] = useState(() => crypto.randomUUID());
   const [busy, setBusy] = useState(false);
-  const [status, setStatus] = useState<'idle' | 'saved' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'saved' | 'error' | 'cover-error'>('idle');
 
-  const refresh = useCallback(async (signal?: AbortSignal) => {
-    if (!canManageBooks) return;
+  const refresh = useCallback(async (signal?: AbortSignal): Promise<CatalogueBook[] | null> => {
+    if (!canManageBooks) return null;
     try {
       const result = await listBooks(0, signal ?? new AbortController().signal);
       setBooks(result.books); setCatalogueState('ready');
+      return result.books;
     } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') return;
+      if (error instanceof DOMException && error.name === 'AbortError') return null;
       setCatalogueState('error');
+      return null;
     }
   }, [canManageBooks]);
 
@@ -74,7 +77,16 @@ export function BookManagement() {
       if (editor.mode === 'new') await addBook(requestId, editor.value);
       else await updateBook(editor.id, editor.value);
       await refresh(); setStatus('saved'); setEditor(null);
-    } catch { setStatus('error'); }
+    } catch (error) {
+      if (error instanceof CatalogueCoverSaveError) {
+        // The metadata/copy RPC already committed. Refresh before leaving the
+        // editor open so retrying the cover cannot create a duplicate record.
+        const refreshedBooks = await refresh();
+        const committed = refreshedBooks?.find(book => book.id === error.bookId);
+        setEditor(current => current ? recoverCatalogueEditorAfterCoverSave(current, error.bookId, committed) : current);
+        setStatus('cover-error');
+      } else setStatus('error');
+    }
     finally { setBusy(false); }
   }
 
@@ -104,6 +116,7 @@ export function BookManagement() {
           </section>}
           {status === 'saved' && <p className="admin-notice" role="status">{t('catalogue.saved')}</p>}
           {status === 'error' && <p role="alert" className="form-error admin-notice">{t('catalogue.saveError')}</p>}
+          {status === 'cover-error' && <p role="alert" className="form-error admin-notice">{t('catalogue.coverSaveError')}</p>}
           <section className="admin-inventory" aria-labelledby="inventory-title"><div className="admin-inventory__heading"><div><span className="eyebrow">{t('catalogue.inventoryEyebrow')}</span><h2 id="inventory-title">{t('catalogue.inventoryTitle')}</h2></div><button className="secondary" type="button" onClick={reloadCatalogue}>{t('catalogue.refresh')}</button></div>
             {catalogueState === 'loading' ? <p role="status">{t('catalogue.loading')}</p> : catalogueState === 'error' ? <div role="alert"><p>{t('catalogue.loadError')}</p><button className="secondary" type="button" onClick={reloadCatalogue}>{t('catalogue.retry')}</button></div> : books.length === 0 ? <div className="admin-inventory__empty"><p>{t('catalogue.empty')}</p><button className="primary" type="button" onClick={beginAdd}>{t('catalogue.addAction')}</button></div> : <div className="admin-book-list">{books.map(book => {
               const title = locale === 'vi' ? book.title_vi : book.title_en; const description = locale === 'vi' ? book.description_vi : book.description_en; const total = book.book_copies[0]?.count ?? 0;

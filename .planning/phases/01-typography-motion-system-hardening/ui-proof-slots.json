@@ -1,0 +1,79 @@
+{
+  "ui_proof_slots": [
+    {
+      "slot_id": "ui-typography-glass",
+      "requirement_id": "UI-TYPE-01",
+      "claim": "Bilingual public UI keeps readable local typography and functional glass controls with usable fallbacks.",
+      "route_state": "/, /explore, and /learning in EN and VI; synthetic/disconnected or fixture-backed local state; default and fallback-capable CSS states.",
+      "required_evidence_kinds": ["code", "test", "runtime"],
+      "optional_evidence_kinds": ["human"],
+      "minimum_observations": ["Local WOFF2 declarations and explicit font fallbacks are present.", "Header/control text remains readable while reading/writing surfaces remain opaque.", "Fallback paths retain usable controls."],
+      "expected_artifact_types": ["screenshot", "report"],
+      "validation_command": "gsdd ui-proof compare .planning/phases/01-typography-motion-system-hardening/ui-proof-slots.json .planning/phases/01-typography-motion-system-hardening/UI-PROOF.json",
+      "environment": {"app_url": "http://127.0.0.1:4193", "data_state": "synthetic/local fixture or disconnected demo; no real account"},
+      "viewport": {"width": 390, "height": 844, "notes": "Pair with a desktop observation for wide layout."},
+      "manual_acceptance_required": false,
+      "claim_limit": "Local route/style evidence only; no full WCAG, learner outcome, native Liquid Glass, OS preference, cold font failure, or deployment claim."
+    },
+    {
+      "slot_id": "ui-mobile-navigation",
+      "requirement_id": "FR24-NAV",
+      "claim": "A learner can reach the five primary destinations through the narrow-screen disclosure with keyboard-safe focus and reset behavior.",
+      "route_state": "Home, Library, My reading, Explore, and Together at 320px and 390px in EN and VI; signed-out or synthetic local fixture state.",
+      "required_evidence_kinds": ["runtime", "test"],
+      "optional_evidence_kinds": ["human"],
+      "minimum_observations": ["Disclosure opens with Explore and Together present and focus enters the link set.", "Escape, route selection, outside click, browser navigation, and resize close/reset the panel.", "Document width does not exceed the target viewport."],
+      "expected_artifact_types": ["screenshot", "report"],
+      "validation_command": "gsdd ui-proof compare .planning/phases/01-typography-motion-system-hardening/ui-proof-slots.json .planning/phases/01-typography-motion-system-hardening/UI-PROOF.json",
+      "environment": {"app_url": "http://127.0.0.1:4191", "data_state": "fictional example.invalid fixture or disconnected demo"},
+      "viewport": {"width": 390, "height": 844, "notes": "Add a 320px observation for narrow-label coverage."},
+      "manual_acceptance_required": false,
+      "claim_limit": "Local EN/VI browser behavior only; no native zoom, screen-reader, Safari, or hosted route-guard claim."
+    },
+    {
+      "slot_id": "ui-explore-activities",
+      "requirement_id": "FR25-ACT",
+      "claim": "All three Explore activities expose readable, keyboard/touch-usable instructions, reflection prompts, and related-book links without required motion.",
+      "route_state": "/explore with each activity closed and expanded; EN and VI; default and reduced-motion/static fallback states.",
+      "required_evidence_kinds": ["code", "runtime", "test"],
+      "optional_evidence_kinds": ["human"],
+      "minimum_observations": ["Each activity opens and closes with an announced disclosure state and readable ordered content.", "Expanded content remains usable at mobile and enlarged-text conditions.", "Motion is optional."],
+      "expected_artifact_types": ["screenshot", "report"],
+      "validation_command": "gsdd ui-proof compare .planning/phases/01-typography-motion-system-hardening/ui-proof-slots.json .planning/phases/01-typography-motion-system-hardening/UI-PROOF.json",
+      "environment": {"app_url": "http://127.0.0.1:4193", "data_state": "static editorial activities and synthetic related books"},
+      "viewport": {"width": 390, "height": 844, "notes": "Pair with desktop fit evidence."},
+      "manual_acceptance_required": false,
+      "claim_limit": "Local activity behavior only; no pedagogical suitability, EVG wording acceptance, or saved-progress claim."
+    },
+    {
+      "slot_id": "ui-scroll-stack-fallback",
+      "requirement_id": "NFR17-STACK",
+      "claim": "Home/Explore scroll enhancement stays optional and falls back to ordinary readable flow when motion is reduced or content cannot fit.",
+      "route_state": "Home and Explore desktop/short/mobile/enlarged-text states with forward and reverse scrolling, expansion/collapse, and reduced-motion source guard.",
+      "required_evidence_kinds": ["code", "runtime", "test"],
+      "optional_evidence_kinds": ["human"],
+      "minimum_observations": ["Native scrolling remains available with no automatic advance.", "Short/mobile/oversized cards use normal flow while fitting desktop cards may receive decorative scale/lift.", "Scroll/resize/observer paths produce no captured warning/error logs."],
+      "expected_artifact_types": ["screenshot", "report"],
+      "validation_command": "gsdd ui-proof compare .planning/phases/01-typography-motion-system-hardening/ui-proof-slots.json .planning/phases/01-typography-motion-system-hardening/UI-PROOF.json",
+      "environment": {"app_url": "http://127.0.0.1:4193", "data_state": "synthetic/static public content"},
+      "viewport": {"width": 1280, "height": 680, "notes": "Pair with 390x844 and a short-height observation."},
+      "manual_acceptance_required": false,
+      "claim_limit": "Local sampled viewport/source evidence only; no all-breakpoint, OS reduced-motion, low-end performance, or learner-preference claim."
+    },
+    {
+      "slot_id": "ui-catalogue-recovery",
+      "requirement_id": "FR23-CATALOGUE",
+      "claim": "A catalogue cover-only failure reports the partial save, preserves the draft, and retries against the existing committed book ID.",
+      "route_state": "/staff/catalogue with synthetic staff fixture; create then injected cover RPC failure, refresh, edit retry, and changed metadata.",
+      "required_evidence_kinds": ["code", "runtime", "test"],
+      "optional_evidence_kinds": ["human"],
+      "minimum_observations": ["Details/copies remain visible after cover failure and the message identifies the partial-save state.", "The form becomes an edit of the same ID with draft cover retained.", "Retry updates one existing record rather than creating a duplicate."],
+      "expected_artifact_types": ["report", "screenshot"],
+      "validation_command": "gsdd ui-proof compare .planning/phases/01-typography-motion-system-hardening/ui-proof-slots.json .planning/phases/01-typography-motion-system-hardening/UI-PROOF.json",
+      "environment": {"app_url": "http://127.0.0.1:4191", "data_state": "fictional in-memory staff fixture; no hosted catalogue write"},
+      "viewport": {"width": 1024, "height": 768, "notes": "Use a desktop staff viewport for form/recovery."},
+      "manual_acceptance_required": false,
+      "claim_limit": "Local fixture recovery only; no hosted RPC atomicity, real staff authorization, or deployment claim."
+    }
+  ]
+}

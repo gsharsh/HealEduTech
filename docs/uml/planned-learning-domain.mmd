@@ -1,0 +1,75 @@
+classDiagram
+    direction LR
+    class AppProfile {
+        <<Planned>>
+        UUID auth_user_id
+        UUID cohort_id
+        string supported_account_method
+    }
+    class Cohort {
+        <<Planned>>
+        UUID id
+        string display_name
+    }
+    class FacilitatorAssignment {
+        <<Planned>>
+        UUID facilitator_user_id
+        UUID learner_user_id
+    }
+    class WeeklyGoal {
+        <<PreviewOnly>>
+        string learner_plan
+        string progress
+    }
+    class Project {
+        <<PreviewOnly>>
+        string title
+        string discovery
+        string presentation_outline
+        string rehearsal_checklist
+        string draft_state
+    }
+    class PrivateFeedback {
+        <<Planned>>
+        UUID author_user_id
+        UUID reviewer_user_id
+        string feedback
+    }
+    class ApprovedResource {
+        <<Planned>>
+        UUID id
+        string content_language
+        string review_state
+        string suitability_rules
+    }
+    class RecommendationPreferences {
+        <<Planned>>
+        int schema_version
+        string consent_state
+        string declared_choices
+    }
+    class RecommendationRun {
+        <<Planned>>
+        string rule_version
+        string reasons
+        string reviewed_fallback
+    }
+    class Showcase {
+        <<Planned>>
+        string moderation_state
+        string withdrawal_state
+    }
+    Cohort "1" -- "0..*" AppProfile : membership
+    AppProfile "1" -- "0..*" FacilitatorAssignment : support
+    AppProfile "1" -- "0..*" WeeklyGoal : owns
+    AppProfile "1" -- "0..*" Project : authors
+    Project "1" -- "0..*" PrivateFeedback : assigned review
+    Project "1" -- "0..1" Showcase : publication gate
+    AppProfile "1" -- "0..1" RecommendationPreferences : declares
+    RecommendationPreferences ..> RecommendationRun : approved inputs
+    ApprovedResource ..> RecommendationRun : safety filters before ranking
+    note for WeeklyGoal "Current React preview resets; no goal table or facilitator persistence."
+    note for Project "Current page-only preview; no project/feedback publication endpoint."
+    note for RecommendationPreferences "Plan week of 5 October 2026. Real learner collection no earlier than January 2027 in Vietnam."
+    note for RecommendationRun "No ranking service, model training or automatic learner tracking currently exists."
+    note for AppProfile "Planned app/cohort profile, separate from current Auth metadata."

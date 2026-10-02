@@ -1,0 +1,125 @@
+{
+  "proof_bundle_version": 1,
+  "scope": {
+    "work_item": "01-typography-motion-system-hardening",
+    "requirement_ids": [
+      "FR25-ACT"
+    ],
+    "slot_ids": [
+      "ui-explore-activities"
+    ],
+    "claim": "All three Explore activities expose readable, keyboard/touch-usable instructions, reflection prompts, and related-book links without required motion."
+  },
+  "route_state": "/explore with each activity closed and expanded; EN and VI; default and reduced-motion/static fallback states.",
+  "environment": {
+    "app_url": "http://127.0.0.1:4193",
+    "data_state": "static editorial activities and synthetic related books"
+  },
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "notes": "Pair with desktop fit evidence."
+  },
+  "evidence_inputs": {
+    "kinds": [
+      "code",
+      "test",
+      "runtime"
+    ],
+    "tools_used": [
+      "cua",
+      "node",
+      "python",
+      "postgresql"
+    ]
+  },
+  "commands_or_manual_steps": [
+    {
+      "manual_step": "Read the linked fresh/inherited observation report; execute recorded scoped commands and CUA steps. Screenshot file retention remains unavailable in the exposed capture API.",
+      "result": "passed"
+    }
+  ],
+  "observations": [
+    {
+      "observation": "ActivityCard implements aria-expanded/controls, inert closed content, ordered steps, prompts and links; both routes render ActivityStack.",
+      "claim": "All three Explore activities expose readable, keyboard/touch-usable instructions, reflection prompts, and related-book links without required motion.",
+      "route_state": "/explore with each activity closed and expanded; EN and VI; default and reduced-motion/static fallback states.",
+      "evidence_kind": "code",
+      "artifact_refs": [
+        ".planning/.local/verification-01/browser-and-source-report.md"
+      ],
+      "privacy": {
+        "data_classification": "synthetic",
+        "raw_artifacts_safe_to_publish": false,
+        "retention": "temporary_review"
+      },
+      "result": "passed",
+      "claim_limit": "Supporting observation only; does not satisfy missing screenshots or unexecuted states. Historical runtime is explicitly marked."
+    },
+    {
+      "observation": "Six EN/VI Enter open/close assertions at 390x844 pass, including three ordered steps and non-overflowing document.",
+      "claim": "All three Explore activities expose readable, keyboard/touch-usable instructions, reflection prompts, and related-book links without required motion.",
+      "route_state": "/explore with each activity closed and expanded; EN and VI; default and reduced-motion/static fallback states.",
+      "evidence_kind": "test",
+      "artifact_refs": [
+        ".planning/.local/verification-01/browser-and-source-report.md"
+      ],
+      "privacy": {
+        "data_classification": "synthetic",
+        "raw_artifacts_safe_to_publish": false,
+        "retention": "temporary_review"
+      },
+      "result": "passed",
+      "claim_limit": "Supporting observation only; does not satisfy missing screenshots or unexecuted states. Historical runtime is explicitly marked."
+    },
+    {
+      "observation": "Each activity opens and closes with an announced disclosure state and readable ordered content. Mobile rendering disables enhancement; enlarged-text behavior is inherited from the earlier report, not freshly repeated. Touch/screen-reader certification is not claimed.",
+      "claim": "All three Explore activities expose readable, keyboard/touch-usable instructions, reflection prompts, and related-book links without required motion.",
+      "route_state": "/explore with each activity closed and expanded; EN and VI; default and reduced-motion/static fallback states.",
+      "evidence_kind": "runtime",
+      "artifact_refs": [
+        ".planning/.local/verification-01/browser-and-source-report.md"
+      ],
+      "privacy": {
+        "data_classification": "synthetic",
+        "raw_artifacts_safe_to_publish": false,
+        "retention": "temporary_review"
+      },
+      "result": "passed",
+      "claim_limit": "Supporting observation only; does not satisfy missing screenshots or unexecuted states. Historical runtime is explicitly marked."
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".planning/.local/verification-01/browser-and-source-report.md",
+      "type": "report",
+      "visibility": "local_only",
+      "retention": "temporary_review",
+      "sensitivity": "possible",
+      "safe_to_publish": false
+    }
+  ],
+  "privacy": {
+    "data_classification": "synthetic",
+    "raw_artifacts_safe_to_publish": false,
+    "retention": "temporary_review"
+  },
+  "manual_acceptance": {
+    "required": true,
+    "reviewer": null,
+    "result": "deferred"
+  },
+  "result": {
+    "claim_status": "partial",
+    "comparison_status_by_slot": {
+      "ui-explore-activities": "partial"
+    },
+    "failure_classification": "missing_infra"
+  },
+  "claim_limits": [
+    "Local activity behavior only; no pedagogical suitability, EVG wording acceptance, or saved-progress claim.",
+    "agent-browser unavailable; CUA was the supported browser equivalent. Native captures were displayed but not persisted to local screenshot paths.",
+    "No human acceptance, hosted validation, delivery or publication claim.",
+    "Viewport metadata records the planned reference; the linked report is authoritative for actual sampled dimensions, settled states and historical-only observations."
+  ]
+}

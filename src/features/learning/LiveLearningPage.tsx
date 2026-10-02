@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { getMyReading, listBooksForReading, listMyReading, saveReading, type ReadingBook, type ReadingRecord, type ReadingStatus } from './reading';
 import { readingTranslations } from './readingTranslations';
 import { WeeklyGoalPrototype } from './WeeklyGoalPrototype';
+import { getCoverImageSources } from '../library/coverImages';
 import './reading.css';
 
 type ReadingActionProps = { bookId: string; onSaved?: (record: ReadingRecord) => void };
@@ -14,10 +15,11 @@ const PETER_RABBIT_BOOK_ID = '31000000-0000-4000-8000-000000000001';
 const PETER_RABBIT_COVER_URL = 'https://www.gutenberg.org/cache/epub/14838/images/cover.jpg';
 
 function ReadingCover({ book, title }: { book: ReadingBook | undefined; title: string }) {
-  const [failed, setFailed] = useState(false);
+  const [failedCoverUrl, setFailedCoverUrl] = useState<string | null>(null);
   const coverUrl = book?.cover_url || (book?.id === PETER_RABBIT_BOOK_ID ? PETER_RABBIT_COVER_URL : null);
-  if (!coverUrl || failed) return <div className="reading-cover reading-cover--fallback" role="img" aria-label={title} />;
-  return <img className="reading-cover" src={coverUrl} alt="" onError={() => setFailed(true)} />;
+  const sources = coverUrl && failedCoverUrl !== coverUrl ? getCoverImageSources(coverUrl) : null;
+  if (!sources) return <div className="reading-cover reading-cover--fallback" role="img" aria-label={title} />;
+  return <img className="reading-cover" src={sources.src} srcSet={sources.srcSet} sizes="(max-width: 480px) 90px, 120px" loading="lazy" decoding="async" alt="" onError={() => setFailedCoverUrl(coverUrl)} />;
 }
 
 function ReadingAction(props: ReadingActionProps) {
@@ -31,6 +33,9 @@ function ReadingAction(props: ReadingActionProps) {
 
 function ReadingEditor({ bookId, userId, onSaved }: ReadingActionProps & { userId: string }) {
   const reflectionId = useId();
+  const reviewBodyId = useId();
+  const reviewPromptId = useId();
+  const reviewCountId = useId();
   const { i18n } = useTranslation();
   const copy = readingTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
   const [record, setRecord] = useState<ReadingRecord | null>(null);
@@ -51,7 +56,9 @@ function ReadingEditor({ bookId, userId, onSaved }: ReadingActionProps & { userI
   }, [bookId, userId, attempt]);
   if (loadState === 'loading') return <p role="status">{copy.loading}</p>;
   if (loadState === 'failed') return <div role="alert"><p>{copy.loadError}</p><button className="secondary" onClick={() => { setLoadState('loading'); setAttempt(value => value + 1); }}>{copy.retry}</button></div>;
-  const nextReflection = status === 'finished' ? reflection.trim() : '';
+  // Keep a finished review intact while the learner reopens a book. The editor
+  // stays hidden during reading, but changing status must not erase saved thinking.
+  const nextReflection = reflection.trim();
   const clean = record?.status === status && (record?.reflection ?? '') === nextReflection;
   async function save() {
     if (saving) return;
@@ -70,8 +77,10 @@ function ReadingEditor({ bookId, userId, onSaved }: ReadingActionProps & { userI
       </div>
       {status === 'finished' && <div className="reading-review">
         <label className="reading-reflection-label" htmlFor={reflectionId}>{copy.review}</label>
-        <p className="reading-action-muted">{copy.reviewBody}</p>
-        <textarea id={reflectionId} value={reflection} maxLength={2000} onChange={event => setReflection(event.target.value)} placeholder={copy.reflectionPlaceholder} />
+        <p className="reading-action-muted" id={reviewBodyId}>{copy.reviewBody}</p>
+        <p className="reading-review-prompt" id={reviewPromptId}>{copy.reviewPrompt}</p>
+        <textarea id={reflectionId} aria-describedby={`${reviewBodyId} ${reviewPromptId} ${reviewCountId}`} value={reflection} maxLength={2000} onChange={event => setReflection(event.target.value)} placeholder={copy.reflectionPlaceholder} />
+        <p className="reading-character-count" id={reviewCountId}>{reflection.length.toLocaleString()} / 2,000 {copy.reviewCount}</p>
       </div>}
       <button type="button" className="primary reading-save" disabled={saving || clean} onClick={() => void save()}>{saving ? copy.saving : clean ? copy.saved : copy.saveChanges}</button>
     </fieldset>

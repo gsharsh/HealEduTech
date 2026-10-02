@@ -1,0 +1,38 @@
+sequenceDiagram
+    actor Person as Learner or staff
+    participant UI as SignInPage
+    participant Client as Supabase JS and tab session storage
+    participant Auth as Supabase Auth
+    participant Email as Hosted email delivery
+    participant Provider as AccountProvider
+    participant API as PostgREST
+    participant DB as PostgreSQL RLS
+    alt Registration
+        Person->>UI: Display name, email, password, confirmation
+        UI->>UI: Validate input and safe return URL
+        UI->>Auth: signUp plus display_name and preferred_language metadata
+        Auth->>Email: Confirmation link if confirmation required
+        UI-->>Person: Pending confirmation; clear password fields
+        Person->>Auth: Follow valid hosted link
+        Auth-->>Client: Callback session on allowlisted sign-in URL
+    else Password sign-in
+        Person->>UI: Email and password
+        UI->>Auth: signInWithPassword
+        Auth-->>Client: Session or safe authentication error
+    else Recovery
+        UI->>Auth: resetPasswordForEmail with safe callback URL
+        Auth->>Email: Recovery link
+        Person->>Auth: Follow recovery link
+        Auth-->>Provider: PASSWORD_RECOVERY event
+        UI->>Auth: updateUser with new password
+        UI->>Auth: Local sign-out
+        UI-->>Person: Sign in again or explicit sign-out failure
+    end
+    Client->>Client: Store session per tab; memory fallback if storage unavailable
+    Client-->>Provider: Auth state change
+    Provider->>API: Select own staff_members row using session
+    API->>DB: Apply authenticated role, auth.uid and RLS
+    DB-->>Provider: Own librarian/admin membership or no staff membership
+    Provider-->>UI: Learner access or permitted staff controls
+    Note over Provider,DB: User-editable metadata never grants a staff role
+    Note over Auth,Email: Real hosted receipt, expiry and recovery remain separate release tests

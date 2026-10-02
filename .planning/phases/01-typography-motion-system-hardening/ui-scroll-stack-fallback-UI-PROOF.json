@@ -1,0 +1,125 @@
+{
+  "proof_bundle_version": 1,
+  "scope": {
+    "work_item": "01-typography-motion-system-hardening",
+    "requirement_ids": [
+      "NFR17-STACK"
+    ],
+    "slot_ids": [
+      "ui-scroll-stack-fallback"
+    ],
+    "claim": "Home/Explore scroll enhancement stays optional and falls back to ordinary readable flow when motion is reduced or content cannot fit."
+  },
+  "route_state": "Home and Explore desktop/short/mobile/enlarged-text states with forward and reverse scrolling, expansion/collapse, and reduced-motion source guard.",
+  "environment": {
+    "app_url": "http://127.0.0.1:4193",
+    "data_state": "synthetic/static public content"
+  },
+  "viewport": {
+    "width": 1280,
+    "height": 680,
+    "notes": "Pair with 390x844 and a short-height observation."
+  },
+  "evidence_inputs": {
+    "kinds": [
+      "code",
+      "test",
+      "runtime"
+    ],
+    "tools_used": [
+      "cua",
+      "node",
+      "python",
+      "postgresql"
+    ]
+  },
+  "commands_or_manual_steps": [
+    {
+      "manual_step": "Read the linked fresh/inherited observation report; execute recorded scoped commands and CUA steps. Screenshot file retention remains unavailable in the exposed capture API.",
+      "result": "passed"
+    }
+  ],
+  "observations": [
+    {
+      "observation": "Width/height/content/root-font/reduced-motion guards and passive/rAF cleanup are wired into Home and Explore.",
+      "claim": "Home/Explore scroll enhancement stays optional and falls back to ordinary readable flow when motion is reduced or content cannot fit.",
+      "route_state": "Home and Explore desktop/short/mobile/enlarged-text states with forward and reverse scrolling, expansion/collapse, and reduced-motion source guard.",
+      "evidence_kind": "code",
+      "artifact_refs": [
+        ".planning/.local/verification-01/browser-and-source-report.md"
+      ],
+      "privacy": {
+        "data_classification": "synthetic",
+        "raw_artifacts_safe_to_publish": false,
+        "retention": "temporary_review"
+      },
+      "result": "passed",
+      "claim_limit": "Supporting observation only; does not satisfy missing screenshots or unexecuted states. Historical runtime is explicitly marked."
+    },
+    {
+      "observation": "Six two-route viewport checks preserve untransformed wrappers and expected enhancement state.",
+      "claim": "Home/Explore scroll enhancement stays optional and falls back to ordinary readable flow when motion is reduced or content cannot fit.",
+      "route_state": "Home and Explore desktop/short/mobile/enlarged-text states with forward and reverse scrolling, expansion/collapse, and reduced-motion source guard.",
+      "evidence_kind": "test",
+      "artifact_refs": [
+        ".planning/.local/verification-01/browser-and-source-report.md"
+      ],
+      "privacy": {
+        "data_classification": "synthetic",
+        "raw_artifacts_safe_to_publish": false,
+        "retention": "temporary_review"
+      },
+      "result": "passed",
+      "claim_limit": "Supporting observation only; does not satisfy missing screenshots or unexecuted states. Historical runtime is explicitly marked."
+    },
+    {
+      "observation": "Native scrolling remains available and no scroll hijacking or automatic advance occurs. 1280x680 enabled both stacks; 1280x650 and 390x844 used normal flow. Settled expanded Explore disabled stacking. Forward/reverse scroll restored scale 1 and produced no captured warning/error logs. Actual OS preference switching and enlarged text are not newly executed.",
+      "claim": "Home/Explore scroll enhancement stays optional and falls back to ordinary readable flow when motion is reduced or content cannot fit.",
+      "route_state": "Home and Explore desktop/short/mobile/enlarged-text states with forward and reverse scrolling, expansion/collapse, and reduced-motion source guard.",
+      "evidence_kind": "runtime",
+      "artifact_refs": [
+        ".planning/.local/verification-01/browser-and-source-report.md"
+      ],
+      "privacy": {
+        "data_classification": "synthetic",
+        "raw_artifacts_safe_to_publish": false,
+        "retention": "temporary_review"
+      },
+      "result": "passed",
+      "claim_limit": "Supporting observation only; does not satisfy missing screenshots or unexecuted states. Historical runtime is explicitly marked."
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".planning/.local/verification-01/browser-and-source-report.md",
+      "type": "report",
+      "visibility": "local_only",
+      "retention": "temporary_review",
+      "sensitivity": "possible",
+      "safe_to_publish": false
+    }
+  ],
+  "privacy": {
+    "data_classification": "synthetic",
+    "raw_artifacts_safe_to_publish": false,
+    "retention": "temporary_review"
+  },
+  "manual_acceptance": {
+    "required": true,
+    "reviewer": null,
+    "result": "deferred"
+  },
+  "result": {
+    "claim_status": "partial",
+    "comparison_status_by_slot": {
+      "ui-scroll-stack-fallback": "partial"
+    },
+    "failure_classification": "missing_infra"
+  },
+  "claim_limits": [
+    "Local sampled viewport/source evidence only; no all-breakpoint, OS reduced-motion, low-end performance, or learner-preference claim.",
+    "agent-browser unavailable; CUA was the supported browser equivalent. Native captures were displayed but not persisted to local screenshot paths.",
+    "No human acceptance, hosted validation, delivery or publication claim.",
+    "Viewport metadata records the planned reference; the linked report is authoritative for actual sampled dimensions, settled states and historical-only observations."
+  ]
+}

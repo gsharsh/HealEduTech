@@ -1,0 +1,125 @@
+{
+  "proof_bundle_version": 1,
+  "scope": {
+    "work_item": "01-typography-motion-system-hardening",
+    "requirement_ids": [
+      "UI-TYPE-01"
+    ],
+    "slot_ids": [
+      "ui-typography-glass"
+    ],
+    "claim": "Bilingual public UI keeps readable local typography and functional glass controls with usable fallbacks."
+  },
+  "route_state": "/, /explore, and /learning in EN and VI; synthetic/disconnected or fixture-backed local state; default and fallback-capable CSS states.",
+  "environment": {
+    "app_url": "http://127.0.0.1:4193",
+    "data_state": "synthetic/local fixture or disconnected demo; no real account"
+  },
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "notes": "Pair with a desktop observation for wide layout."
+  },
+  "evidence_inputs": {
+    "kinds": [
+      "code",
+      "test",
+      "runtime"
+    ],
+    "tools_used": [
+      "cua",
+      "node",
+      "python",
+      "postgresql"
+    ]
+  },
+  "commands_or_manual_steps": [
+    {
+      "manual_step": "Read the linked fresh/inherited observation report; execute recorded scoped commands and CUA steps. Screenshot file retention remains unavailable in the exposed capture API.",
+      "result": "passed"
+    }
+  ],
+  "observations": [
+    {
+      "observation": "Local WOFF2 declarations and explicit font fallbacks are present. Reading/writing surfaces and preference/support fallbacks are implemented; OS preferences were not executed.",
+      "claim": "Bilingual public UI keeps readable local typography and functional glass controls with usable fallbacks.",
+      "route_state": "/, /explore, and /learning in EN and VI; synthetic/disconnected or fixture-backed local state; default and fallback-capable CSS states.",
+      "evidence_kind": "code",
+      "artifact_refs": [
+        ".planning/.local/verification-01/browser-and-source-report.md"
+      ],
+      "privacy": {
+        "data_classification": "synthetic",
+        "raw_artifacts_safe_to_publish": false,
+        "retention": "temporary_review"
+      },
+      "result": "passed",
+      "claim_limit": "Supporting observation only; does not satisfy missing screenshots or unexecuted states. Historical runtime is explicitly marked."
+    },
+    {
+      "observation": "15/15 font source/build/HTTP byte, hash, size and signature checks pass; 20 EN/VI route geometry assertions pass.",
+      "claim": "Bilingual public UI keeps readable local typography and functional glass controls with usable fallbacks.",
+      "route_state": "/, /explore, and /learning in EN and VI; synthetic/disconnected or fixture-backed local state; default and fallback-capable CSS states.",
+      "evidence_kind": "test",
+      "artifact_refs": [
+        ".planning/.local/verification-01/browser-and-source-report.md"
+      ],
+      "privacy": {
+        "data_classification": "synthetic",
+        "raw_artifacts_safe_to_publish": false,
+        "retention": "temporary_review"
+      },
+      "result": "passed",
+      "claim_limit": "Supporting observation only; does not satisfy missing screenshots or unexecuted states. Historical runtime is explicitly marked."
+    },
+    {
+      "observation": "Current built Home/Explore/learning render EN/VI at 320 and 390 CSS pixels. Default glass header and local type render. Human reading comfort and preference-switch runtime are unclaimed.",
+      "claim": "Bilingual public UI keeps readable local typography and functional glass controls with usable fallbacks.",
+      "route_state": "/, /explore, and /learning in EN and VI; synthetic/disconnected or fixture-backed local state; default and fallback-capable CSS states.",
+      "evidence_kind": "runtime",
+      "artifact_refs": [
+        ".planning/.local/verification-01/browser-and-source-report.md"
+      ],
+      "privacy": {
+        "data_classification": "synthetic",
+        "raw_artifacts_safe_to_publish": false,
+        "retention": "temporary_review"
+      },
+      "result": "passed",
+      "claim_limit": "Supporting observation only; does not satisfy missing screenshots or unexecuted states. Historical runtime is explicitly marked."
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".planning/.local/verification-01/browser-and-source-report.md",
+      "type": "report",
+      "visibility": "local_only",
+      "retention": "temporary_review",
+      "sensitivity": "possible",
+      "safe_to_publish": false
+    }
+  ],
+  "privacy": {
+    "data_classification": "synthetic",
+    "raw_artifacts_safe_to_publish": false,
+    "retention": "temporary_review"
+  },
+  "manual_acceptance": {
+    "required": true,
+    "reviewer": null,
+    "result": "deferred"
+  },
+  "result": {
+    "claim_status": "partial",
+    "comparison_status_by_slot": {
+      "ui-typography-glass": "partial"
+    },
+    "failure_classification": "missing_infra"
+  },
+  "claim_limits": [
+    "Local route/style evidence only; no full WCAG, learner outcome, native Liquid Glass, OS preference, cold font failure, or deployment claim.",
+    "agent-browser unavailable; CUA was the supported browser equivalent. Native captures were displayed but not persisted to local screenshot paths.",
+    "No human acceptance, hosted validation, delivery or publication claim.",
+    "Viewport metadata records the planned reference; the linked report is authoritative for actual sampled dimensions, settled states and historical-only observations."
+  ]
+}
