@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ProjectFeedbackPrototype } from './ProjectFeedbackPrototype';
-import { TopicArtwork } from '../home/TopicArtwork';
 import './community.css';
 export function CommunityPage() {
   const { t } = useTranslation();
@@ -13,8 +12,13 @@ export function CommunityPage() {
         <p>{t('communityBody')}</p>
       </div>
     </div>
-    <div className="showcase-grid">{['garden', 'bridge'].map((key, index) => <article className="showcase-card" key={key}>
-      <div className={`showcase-art ${index ? 'ochre' : 'sage'}`} aria-hidden="true"><TopicArtwork topic={index ? 'science' : 'nature'} /><span>{t('sampleProject')}</span>
+    <div className="showcase-grid">{(['garden', 'bridge'] as const).map(key => <article className={`showcase-card showcase-card--${key}`} key={key}>
+      <div className="showcase-art" aria-hidden="true">
+        <picture>
+          <source srcSet={`/images/community/${key}-800.webp 800w, /images/community/${key}-1600.webp 1600w, /images/community/${key}-2400.webp 2400w`} sizes="(max-width: 560px) calc(100vw - 32px), (max-width: 1208px) calc(100vw - 48px), 1160px" type="image/webp" />
+          <img src={`/images/community/${key}-1600.webp`} width="1600" height="1067" alt="" loading="lazy" decoding="async" />
+        </picture>
+        <span>{t('sampleProject')}</span>
       </div>
       <div className="showcase-copy">
         <span className="eyebrow">{t('exampleOnly')}</span>

@@ -7,7 +7,6 @@ import { listBooks, type CatalogueBook } from '../library/catalogue';
 import { libraryTranslations } from '../library/libraryTranslations';
 import { supabase } from '../../lib/supabase';
 import { homeCopy, type HomeLanguage } from './homeCopy';
-import { TopicArtwork } from './TopicArtwork';
 import { useScrollStack } from '../../components/ui/ScrollStack';
 import './home.css';
 
@@ -54,11 +53,11 @@ function TopicStory({ copy }: { copy: typeof homeCopy[HomeLanguage] }) {
                 {copy.topicAction} <span aria-hidden="true">↗</span>
               </Link>
             </div>
-            <div className="home-stack__art" aria-hidden="true">
-              <span className="home-stack__art-ring home-stack__art-ring--one" />
-              <span className="home-stack__art-ring home-stack__art-ring--two" />
-              <TopicArtwork topic={topic} />
-              <span className="home-stack__art-note">{copy.topics[topic]}</span>
+            <div className="home-stack__media" aria-hidden="true">
+              <picture>
+                <source srcSet={`/images/home/${topic}-800.webp 800w, /images/home/${topic}-1600.webp 1600w, /images/home/${topic}-2400.webp 2400w`} sizes="(max-width: 560px) calc(100vw - 32px), (max-width: 1208px) calc(100vw - 48px), 1160px" type="image/webp" />
+                <img src={`/images/home/${topic}-1600.webp`} width="1600" height={topic === 'science' ? '1600' : '1067'} alt="" loading="lazy" decoding="async" />
+              </picture>
             </div>
           </div>
         </section>
@@ -113,20 +112,10 @@ export function HomePage() {
           </div>
         </div>
         <div className="home-hero__art" aria-hidden="true">
-          <div className="home-hero__art-grid" />
-          <span className="home-hero__art-orbit home-hero__art-orbit--one" />
-          <span className="home-hero__art-orbit home-hero__art-orbit--two" />
-          <div className="home-hero__field-card home-hero__field-card--back">
-            <span>{copy.heroArtLabel}</span>
-            <strong>{copy.heroArtTitle}</strong>
-          </div>
-          <div className="home-hero__field-card home-hero__field-card--front">
-            <span>EVG / 2026</span>
-            <div className="home-hero__field-mark"><TopicArtwork topic="stories" /></div>
-            <strong>{copy.heroArtMeta}</strong>
-            <small>{copy.topics.nature} · {copy.topics.stories} · {copy.topics.science}</small>
-          </div>
-          <span className="home-hero__art-caption">READ / ASK / MAKE</span>
+          <picture>
+            <source srcSet="/images/home/hero-800.webp 800w, /images/home/hero-1600.webp 1600w, /images/home/hero-2400.webp 2400w" sizes="(max-width: 760px) 100vw, (max-width: 1208px) calc(100vw - 48px), 1160px" type="image/webp" />
+            <img src="/images/home/hero-1600.webp" width="1600" height="1067" alt="" fetchPriority="high" decoding="async" />
+          </picture>
         </div>
       </section>
 

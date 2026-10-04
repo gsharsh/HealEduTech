@@ -1,0 +1,83 @@
+[
+  {
+    "file": "nature-800.webp",
+    "dimensions": [
+      800,
+      534
+    ],
+    "bytes": 14066,
+    "sha256": "6f85bff48900483d55491de2c2724dec14e81e75496e95913833939113620182"
+  },
+  {
+    "file": "nature-1600.webp",
+    "dimensions": [
+      1600,
+      1067
+    ],
+    "bytes": 38152,
+    "sha256": "935d9ed95f03919f000034590cafaea3892c5952e4044aea9375eeafc8a92351"
+  },
+  {
+    "file": "nature-2400.webp",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "bytes": 85512,
+    "sha256": "0e4c8106a4fa51cc39e34f18f782591946625aab5dbb62a80aca98634afe9161"
+  },
+  {
+    "file": "stories-800.webp",
+    "dimensions": [
+      800,
+      534
+    ],
+    "bytes": 28998,
+    "sha256": "5b0438dc5afe74f313d525981171227a855a6151edf0735552d53012b3b29925"
+  },
+  {
+    "file": "stories-1600.webp",
+    "dimensions": [
+      1600,
+      1067
+    ],
+    "bytes": 74620,
+    "sha256": "f872f41de9c7929f867d6048848c080ee93c5ec2d209e5117e0ac1e0ce62f5f8"
+  },
+  {
+    "file": "stories-2400.webp",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "bytes": 133540,
+    "sha256": "1e10f26476917b652d052e101b5872d6d2492c29d9570c035e631ad3fd8ef36a"
+  },
+  {
+    "file": "science-800.webp",
+    "dimensions": [
+      800,
+      534
+    ],
+    "bytes": 23288,
+    "sha256": "6f5b01e7baa50dce0a1ec5b7686b638e5a6dd915e0bc4523d6cafbf3f8144f9b"
+  },
+  {
+    "file": "science-1600.webp",
+    "dimensions": [
+      1600,
+      1067
+    ],
+    "bytes": 84788,
+    "sha256": "1e5ce5ab7cd6177532ba3cfbc44161501ea961398368247ce13f49d3fa47f638"
+  },
+  {
+    "file": "science-2400.webp",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "bytes": 175376,
+    "sha256": "208346058234a58155e08961943078c1f2d97a3c119486de3e41baf8a6f93b19"
+  }
+]

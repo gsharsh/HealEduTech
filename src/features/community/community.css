@@ -546,14 +546,41 @@
   margin:4px 0 0;
 }
 @media screen {
-  .showcase-grid { gap: 26px; }
-  .showcase-card { border-radius: 24px; background: var(--paper); box-shadow: 0 5px 18px #17392c04; }
-  .showcase-art { position: relative; height: clamp(220px, 26vw, 310px); padding: 20px; overflow: hidden; }
-  .showcase-art .topic-art { width: 100%; height: 100%; max-width: 380px; }
-  .showcase-art > span { position: absolute; bottom: 16px; left: 20px; padding: 6px 10px; border-radius: 7px; background: #ffffffdb; color: #294635; font-size: .6875rem; font-weight: 650; letter-spacing: .08em; }
-  .showcase-copy { padding: 28px; }
-  .showcase-copy h2 { font-size: 1.5rem; letter-spacing: -.03em; }
-  .showcase-copy p { font-size: .9375rem; }
+  .showcase-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .showcase-card {
+    --showcase-bg: #dfead5;
+    --showcase-ink: #264e3b;
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: clamp(320px, 36vh, 380px);
+    padding: clamp(24px, 3.5vw, 44px);
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--showcase-ink) 20%, transparent);
+    border-radius: 24px;
+    color: var(--showcase-ink);
+    background: var(--showcase-bg);
+    box-shadow: 0 18px 46px rgba(29, 56, 47, .12);
+  }
+  .showcase-card--garden { --showcase-bg: #dfead5; --showcase-ink: #264e3b; }
+  .showcase-card--bridge { --showcase-bg: #f1e5cf; --showcase-ink: #634b32; }
+  .showcase-art { position: absolute; z-index: 0; inset: 0; display: block; height: auto; padding: 0; overflow: hidden; }
+  .showcase-art picture, .showcase-art img { display: block; width: 100%; height: 100%; }
+  .showcase-art img { object-fit: cover; object-position: right center; }
+  .showcase-art::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--showcase-bg) 0%, var(--showcase-bg) 28%, color-mix(in srgb, var(--showcase-bg) 96%, transparent) 40%, color-mix(in srgb, var(--showcase-bg) 83%, transparent) 51%, color-mix(in srgb, var(--showcase-bg) 30%, transparent) 68%, transparent 92%);
+    content: '';
+  }
+  .showcase-art > span { position: absolute; z-index: 1; right: 22px; bottom: 18px; padding: 6px 10px; border: 1px solid #ffffff80; border-radius: 7px; background: #ffffffdb; color: #294635; font-size: .6875rem; font-weight: 650; letter-spacing: .08em; }
+  .showcase-card > .showcase-copy { position: relative; z-index: 1; width: min(56%, 650px); padding: 0; color: var(--showcase-ink); }
+  .showcase-copy .eyebrow { color: var(--showcase-ink); }
+  .showcase-copy h2 { margin: 16px 0 14px; color: var(--showcase-ink); font-family: var(--font-editorial); font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 500; letter-spacing: -.055em; line-height: 1.08; text-wrap: balance; overflow-wrap: anywhere; }
+  .showcase-copy p { max-width: 520px; margin: 0 0 14px; color: var(--showcase-ink); font-size: clamp(1rem, 1.3vw, 1.05rem); line-height: 1.65; }
   .showcase-copy .muted { font-size: .8125rem; }
   .community-next-step { padding: 26px 30px; border-radius: 20px; margin-block: 30px 44px; grid-template-columns: 1fr auto; align-items: center; gap: 8px 28px; }
   .community-next-step h2, .community-next-step p { grid-column: 1; }
@@ -573,6 +600,13 @@
   .moderation-item, .recognition-card { border-radius: 18px; padding: 24px; }
   .moderation-item > p, .recognition-card > p, .recognition-card dd { font-size: .875rem; }
   .recognition-card > p { min-height: 0; }
+}
+@media screen and (max-width: 760px) {
+  .showcase-card { min-height: 0; padding: clamp(190px, 48vw, 240px) 24px 24px; }
+  .showcase-card > .showcase-copy { width: 100%; }
+  .showcase-art { bottom: auto; height: clamp(190px, 48vw, 240px); }
+  .showcase-art img { object-position: right center; }
+  .showcase-art::after { background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--showcase-bg) 12%, transparent) 42%, color-mix(in srgb, var(--showcase-bg) 74%, transparent) 70%, var(--showcase-bg) 100%); }
 }
 @media screen and (max-width: 700px) {
   .community-next-step { grid-template-columns: 1fr; padding: 24px; }

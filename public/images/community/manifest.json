@@ -1,0 +1,56 @@
+[
+  {
+    "file": "garden-800.webp",
+    "dimensions": [
+      800,
+      534
+    ],
+    "bytes": 39430,
+    "sha256": "225e6fbaea816bf18f77d2d6cf1ad99b01855479e46aadb99ddb8f339c6456a6"
+  },
+  {
+    "file": "garden-1600.webp",
+    "dimensions": [
+      1600,
+      1067
+    ],
+    "bytes": 99970,
+    "sha256": "029d3a9d9fd636221fe647d3a4586fd56cd1cd2454749c50e7a28ec9bf8a5456"
+  },
+  {
+    "file": "garden-2400.webp",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "bytes": 174970,
+    "sha256": "88eb1df7c439b535c6008598b3eba8653b34733d67be43ff3659ca030914445e"
+  },
+  {
+    "file": "bridge-800.webp",
+    "dimensions": [
+      800,
+      534
+    ],
+    "bytes": 39990,
+    "sha256": "ce5373393c2af0786988979b4a3395bcb536a50e6cadd2d4f702d3c6aef2d281"
+  },
+  {
+    "file": "bridge-1600.webp",
+    "dimensions": [
+      1600,
+      1067
+    ],
+    "bytes": 160468,
+    "sha256": "f74e4fd1bcf66f699df63189bb719c3f18cbe96495a645e4f4573f7876f943b1"
+  },
+  {
+    "file": "bridge-2400.webp",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "bytes": 403118,
+    "sha256": "dfde90b9eecf84f5cfe388b316cd8c59a9eb4db35361edf985fa4cc830c308c3"
+  }
+]

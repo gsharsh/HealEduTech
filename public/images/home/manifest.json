@@ -1,0 +1,110 @@
+[
+  {
+    "file": "hero-800.webp",
+    "dimensions": [
+      800,
+      534
+    ],
+    "bytes": 59246,
+    "sha256": "63aca7355dc83ef59e914bb770426288a1e076ec13a6b15a09f5eb043c53f8cd"
+  },
+  {
+    "file": "hero-1600.webp",
+    "dimensions": [
+      1600,
+      1067
+    ],
+    "bytes": 207800,
+    "sha256": "bd61268e2c67c9bd99fcaa6d4c85698233e5fda01c596db4cfe6c7dedda02157"
+  },
+  {
+    "file": "hero-2400.webp",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "bytes": 401330,
+    "sha256": "c85bd01e72efa263841bcbbdefb8363974b0cca420587051857c1cb8b51811ce"
+  },
+  {
+    "file": "nature-800.webp",
+    "dimensions": [
+      800,
+      534
+    ],
+    "bytes": 123774,
+    "sha256": "7e3d465242fd2974a3f728c5232f448194d63f11708d29d3077e260977e048f5"
+  },
+  {
+    "file": "nature-1600.webp",
+    "dimensions": [
+      1600,
+      1067
+    ],
+    "bytes": 434818,
+    "sha256": "335fa37d578c37c39eb0aa0cd0a15ac96a3908c568a3156ee9acb538352c3e6e"
+  },
+  {
+    "file": "nature-2400.webp",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "bytes": 819456,
+    "sha256": "554d83a1d70fac2221866c2d59b01575dbf14cfb1bbb41c47509468864d6d97e"
+  },
+  {
+    "file": "stories-800.webp",
+    "dimensions": [
+      800,
+      534
+    ],
+    "bytes": 17320,
+    "sha256": "13ea320022ef6f71328246d758f6082ff0b44b0001f9e597e11b9b35b8b8c14b"
+  },
+  {
+    "file": "stories-1600.webp",
+    "dimensions": [
+      1600,
+      1067
+    ],
+    "bytes": 46116,
+    "sha256": "28baf80a7df4fce5e8f956bd5dde937fecaa79bd565c42ffe777b2100516215c"
+  },
+  {
+    "file": "stories-2400.webp",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "bytes": 90552,
+    "sha256": "79f9234ab60f181c6e80270a70866b3e14ba734b3714f1cd6033d7a36b99866e"
+  },
+  {
+    "file": "science-800.webp",
+    "dimensions": [
+      800,
+      800
+    ],
+    "bytes": 78336,
+    "sha256": "5d162eef99f4a578a5967aeb03881533d4f991daa51b9ebf7130bf153d993c6a"
+  },
+  {
+    "file": "science-1600.webp",
+    "dimensions": [
+      1600,
+      1600
+    ],
+    "bytes": 242112,
+    "sha256": "d7f3e5b48f2c17e39e62d16f45f811f9afcee9e4872bf29de25b429a37828e48"
+  },
+  {
+    "file": "science-2400.webp",
+    "dimensions": [
+      2400,
+      2400
+    ],
+    "bytes": 420066,
+    "sha256": "d3ccad4e360cfed294a7770ed35f9202a6be62e1dc5cfe316b325647e2a4bf11"
+  }
+]
