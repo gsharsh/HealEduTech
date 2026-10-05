@@ -111,7 +111,7 @@ Recommendation planning starts the week of **5 October 2026** with an editable p
 
 ## UML source set
 
-The implemented diagrams below use current names and operations. The future learning diagram is intentionally separate. A standalone [rendered class diagram](uml/rendered.html) and [SVG](uml/rendered.svg) accompany the editable source. Editable Mermaid sources are [implemented classes](uml/implemented-domain.mmd), [Auth sequence](uml/auth-sequence.mmd), [catalogue/reading sequence](uml/catalogue-reading-sequence.mmd), [circulation sequence](uml/circulation-sequence.mmd), [deployment/access map](uml/deployment-access.mmd) and [planned learning classes](uml/planned-learning-domain.mmd). The deployment map is a component/data-flow diagram, not a strict UML deployment notation.
+The implemented diagrams below use current names and operations. The future learning diagram is intentionally separate. The standalone [rendered class diagram](uml/rendered.html) accompanies the editable source. Editable Mermaid sources are [implemented classes](uml/implemented-domain.mmd), [Auth sequence](uml/auth-sequence.mmd), [catalogue/reading sequence](uml/catalogue-reading-sequence.mmd), [circulation sequence](uml/circulation-sequence.mmd), [deployment/access map](uml/deployment-access.mmd) and [planned learning classes](uml/planned-learning-domain.mmd). The deployment map is a component/data-flow diagram, not a strict UML deployment notation.
 
 ### Implemented class diagram
 

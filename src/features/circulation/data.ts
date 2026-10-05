@@ -97,14 +97,6 @@ export async function registerBorrower(userId: string, displayName: string) {
   return data as Borrower;
 }
 
-export async function setBorrowerEligibility(userId: string, eligible: boolean) {
-  const { data, error } = await requireClient().rpc('set_circulation_borrower_eligibility', {
-    p_user_id: userId, p_eligible: eligible,
-  });
-  if (error) throw error;
-  return data as Borrower;
-}
-
 export async function checkoutCopy(requestId: string, borrowerUserId: string, copyId: string, dueDate: string) {
   const { data, error } = await requireClient().rpc('checkout_circulation_copy', {
     p_request_id: requestId, p_borrower_user_id: borrowerUserId, p_copy_id: copyId, p_due_date: dueDate,

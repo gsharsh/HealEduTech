@@ -161,7 +161,6 @@ src/
   styles/         shared application styles
   types/          shared domain types and future generated database types
 supabase/
-  functions/      server-only privileged operations
   migrations/     reviewed database schema and row-level security changes
   seed.sql        idempotent public-domain sample catalogue for local demos
   tests/          rollback-only SQL checks for policies and seed data

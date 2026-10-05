@@ -1,7 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from '../../lib/supabase';
+import type { ReadingStatus } from '../../types/domain';
 
-export type ReadingStatus = 'currently_reading' | 'finished';
+export type { ReadingStatus } from '../../types/domain';
 export type InterestTopic = 'nature' | 'stories' | 'science';
 
 export interface ReadingRecord {

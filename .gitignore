@@ -1,9 +1,6 @@
 node_modules
 dist
 .DS_Store
-.env
-.env.local
-.env.*.local
 *.log
 .vite
 coverage
@@ -16,3 +13,4 @@ coverage
 # Supabase CLI machine-local metadata
 supabase/.temp/
 .planning/.local/
+.planning/.state-fingerprint.json

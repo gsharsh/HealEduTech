@@ -1,6 +1,6 @@
 # Database migrations
 
-Add reviewed Supabase migrations here. The initial schema should be introduced with row-level security policies and tests as part of Phase 2; an empty migration is intentionally not included in the scaffold.
+Add reviewed Supabase migrations here. Keep schema changes paired with row-level security policies and tests, and apply them in the reviewed delivery order.
 
 Generate TypeScript database types after applying a schema:
 

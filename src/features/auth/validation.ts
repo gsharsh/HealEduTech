@@ -73,10 +73,3 @@ export function authCallbackErrorFromUrl(href: string): string | null {
   if (!code) return null;
   return authErrorKey({ code });
 }
-
-export function authCallbackError(): string | null {
-  const result = authCallbackErrorFromUrl(window.location.href);
-  if (!result) return null;
-  window.history.replaceState({}, document.title, window.location.pathname);
-  return result;
-}

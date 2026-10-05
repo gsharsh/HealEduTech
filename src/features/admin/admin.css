@@ -3,7 +3,6 @@
 .admin-catalogue__heading, .admin-inventory__heading, .admin-editor__heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
 .admin-catalogue__heading h1, .admin-inventory__heading h2, .admin-editor__heading h2 { margin: 5px 0 6px; }
 .admin-catalogue__heading p { max-width: 620px; margin: 0; color: var(--muted, #65766f); }
-.admin-catalogue__links { display: flex; flex-wrap: wrap; gap: 10px; }
 .workspace-public-link { display: inline-block; color: #52655e; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; }
 .workspace-public-link:hover { color: #1f5948; }
 .admin-access-state { max-width: 680px; }
