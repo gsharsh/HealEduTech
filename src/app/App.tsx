@@ -22,6 +22,7 @@ import { RouteMeta } from "./RouteMeta";
 const AdminPage = lazy(() => import("../features/admin/AdminPage").then(module => ({ default: module.AdminPage })));
 const AdministratorDashboard = lazy(() => import("../features/admin/AdministratorDashboard").then(module => ({ default: module.AdministratorDashboard })));
 const BookManagement = lazy(() => import("../features/admin/BookManagement").then(module => ({ default: module.BookManagement })));
+const StaffPage = lazy(() => import("../features/admin/StaffPage").then(module => ({ default: module.StaffPage })));
 const CirculationPage = lazy(() => import("../features/circulation/CirculationPage").then(module => ({ default: module.CirculationPage })));
 const CommunityPage = lazy(() => import("../features/community/CommunityPage").then(module => ({ default: module.CommunityPage })));
 const StaffTrainingPage = lazy(() => import("../features/community/StaffTrainingPage").then(module => ({ default: module.StaffTrainingPage })));
@@ -55,7 +56,7 @@ export function App() {
         <Route path="/explore" element={supabase ? <LiveExplorePage /> : <ExplorePage />} />
         <Route path="/community" element={<LazyPage><CommunityPage /></LazyPage>} />
         <Route path="/staff/training" element={<RequireStaff><LazyPage><StaffTrainingPage /></LazyPage></RequireStaff>} />
-        <Route path="/staff" element={<RequireStaff><Navigate to="/staff/catalogue" replace /></RequireStaff>} />
+        <Route path="/staff" element={<RequireStaff allowDemo={false}><LazyPage><StaffPage /></LazyPage></RequireStaff>} />
         <Route path="/staff/catalogue" element={<RequireStaff><LazyPage>{supabase ? <BookManagement /> : <AdminPage />}</LazyPage></RequireStaff>} />
         <Route path="/staff/circulation" element={<RequireStaff><LazyPage>{supabase ? <CirculationPage /> : <AdminPage />}</LazyPage></RequireStaff>} />
         <Route path="/admin/settings" element={<RequireAuth><LazyPage><AdministratorDashboard /></LazyPage></RequireAuth>} />

@@ -451,6 +451,8 @@
     "administration": "Administration",
     "publicCatalogue": "View public catalogue",
     "staffWorkspace": "Library staff workspace",
+    "deskBody": "Manage books, loans and returns, and find staff training in one place.",
+    "deskTools": "Your library tools",
     "signInTitle": "Administrator sign-in required",
     "signInBody": "Sign in with an authorised administrator account to manage staff access and library settings.",
     "adminOnlyTitle": "This area is for administrators",

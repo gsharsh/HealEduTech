@@ -449,6 +449,8 @@
     "administration": "Quản trị",
     "publicCatalogue": "Xem danh mục công khai",
     "staffWorkspace": "Khu vực nhân viên thư viện",
+    "deskBody": "Quản lý sách, mượn và trả sách, và tìm tài liệu đào tạo nhân viên tại một nơi.",
+    "deskTools": "Công cụ thư viện của bạn",
     "signInTitle": "Cần đăng nhập quản trị viên",
     "signInBody": "Đăng nhập bằng tài khoản quản trị viên được cấp quyền để quản lý quyền nhân viên và cài đặt thư viện.",
     "adminOnlyTitle": "Khu vực này dành cho quản trị viên",

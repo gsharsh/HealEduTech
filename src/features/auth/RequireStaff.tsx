@@ -22,21 +22,21 @@ function AccessUnavailable() {
   return <section className="route-access-state" role="alert"><span className="eyebrow">{t('access.accountArea')}</span><h1>{t('access.unavailableTitle')}</h1><p>{t('access.unavailableBody')}</p><button className="primary" type="button" onClick={() => void refreshStaffAccess()}>{t('access.tryAgain')}</button><Link className="secondary" to="/library">{t('access.backToLibrary')}</Link></section>;
 }
 
-export function RequireAuth({ children }: { children: ReactNode }) {
+export function RequireAuth({ children, allowDemo = true }: { children: ReactNode; allowDemo?: boolean }) {
   const { user, loading, accessStatus } = useAccount();
-  if (!supabase) return children;
+  if (!supabase && allowDemo) return children;
   if (loading || (user && accessStatus === 'loading')) return <LoadingAccess />;
   if (!user) return <SignInRequired />;
   if (accessStatus === 'error') return <AccessUnavailable />;
   return children;
 }
 
-export function RequireStaff({ children, roles = ['librarian', 'administrator'] }: { children: ReactNode; roles?: StaffRole[] }) {
+export function RequireStaff({ children, roles = ['librarian', 'administrator'], allowDemo = true }: { children: ReactNode; roles?: StaffRole[]; allowDemo?: boolean }) {
   const { t } = useTranslation();
   const { user, loading, accessStatus, staffRole } = useAccount();
 
   // The disconnected build remains a clearly labelled design preview.
-  if (!supabase) return children;
+  if (!supabase && allowDemo) return children;
   if (loading || (user && accessStatus === 'loading')) return <LoadingAccess />;
   if (!user) return <SignInRequired />;
   if (accessStatus === 'error') return <AccessUnavailable />;

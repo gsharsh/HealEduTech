@@ -12,6 +12,7 @@ export function AppShell() {
   const copy = libraryTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
   const { pathname } = useLocation();
   const isVietnamese = i18n.language === 'vi';
+  const isStaffArea = /^\/(staff|admin)(\/|$)/.test(pathname);
   const [mobileNavPath, setMobileNavPath] = useState<string | null>(null);
   const [navigationPath, setNavigationPath] = useState(pathname);
   // Clear the disclosure before rendering a different route, including
@@ -182,9 +183,10 @@ export function AppShell() {
         </div>
       </header>
 
-      {accessStatus === 'ready' && staffRole && (
+      {isStaffArea && user && accessStatus === 'ready' && staffRole && (
         <nav className="evg-staff-nav" aria-label={t('access.navigation')}>
           <span className="evg-staff-label">{t('access.staffArea')}</span>
+          <NavLink end to="/staff">{t('access.openDesk')}</NavLink>
           <NavLink to="/staff/catalogue">{t('access.catalogue')}</NavLink>
           <NavLink to="/staff/circulation">{t('access.circulation')}</NavLink>
           <NavLink to="/staff/training">{t('staffTraining.nav')}</NavLink>
