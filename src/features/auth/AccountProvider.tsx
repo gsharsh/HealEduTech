@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '../../lib/supabase';
+import i18n from '../../i18n';
 import { AccountContext, type StaffRole } from './context';
 import { recoveryTokenMatches } from './validation';
 
@@ -99,6 +100,8 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       const nextUser = session?.user ?? null;
       const nextUserId = nextUser?.id ?? null;
       if (currentUserId.current !== nextUserId) {
+        const preferredLanguage = nextUser?.user_metadata?.preferred_language;
+        if (preferredLanguage === 'en' || preferredLanguage === 'vi') void i18n.changeLanguage(preferredLanguage);
         currentUserId.current = nextUserId;
         sessionGenerationRef.current += 1;
         staffRequestRef.current += 1;

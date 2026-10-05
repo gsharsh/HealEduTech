@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const labels = {
-  en: { '/': 'Home', '/start': 'Quick guide', '/learning': 'My reading', '/library': 'Library', '/explore': 'Explore', '/community': 'Together', '/sign-in': 'Sign in', '/reset-password': 'Reset password', '/staff': 'Library desk', '/staff/catalogue': 'Catalogue', '/staff/circulation': 'Loans & returns', '/staff/training': 'Community training', '/admin/settings': 'Administration' },
-  vi: { '/': 'Trang chủ', '/start': 'Hướng dẫn nhanh', '/learning': 'Sách của em', '/library': 'Thư viện', '/explore': 'Khám phá', '/community': 'Cùng nhau', '/sign-in': 'Đăng nhập', '/reset-password': 'Đặt lại mật khẩu', '/staff': 'Quầy thư viện', '/staff/catalogue': 'Danh mục sách', '/staff/circulation': 'Mượn & trả sách', '/staff/training': 'Đào tạo cộng đồng', '/admin/settings': 'Quản trị' },
+  en: { '/': 'Home', '/start': 'Quick guide', '/learning': 'My reading', '/library': 'Library', '/explore': 'Explore', '/community': 'Together', '/account': 'Account', '/sign-in': 'Sign in', '/reset-password': 'Reset password', '/staff': 'Library desk', '/staff/catalogue': 'Catalogue', '/staff/circulation': 'Loans & returns', '/staff/training': 'Community training', '/admin/settings': 'Administration' },
+  vi: { '/': 'Trang chủ', '/start': 'Hướng dẫn nhanh', '/learning': 'Sách của em', '/library': 'Thư viện', '/explore': 'Khám phá', '/community': 'Cùng nhau', '/account': 'Tài khoản', '/sign-in': 'Đăng nhập', '/reset-password': 'Đặt lại mật khẩu', '/staff': 'Quầy thư viện', '/staff/catalogue': 'Danh mục sách', '/staff/circulation': 'Mượn & trả sách', '/staff/training': 'Đào tạo cộng đồng', '/admin/settings': 'Quản trị' },
 } as const;
 
 export function RouteMeta() {

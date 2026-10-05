@@ -22,12 +22,12 @@ function AccessUnavailable() {
   return <section className="route-access-state" role="alert"><span className="eyebrow">{t('access.accountArea')}</span><h1>{t('access.unavailableTitle')}</h1><p>{t('access.unavailableBody')}</p><button className="primary" type="button" onClick={() => void refreshStaffAccess()}>{t('access.tryAgain')}</button><Link className="secondary" to="/library">{t('access.backToLibrary')}</Link></section>;
 }
 
-export function RequireAuth({ children, allowDemo = true }: { children: ReactNode; allowDemo?: boolean }) {
+export function RequireAuth({ children, allowDemo = true, requireStaffAccess = true }: { children: ReactNode; allowDemo?: boolean; requireStaffAccess?: boolean }) {
   const { user, loading, accessStatus } = useAccount();
   if (!supabase && allowDemo) return children;
-  if (loading || (user && accessStatus === 'loading')) return <LoadingAccess />;
+  if (loading || (requireStaffAccess && user && accessStatus === 'loading')) return <LoadingAccess />;
   if (!user) return <SignInRequired />;
-  if (accessStatus === 'error') return <AccessUnavailable />;
+  if (requireStaffAccess && accessStatus === 'error') return <AccessUnavailable />;
   return children;
 }
 

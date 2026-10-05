@@ -154,7 +154,7 @@ export function AppShell() {
         </nav>
         <div className="evg-header-actions">
           <NavLink className="evg-guide-link" to="/start">{isVietnamese ? 'Hướng dẫn nhanh' : 'Quick guide'}</NavLink>
-          <NavLink className="evg-account-link" to="/sign-in">{user ? copy.account : copy.signIn}</NavLink>
+          <NavLink className="evg-account-link" to={user ? '/account' : '/sign-in'}>{user ? copy.account : copy.signIn}</NavLink>
           <div className="evg-language">
             <button
               type="button"

@@ -41,6 +41,8 @@ test('auth callback errors are read from link query or hash without exposing pro
 });
 test('next redirect only allows known local pages with safe characters', () => {
   assert.equal(safeNextPath('/library'), '/library');
+  assert.equal(safeNextPath('/account'), '/account');
+  assert.equal(safeNextPath('/staff'), '/staff');
   assert.equal(safeNextPath('/library?page=2#books'), '/library?page=2#books');
   assert.equal(safeNextPath('/library/the-tale-of-peter-rabbit'), '/library/the-tale-of-peter-rabbit');
   assert.equal(safeNextPath('/admin/circulation'), '/admin/circulation');
@@ -63,6 +65,7 @@ test('auth callback URLs preserve only sanitized local next paths', () => {
   assert.equal(buildAuthRedirectUrl('https://evg.example', 'https://evil.example'), 'https://evg.example/sign-in?next=%2Flearning');
   assert.equal(buildAuthRedirectUrl('https://evg.example'), 'https://evg.example/sign-in');
   assert.equal(buildAuthRedirectUrl('https://evg.example', '/library', 'recovery'), 'https://evg.example/sign-in?mode=recovery&next=%2Flibrary');
+  assert.equal(buildAuthRedirectUrl('https://evg.example', '/account', 'recovery'), 'https://evg.example/sign-in?mode=recovery&next=%2Faccount');
 });
 test('book return context survives the sign-in redirect and browse link sanitizers', () => {
   const bookPath = '/library/31000000-0000-4000-8000-000000000001?returnTo=%2Flibrary%3Fq%3DPeter%26topic%3Dnature%26page%3D2';

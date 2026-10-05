@@ -23,6 +23,7 @@ const AdminPage = lazy(() => import("../features/admin/AdminPage").then(module =
 const AdministratorDashboard = lazy(() => import("../features/admin/AdministratorDashboard").then(module => ({ default: module.AdministratorDashboard })));
 const BookManagement = lazy(() => import("../features/admin/BookManagement").then(module => ({ default: module.BookManagement })));
 const StaffPage = lazy(() => import("../features/admin/StaffPage").then(module => ({ default: module.StaffPage })));
+const AccountPage = lazy(() => import("../features/account/AccountPage").then(module => ({ default: module.AccountPage })));
 const CirculationPage = lazy(() => import("../features/circulation/CirculationPage").then(module => ({ default: module.CirculationPage })));
 const CommunityPage = lazy(() => import("../features/community/CommunityPage").then(module => ({ default: module.CommunityPage })));
 const StaffTrainingPage = lazy(() => import("../features/community/StaffTrainingPage").then(module => ({ default: module.StaffTrainingPage })));
@@ -41,6 +42,13 @@ function LegacyAdminRoute() {
   return <Navigate to={staffRole === 'administrator' ? '/admin/settings' : '/staff/catalogue'} replace />;
 }
 
+function AccountRoute() {
+  const { user, loading, recovery } = useAccount();
+  if (!loading && !user) return <Navigate to="/sign-in?next=/account" replace />;
+  if (recovery) return <Navigate to="/sign-in?mode=recovery&next=/account" replace />;
+  return <RequireAuth allowDemo={false} requireStaffAccess={false}><LazyPage><AccountPage key={user?.id} /></LazyPage></RequireAuth>;
+}
+
 export function App() {
   return (<AccountProvider><DemoProvider>
     <RouteMeta />
@@ -51,6 +59,7 @@ export function App() {
         <Route index element={<HomePage />} />
         <Route path="/start" element={<QuickGuidePage />} />
         <Route path="/learning" element={supabase ? <LiveLearningPage /> : <MyLearningPage />} />
+        <Route path="/account" element={<AccountRoute />} />
         <Route path="/library" element={supabase ? <LiveLibraryPage /> : <LibraryPage />} />
         {supabase && <Route path="/library/:bookId" element={<BookDetailPage />} />}
         <Route path="/explore" element={supabase ? <LiveExplorePage /> : <ExplorePage />} />

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { authRedirectUrl, passwordResetRedirectUrl, supabase } from '../../lib/supabase';
 import { useAccount } from './context';
@@ -130,6 +130,7 @@ export function SignInPage() {
 
   const title = mode === 'reset' ? 'auth.resetTitle' : user ? 'auth.signedIn' : pending ? (pending.recovery ? 'auth.recoverTitle' : 'auth.verifyTitle') : mode === 'recover' ? 'auth.recoverTitle' : mode === 'register' ? 'auth.registerTitle' : 'auth.signInTitle';
   const passwordDescriptions = [mode !== 'sign-in' ? 'password-help' : '', fieldErrors.password ? 'auth-password-error' : ''].filter(Boolean).join(' ') || undefined;
+  if (!loading && !busy && user && !recovery && mode !== 'reset' && !callbackNext && !error && notice !== 'auth.passwordUpdatedSignOutFailed') return <Navigate to="/account" replace />;
   return <main ref={mainRef} tabIndex={-1} className="sign-in-page"><section className="sign-in-card account-card" aria-labelledby="auth-title">
     <span className="brand-mark" aria-hidden="true">e.</span><span className="eyebrow">EVG VIETNAM</span><h1 id="auth-title">{t(title)}</h1>{mode === 'sign-in' && !user && <p className="auth-subtitle">{t('auth.signInSubtitle')}</p>}
     {loading ? <p role="status">{t('auth.loading')}</p> : user && mode !== 'reset' ? <div className="signed-in-account"><p className="signed-in-account__email">{user.email}</p><div className="signed-in-account__actions"><Link className="primary signed-in-account__continue" to={next}>{t('auth.continue')}</Link>{accessStatus === 'loading' && <p className="muted signed-in-account__status" role="status">{t('access.checking')}</p>}<div className="signed-in-account__secondary-actions">{accessStatus === 'ready' && staffRole && <Link className="secondary" to="/staff">{t('access.openDesk')}</Link>}<button className="secondary" type="button" disabled={busy} onClick={() => void signOut()}>{t('auth.signOut')}</button></div></div><p className="muted auth-shared-device signed-in-account__note">{t('auth.sharedDevice')}</p></div> : !supabase ? <><p role="status">{t('auth.notConfigured')}</p><p className="muted auth-shared-device">{t('auth.sharedDevice')}</p></> : <>
