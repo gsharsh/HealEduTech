@@ -13,6 +13,7 @@ export function AppShell() {
   const { pathname } = useLocation();
   const isVietnamese = i18n.language === 'vi';
   const isStaffArea = /^\/(staff|admin)(\/|$)/.test(pathname);
+  const canOpenDesk = Boolean(user && accessStatus === 'ready' && (staffRole === 'librarian' || staffRole === 'administrator'));
   const [mobileNavPath, setMobileNavPath] = useState<string | null>(null);
   const [navigationPath, setNavigationPath] = useState(pathname);
   // Clear the disclosure before rendering a different route, including
@@ -140,7 +141,7 @@ export function AppShell() {
   return (
     <div className="evg-shell">
       <a className="evg-skip-link" href="#main-content">{t('skip')}</a>
-      <header className="evg-header">
+      <header className={`evg-header ${canOpenDesk ? 'has-staff-action' : ''}`}>
         <NavLink className="evg-brand" to="/" aria-label="EVG Learn & Grow">
           <span className="evg-brand-name">EVG</span>
         </NavLink>
@@ -153,6 +154,7 @@ export function AppShell() {
           <NavLink to="/community" onClick={closeMobileNavFromLink}>{t('community')}</NavLink>
         </nav>
         <div className="evg-header-actions">
+          {canOpenDesk && <NavLink className="evg-desk-link" to="/staff">{t('access.openDesk')}</NavLink>}
           <NavLink className="evg-account-link" to={user ? '/account' : '/sign-in'}>{user ? copy.account : copy.signIn}</NavLink>
           <div className="evg-language">
             <button

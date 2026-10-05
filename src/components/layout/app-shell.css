@@ -24,13 +24,13 @@
 .evg-brand-sub { color: var(--evg-muted); font-size: 10px; letter-spacing: .09em; }
 .evg-primary-nav { position: relative; display: flex; flex: 1 1 auto; min-width: 0; align-items: center; justify-content: center; gap: clamp(12px, 2vw, 24px); }
 .evg-primary-nav__pill { position: absolute; z-index: 0; top: 0; left: 0; display: block; border-radius: 999px; background: var(--glass-fill-strong); background: color-mix(in srgb, var(--evg-accent) 14%, var(--glass-fill-strong)); opacity: 0; pointer-events: none; transform: translate3d(0, 0, 0); transition: transform var(--duration-normal) var(--ease-out), width var(--duration-normal) var(--ease-out), height var(--duration-normal) var(--ease-out), opacity var(--duration-fast) var(--ease-out); }
-.evg-primary-nav a, .evg-account-link { display: inline-flex; align-items: center; min-height: 44px; padding: 10px 12px; color: var(--evg-text); font-size: .875rem; font-weight: 500; white-space: nowrap; border-radius: 999px; background: transparent; }
+.evg-primary-nav a, .evg-account-link, .evg-desk-link { display: inline-flex; align-items: center; min-height: 44px; padding: 10px 12px; color: var(--evg-text); font-size: .875rem; font-weight: 500; white-space: nowrap; border-radius: 999px; background: transparent; }
 .evg-primary-nav a { position: relative; z-index: 1; }
 .evg-primary-nav a[aria-current='page'] { color: var(--evg-accent); background: var(--glass-fill-strong); background: color-mix(in srgb, var(--evg-accent) 14%, var(--glass-fill-strong)); box-shadow: none; }
 .evg-primary-nav.has-active-pill a[aria-current='page'] { background: transparent; }
-.evg-primary-nav a:hover, .evg-account-link:hover { color: var(--evg-accent); }
+.evg-primary-nav a:hover, .evg-account-link:hover, .evg-desk-link:hover { color: var(--evg-accent); }
 .evg-primary-nav a:hover { border-radius: 999px; background: color-mix(in srgb, var(--evg-accent) 7%, transparent); }
-.evg-header-actions { display: flex; justify-self: end; align-items: center; gap: 18px; }
+.evg-header-actions { display: flex; min-width: 0; justify-self: end; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 4px 18px; }
 .evg-mobile-menu-toggle { display: none; align-items: center; justify-content: center; width: 44px; min-width: 44px; height: 44px; padding: 0; border: 1px solid var(--glass-edge); border-radius: 999px; color: var(--evg-text); background: var(--glass-fill-strong); box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight); -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)); backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)); }
 .evg-mobile-menu-icon, .evg-mobile-menu-icon::before, .evg-mobile-menu-icon::after { display: block; width: 18px; height: 2px; border-radius: 2px; background: currentColor; transition: transform var(--duration-fast) var(--ease-out), opacity var(--duration-fast) var(--ease-out); }
 .evg-mobile-menu-icon { position: relative; }
@@ -58,9 +58,19 @@
 .evg-footer nav { display: flex; flex-wrap: wrap; gap: 16px; }
 .evg-footer a { display: inline-flex; align-items: center; min-height: 44px; color: var(--evg-accent); }
 .evg-footer a:hover { text-decoration: underline; text-underline-offset: 3px; }
+@media (min-width: 1209px) {
+  .evg-header.has-staff-action .evg-primary-nav { gap: 12px; }
+  .evg-header.has-staff-action .evg-header-actions { column-gap: 8px; }
+  .evg-header.has-staff-action .evg-account-link, .evg-header.has-staff-action .evg-desk-link { padding-inline: 8px; }
+}
+@media (min-width: 761px) and (max-width: 1208px) {
+  .evg-header.has-staff-action { grid-template-columns: minmax(0, 1fr) auto; gap: 0 16px; }
+  .evg-header.has-staff-action .evg-primary-nav { grid-column: 1 / -1; grid-row: 2; gap: 16px; padding-top: 4px; }
+  .evg-header.has-staff-action ~ .evg-main { scroll-margin-top: 124px; }
+}
 @media (max-width: 1120px) {
   .evg-header { grid-template-columns: minmax(0, 1fr) auto; gap: 0 16px; }
-  .evg-header-actions { gap: 8px; }
+  .evg-header-actions { gap: 4px 8px; }
   .evg-primary-nav { grid-column: 1 / -1; grid-row: 2; gap: 16px; padding-top: 4px; }
   .evg-main { scroll-margin-top: 124px; }
 }
@@ -78,12 +88,18 @@
 @media (prefers-reduced-motion: reduce) { .evg-primary-nav__pill { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .evg-mobile-menu-icon, .evg-mobile-menu-icon::before, .evg-mobile-menu-icon::after { transition: none; } }
 @media (max-width: 760px) {
-  .evg-header { gap: 0 8px; }
-  .evg-header-actions { gap: 8px; }
-  .evg-account-link { padding-inline: 8px; }
+  .evg-header { grid-template-columns: auto minmax(0, 1fr); gap: 0 8px; }
+  .evg-header-actions { gap: 4px 8px; max-width: 100%; }
+  .evg-account-link, .evg-desk-link { padding-inline: 8px; }
   .evg-mobile-menu-toggle { display: inline-flex; }
   .evg-primary-nav { display: none; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; max-height: min(60dvh, 28rem); padding: 10px 0 6px; overflow-y: auto; overscroll-behavior: contain; border-top: 1px solid var(--evg-line); }
   .evg-primary-nav.is-mobile-open { display: grid; }
   .evg-primary-nav a { display: inline-flex; width: 100%; min-width: 0; justify-content: flex-start; padding: 10px 12px; text-align: left; white-space: normal; }
   .evg-primary-nav__pill { top: 0; }
+}
+@media (max-width: 560px) {
+  .evg-header-actions { gap: 4px 8px; }
+  .evg-header.has-staff-action .evg-header-actions { gap: 4px; }
+  .evg-header.has-staff-action .evg-account-link, .evg-header.has-staff-action .evg-desk-link { padding-inline: 4px; font-size: .75rem; }
+  .evg-header.has-staff-action .evg-language-toggle { width: 64px; }
 }
