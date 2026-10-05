@@ -52,6 +52,7 @@
 .account-security__copy { margin: 0; max-width: 720px; }
 .account-security__actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .account-security__actions .secondary { min-width: 190px; }
+.account-guide > .secondary { justify-self: start; }
 .account-page .reading-interests { margin-top: 0; padding: 26px; border: 1px solid var(--line); border-radius: 22px; background: var(--paper); box-shadow: 0 5px 18px #17392c04; }
 .account-page .reading-interests h2 { margin-top: 0; }
 .account-page .reading-interests > p { font-size: .875rem; }

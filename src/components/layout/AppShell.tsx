@@ -153,7 +153,6 @@ export function AppShell() {
           <NavLink to="/community" onClick={closeMobileNavFromLink}>{t('community')}</NavLink>
         </nav>
         <div className="evg-header-actions">
-          <NavLink className="evg-guide-link" to="/start">{isVietnamese ? 'Hướng dẫn nhanh' : 'Quick guide'}</NavLink>
           <NavLink className="evg-account-link" to={user ? '/account' : '/sign-in'}>{user ? copy.account : copy.signIn}</NavLink>
           <div className="evg-language">
             <button
@@ -206,7 +205,6 @@ export function AppShell() {
       <footer className="evg-footer">
         <span lang="en">EVG · Learn &amp; grow</span>
         <nav aria-label={isVietnamese ? 'Liên kết bổ sung' : 'More links'}>
-          <NavLink to="/start">{isVietnamese ? 'Hướng dẫn nhanh' : 'Quick guide'}</NavLink>
           <NavLink to="/explore">{t('explore')}</NavLink>
           <NavLink to="/community">{t('community')}</NavLink>
         </nav>
