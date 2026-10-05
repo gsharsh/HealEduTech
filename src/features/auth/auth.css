@@ -8,6 +8,18 @@
 .auth-subtitle { margin-top:-4px; }
 .auth-shared-device { margin:12px 0; }
 
+.signed-in-account { display:grid; gap:20px; }
+.signed-in-account__email { margin:0; overflow-wrap:anywhere; }
+.signed-in-account__actions { display:grid; gap:12px; }
+.signed-in-account__actions .primary { width:100%; }
+.signed-in-account__secondary-actions { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; }
+.sign-in-card .signed-in-account__secondary-actions .secondary { width:100%; min-height:44px; margin-top:0; }
+.signed-in-account__status { margin:0; }
+.signed-in-account__note { margin:0; padding-top:16px; }
+.auth-card-footer { display:grid; gap:14px; margin-top:24px; }
+.auth-card-footer > p { margin:0; }
+.auth-card-footer__links { display:flex; align-items:center; justify-content:space-between; gap:14px; padding-top:18px; border-top:1px solid var(--line); }
+
 .sign-in-page {
   padding: clamp(24px, 5vw, 64px) 20px;
   background: radial-gradient(ellipse at 8% 8%, #dcebdc 0, transparent 42%), radial-gradient(ellipse at 95% 90%, #f0e5d5 0, transparent 40%), var(--canvas);
@@ -29,4 +41,6 @@
 @media (max-width: 480px) {
   .sign-in-page { padding: 20px 14px; }
   .sign-in-card { padding: 26px 22px; border-radius: 22px; }
+  .signed-in-account__secondary-actions { grid-template-columns: 1fr; }
+  .auth-card-footer__links { align-items: stretch; flex-direction: column; }
 }

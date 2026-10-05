@@ -62,7 +62,7 @@ export function AdministratorDashboard() {
         <div><h2>{t('workspaces.circulationTitle')}</h2><p>{t('workspaces.circulationBody')}</p></div>
         <Link className="secondary" to="/staff/circulation">{t('workspaces.openCirculation')}</Link>
       </article>
-      <article className="workspace-card workspace-card--admin">
+      <article className="workspace-card">
         <span className="workspace-card__number" aria-hidden="true">03</span>
         <div><h2>{t('workspaces.staffAccessTitle')}</h2><p>{t('workspaces.staffAccessBody')}</p></div>
         <a className="secondary" href="#staff-access">{t('workspaces.manageStaff')}</a>
