@@ -74,3 +74,11 @@ test('book return context survives the sign-in redirect and browse link sanitize
   const callback = new URL(buildAuthRedirectUrl('https://evg.example', bookPath));
   assert.equal(callback.searchParams.get('next'), bookPath);
 });
+test('staff oversight destinations survive sign-in redirects without opening arbitrary routes', () => {
+  assert.equal(safeNextPath('/staff/dashboard'), '/staff/dashboard');
+  assert.equal(safeNextPath('/staff/students?filter=reading'), '/staff/students?filter=reading');
+  assert.equal(safeNextPath('/staff/students/60000000-0000-4000-8000-000000000003'), '/staff/students/60000000-0000-4000-8000-000000000003');
+  assert.equal(safeNextPath('/staff/circulation?status=followup'), '/staff/circulation?status=followup');
+  assert.equal(safeNextPath('/staff/students/unsafe'), '/learning');
+  assert.equal(safeNextPath('/staff/students/%2f%2fevil.example'), '/learning');
+});

@@ -1,16 +1,19 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import { useAccount } from '../../features/auth/context';
 import { libraryTranslations } from '../../features/library/libraryTranslations';
+import { useStaffAlerts } from '../../features/admin/useStaffAlerts';
 import './app-shell.css';
 
 export function AppShell() {
   const { t, i18n } = useTranslation();
   const { user, accessStatus, staffRole } = useAccount();
   const copy = libraryTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const followupActive = pathname === '/staff/circulation' && new URLSearchParams(search).get('status') === 'followup';
+  const alerts = useStaffAlerts(pathname);
   const isVietnamese = i18n.language === 'vi';
   const isStaffArea = /^\/(staff|admin)(\/|$)/.test(pathname);
   const canOpenDesk = Boolean(user && accessStatus === 'ready' && (staffRole === 'librarian' || staffRole === 'administrator'));
@@ -154,7 +157,7 @@ export function AppShell() {
           <NavLink to="/community" onClick={closeMobileNavFromLink}>{t('community')}</NavLink>
         </nav>
         <div className="evg-header-actions">
-          {canOpenDesk && <NavLink className="evg-desk-link" to="/staff">{t('access.openDesk')}</NavLink>}
+          {canOpenDesk && <NavLink className="evg-desk-link" to="/staff">{t('access.openDesk')}{alerts.count !== null && alerts.count > 0 && <span className="staff-alert-badge" aria-label={`${alerts.count} ${isVietnamese ? 'lượt mượn quá hạn từ 7 ngày' : 'loans overdue by 7+ days'}`}>{alerts.count}</span>}</NavLink>}
           <NavLink className="evg-account-link" to={user ? '/account' : '/sign-in'}>{user ? copy.account : copy.signIn}</NavLink>
           <div className="evg-language">
             <button
@@ -188,8 +191,11 @@ export function AppShell() {
         <nav className="evg-staff-nav" aria-label={t('access.navigation')}>
           <span className="evg-staff-label">{t('access.staffArea')}</span>
           <NavLink end to="/staff">{t('access.openDesk')}</NavLink>
+          <NavLink to="/staff/dashboard">{isVietnamese ? 'Thống kê' : 'Dashboard'}</NavLink>
+          <NavLink to="/staff/students">{isVietnamese ? 'Học sinh' : 'Students'}</NavLink>
           <NavLink to="/staff/catalogue">{t('access.catalogue')}</NavLink>
-          <NavLink to="/staff/circulation">{t('access.circulation')}</NavLink>
+          <NavLink to="/staff/circulation" className={({ isActive }) => isActive && !followupActive ? 'active' : ''}>{t('access.circulation')}</NavLink>
+          <Link to="/staff/circulation?status=followup" className={followupActive ? 'active' : undefined} aria-current={followupActive ? 'page' : undefined}>{isVietnamese ? 'Cần theo dõi' : 'Needs attention'}{alerts.count !== null && alerts.count > 0 && <span className="staff-alert-badge">{alerts.count}</span>}</Link>
           <NavLink to="/staff/training">{t('staffTraining.nav')}</NavLink>
           {staffRole === 'administrator' && <NavLink to="/admin/settings">{t('access.administration')}</NavLink>}
         </nav>

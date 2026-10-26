@@ -34,7 +34,7 @@ BOOTSTRAP = """create role anon nologin;
 create role authenticated nologin;
 create schema auth;
 create schema extensions;
-create table auth.users(id uuid primary key, email text, email_confirmed_at timestamptz,
+create table auth.users(id uuid primary key, email text, email_confirmed_at timestamptz, created_at timestamptz default now(),
   raw_user_meta_data jsonb default '{}');
 create function auth.uid() returns uuid language sql stable as $$
 select coalesce(nullif(current_setting('request.jwt.claim.sub',true),''),
@@ -136,7 +136,7 @@ class LocalAudit:
                 process.wait(timeout=5)
 
     def reset_loans(self):
-        self.sql("delete from public.circulation_events;delete from public.loans;update public.book_copies set condition='usable';", "reset-probe-state")
+        self.sql("delete from public.loan_contacts;delete from public.circulation_events;delete from public.loans;update public.book_copies set condition='usable';", "reset-probe-state")
 
     def concurrent(self):
         # All fixtures live only in the cluster created by this script. Never
@@ -179,6 +179,25 @@ class LocalAudit:
           'active_loans',(select count(*) from public.loans where copy_id='{COPIES[0]}' and resolved_at is null),
           'old_resolution',(select resolution from public.loans where id='{old}'));""", "correction-final"))
         checks.append({"name": "old resolution correction vs new checkout", "clients": result, "final": final, "pass": result['first_exit'] == 0 and result['second_exit'] != 0 and result['second_sqlstate'] == '55000' and final == {'copy_condition': 'usable', 'active_loans': 1, 'old_resolution': 'returned'}})
+        contact_loan = '64000000-0000-4000-8000-000000000002'
+        contact = f"select public.staff_record_loan_contact('63000000-0000-4000-8000-000000000010','{contact_loan}');"
+        returned = f"select (public.resolve_circulation_loan('63000000-0000-4000-8000-000000000011','{contact_loan}','returned','usable')).id;"
+        for name, first, second in [
+            ("contact-retry", contact, contact),
+            ("return-vs-contact", returned, contact),
+            ("contact-vs-return", contact, returned),
+        ]:
+            self.reset_loans()
+            self.sql(f"""insert into public.loans(id,request_id,borrower_user_id,copy_id,due_date,checked_out_by)
+              values ('{contact_loan}','63000000-0000-4000-8000-000000000009','{USER['one']}','{COPIES[0]}',
+              (now() at time zone 'Asia/Ho_Chi_Minh')::date-7,'{USER['staff']}');""", name + "-setup")
+            result = self.pair(name, "staff", first, second)
+            state = json.loads(self.sql(f"""select json_build_object(
+              'contacts',(select count(*) from public.loan_contacts),
+              'resolved',(select resolved_at is not null from public.loans where id='{contact_loan}'));""", name + "-final"))
+            expected = {"contacts": 0 if name == "return-vs-contact" else 1, "resolved": name != "contact-retry"}
+            second_ok = result['second_exit'] != 0 and result['second_sqlstate'] == '55000' if name == "return-vs-contact" else result['second_exit'] == 0
+            checks.append({"name": name, "clients": result, "final": state, "pass": result['first_exit'] == 0 and second_ok and state == expected})
         self.sql("update public.circulation_policy set enabled=false;", "disable-circulation")
 
     def close(self):
@@ -219,7 +238,7 @@ def main() -> int:
         except Exception as error:
             audit.report["cleanup_error"] = str(error)
         (output / "results.json").write_text(json.dumps(audit.report, indent=2))
-    success = not audit.report.get("error") and not audit.report.get("cleanup_error") and all(s['status'] == 'pass' for s in audit.report['suites']) and len(audit.report['concurrency']) == 5 and all(c['pass'] for c in audit.report['concurrency'])
+    success = not audit.report.get("error") and not audit.report.get("cleanup_error") and all(s['status'] == 'pass' for s in audit.report['suites']) and len(audit.report['concurrency']) == 8 and all(c['pass'] for c in audit.report['concurrency'])
     print(json.dumps({"pass": success, "migrations": len(audit.report['migrations']), "sql_suites_passed": sum(s['status'] == 'pass' for s in audit.report['suites']), "concurrency_passed": sum(c['pass'] for c in audit.report['concurrency']), "cluster_removed": audit.report.get('cluster_removed', False), "evidence": str(output)}, indent=2))
     return 0 if success else 1
 

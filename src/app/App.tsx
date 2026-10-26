@@ -27,6 +27,9 @@ const AccountPage = lazy(() => import("../features/account/AccountPage").then(mo
 const CirculationPage = lazy(() => import("../features/circulation/CirculationPage").then(module => ({ default: module.CirculationPage })));
 const CommunityPage = lazy(() => import("../features/community/CommunityPage").then(module => ({ default: module.CommunityPage })));
 const StaffTrainingPage = lazy(() => import("../features/community/StaffTrainingPage").then(module => ({ default: module.StaffTrainingPage })));
+const StudentsPage = lazy(() => import("../features/admin/StudentsPage").then(module => ({ default: module.StudentsPage })));
+const StudentDetailPage = lazy(() => import("../features/admin/StudentsPage").then(module => ({ default: module.StudentDetailPage })));
+const StaffDashboard = lazy(() => import("../features/admin/StaffDashboard").then(module => ({ default: module.StaffDashboard })));
 
 function RouteLoading() {
   const { t } = useTranslation();
@@ -49,6 +52,12 @@ function AccountRoute() {
   return <RequireAuth allowDemo={false} requireStaffAccess={false}><LazyPage><AccountPage key={user?.id} /></LazyPage></RequireAuth>;
 }
 
+function StaffOversightRoute({ page }: { page: 'students' | 'student' | 'dashboard' }) {
+  const { user, staffRole } = useAccount();
+  const sessionKey = `${user?.id ?? ''}:${staffRole ?? ''}`;
+  return <RequireStaff allowDemo={false}><LazyPage>{page === 'students' ? <StudentsPage key={sessionKey} /> : page === 'student' ? <StudentDetailPage key={sessionKey} /> : <StaffDashboard key={sessionKey} />}</LazyPage></RequireStaff>;
+}
+
 export function App() {
   return (<AccountProvider><DemoProvider>
     <RouteMeta />
@@ -66,6 +75,9 @@ export function App() {
         <Route path="/community" element={<LazyPage><CommunityPage /></LazyPage>} />
         <Route path="/staff/training" element={<RequireStaff><LazyPage><StaffTrainingPage /></LazyPage></RequireStaff>} />
         <Route path="/staff" element={<RequireStaff allowDemo={false}><LazyPage><StaffPage /></LazyPage></RequireStaff>} />
+        <Route path="/staff/dashboard" element={<StaffOversightRoute page="dashboard" />} />
+        <Route path="/staff/students" element={<StaffOversightRoute page="students" />} />
+        <Route path="/staff/students/:studentId" element={<StaffOversightRoute page="student" />} />
         <Route path="/staff/catalogue" element={<RequireStaff><LazyPage>{supabase ? <BookManagement /> : <AdminPage />}</LazyPage></RequireStaff>} />
         <Route path="/staff/circulation" element={<RequireStaff><LazyPage>{supabase ? <CirculationPage /> : <AdminPage />}</LazyPage></RequireStaff>} />
         <Route path="/admin/settings" element={<RequireAuth><LazyPage><AdministratorDashboard /></LazyPage></RequireAuth>} />

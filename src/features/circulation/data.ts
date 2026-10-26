@@ -48,19 +48,53 @@ export async function getCirculationPolicy() {
   return data as CirculationPolicy;
 }
 
-export async function listBorrowers() {
-  const { data, error } = await requireClient().from('circulation_borrowers')
-    .select('user_id,display_name,eligible').order('display_name');
-  if (error) throw error;
-  return data as Borrower[];
+export async function listBorrowers(signal?: AbortSignal) {
+  const borrowers: Borrower[] = [];
+  let cursor = '';
+  for (;;) {
+    let request = requireClient().from('circulation_borrowers').select('user_id,display_name,eligible').order('user_id').limit(500);
+    if (cursor) request = request.gt('user_id', cursor);
+    if (signal) request = request.abortSignal(signal);
+    const { data, error } = await request;
+    if (error) throw error;
+    const page = data as Borrower[];
+    borrowers.push(...page);
+    if (page.length < 500) return borrowers.sort((a, b) => a.display_name.localeCompare(b.display_name));
+    cursor = page[page.length - 1].user_id;
+  }
 }
 
-export async function listCopies() {
-  const { data, error } = await requireClient().from('book_copies')
-    .select('id,book_id,inventory_code,condition,shelf_location,books(title_en,title_vi)')
-    .order('inventory_code');
-  if (error) throw error;
-  return data as unknown as CirculationCopy[];
+export async function listCopies(signal?: AbortSignal) {
+  const copies: CirculationCopy[] = [];
+  let cursor = '';
+  for (;;) {
+    let request = requireClient().from('book_copies').select('id,book_id,inventory_code,condition,shelf_location,books(title_en,title_vi)').order('id').limit(500);
+    if (cursor) request = request.gt('id', cursor);
+    if (signal) request = request.abortSignal(signal);
+    const { data, error } = await request;
+    if (error) throw error;
+    const page = data as unknown as CirculationCopy[];
+    copies.push(...page);
+    if (page.length < 500) return copies.sort((a, b) => a.inventory_code.localeCompare(b.inventory_code));
+    cursor = page[page.length - 1].id;
+  }
+}
+
+/** Availability cannot be derived from the current page of the staff loan table. */
+export async function listActiveLoanCopyIds(signal?: AbortSignal) {
+  const ids = new Set<string>();
+  let cursor = '';
+  for (;;) {
+    let request = requireClient().from('loans').select('copy_id').is('resolved_at', null).order('copy_id').limit(500);
+    if (cursor) request = request.gt('copy_id', cursor);
+    if (signal) request = request.abortSignal(signal);
+    const { data, error } = await request;
+    if (error) throw error;
+    const page = data as { copy_id: string }[];
+    page.forEach(item => ids.add(item.copy_id));
+    if (page.length < 500) return ids;
+    cursor = page[page.length - 1].copy_id;
+  }
 }
 
 export async function listLoans(scope: 'own' | 'staff' = 'own', options: { userId?: string; signal?: AbortSignal } = {}) {

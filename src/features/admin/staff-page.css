@@ -6,6 +6,10 @@
   margin: 0 auto;
 }
 
+.staff-page__attention { padding: 24px; border: 1px solid #d8c79d; border-radius: 20px; background: #fff9e9; }
+.staff-page__attention h2 { margin: 0 0 8px; }
+.staff-page__attention p { margin: 0 0 16px; }
+
 .staff-page__hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

@@ -22,3 +22,30 @@
 .circulation-table th, .circulation-table td { padding: 14px 10px; }
 .loan-status { padding: 5px 9px; border-radius: 8px; }
 @media (min-width: 760px) { .circulation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .circulation-wide { grid-column: 1 / -1; } }
+
+.circulation-section-heading, .circulation-pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.circulation-section-heading h2 { margin-bottom: 0; }
+.circulation-pagination { margin-top: 16px; font-size: .875rem; }
+.circulation-filters { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 18px; margin: 22px 0 14px; }
+.circulation-filters label { display: grid; gap: 8px; font-size: .875rem; font-weight: 650; }
+.circulation-search { display: flex; gap: 8px; margin-top: 8px; }
+.circulation-search input { min-width: 0; width: 100%; }
+.circulation-filters input, .circulation-filters select, .loan-followup input, .loan-followup textarea { min-height: 44px; padding: 10px 12px; border: 1px solid var(--line, #d8d3c6); border-radius: 10px; background: #fff; color: var(--ink); font: inherit; }
+.circulation-filters select { width: 100%; }
+.circulation-meta { display: block; margin-top: 5px; overflow-wrap: anywhere; font-size: .8125rem; }
+.circulation-attention { color: #8a3328; font-weight: 650; max-width: 18ch; }
+.circulation-table { min-width: 860px; }
+.circulation-card .table-wrap { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+.circulation-table td:first-child { min-width: 130px; }
+.circulation-table td:nth-child(2) { min-width: 140px; }
+.circulation-followup-row > td { padding-top: 0; }
+.loan-followup summary { cursor: pointer; color: var(--green, #286047); font-weight: 650; padding: 8px 0; width: fit-content; }
+.loan-followup__content { display: grid; gap: 12px; max-width: min(650px, calc(100vw - 100px)); padding: 14px 0; }
+.loan-followup__content p, .loan-followup__content h3 { margin: 0; }
+.loan-followup__content input, .loan-followup__content textarea { width: 100%; box-sizing: border-box; }
+.loan-followup__content textarea { resize: vertical; }
+.loan-followup__content button, .loan-followup__content a { justify-self: start; }
+.loan-followup__content label { font-weight: 650; }
+.loan-followup__content li { margin-bottom: 8px; }
+.circulation-filter-note { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+@media (max-width: 640px) { .circulation-filters { grid-template-columns: 1fr; } .circulation-card { padding: 18px; } }

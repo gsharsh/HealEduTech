@@ -7,7 +7,7 @@ export function validPassword(value: string): boolean {
   return value.length >= 12 && value.length <= 128;
 }
 
-const appPaths = new Set(['/account', '/learning', '/library', '/explore', '/community', '/staff', '/staff/catalogue', '/staff/circulation', '/staff/training', '/admin', '/admin/circulation', '/admin/settings']);
+const appPaths = new Set(['/account', '/learning', '/library', '/explore', '/community', '/staff', '/staff/dashboard', '/staff/students', '/staff/catalogue', '/staff/circulation', '/staff/training', '/admin', '/admin/circulation', '/admin/settings']);
 export function safeNextPath(value: string | null): string {
   if (!value || !value.startsWith('/') || value.startsWith('//')) return '/learning';
   const hasUnsafeCharacter = value.split('').some(character => {
@@ -19,7 +19,8 @@ export function safeNextPath(value: string | null): string {
     const url = new URL(value, 'https://evg.local');
     if (/%(?:2f|5c|0[0-9a-f]|1[0-9a-f]|7f)/i.test(url.pathname)) return '/learning';
     const isBookDetail = /^\/library\/[^/]+$/.test(url.pathname);
-    return appPaths.has(url.pathname) || isBookDetail ? `${url.pathname}${url.search}${url.hash}` : '/learning';
+    const isStudentDetail = /^\/staff\/students\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(url.pathname);
+    return appPaths.has(url.pathname) || isBookDetail || isStudentDetail ? `${url.pathname}${url.search}${url.hash}` : '/learning';
   } catch {
     return '/learning';
   }

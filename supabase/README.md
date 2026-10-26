@@ -14,6 +14,34 @@ https://mcp.supabase.com/mcp?project_ref=znftduqfbwfrprhawgxh&features=docs%2Cac
 
 Only apply the HealEduTech migrations or seed data after the connector, CLI, or database URL is pointed at `znftduqfbwfrprhawgxh`.
 
+## Public availability view security
+
+`20261021090000_secure_book_availability.sql` fixes the Security Definer View
+advisor warning for `public.book_availability`. The view uses
+`security_invoker = true`, while a private helper returns only the public
+`book_id`, `total_copies`, and `available_copies` aggregate. The helper deliberately
+uses definer privileges so guest and learner counts include all copies and active
+loans without granting access to private inventory or borrower records.
+
+Setting the original view to invoker without this helper would cause guest
+permission errors and incorrect learner counts under the existing inventory RLS.
+
+Apply the complete migration through the SQL Editor or an authenticated database
+connection for the confirmed project. For example:
+
+```sh
+psql "$SUPABASE_DB_URL" -X -v ON_ERROR_STOP=1 --single-transaction \
+  -f supabase/migrations/20261021090000_secure_book_availability.sql
+```
+
+Then rerun the Supabase Security Advisor and check public catalogue availability.
+The local SQL suite checks the view setting, aggregate counts, and private-table
+access with synthetic users in a disposable PostgreSQL cluster:
+
+```sh
+python3 supabase/tests/run-local.py
+```
+
 ## Staff role assignment from Supabase Dashboard
 
 The staff migration bootstraps `gsharsh11235@gmail.com` as the approved first application administrator. After that account exists and is confirmed in Authentication, sign in to `/admin` and claim administrator access.

@@ -80,6 +80,8 @@ Build and verify one usable workflow at a time. Working recommendations and AI s
 
 ## Current frontend preview
 
+**26 October 2026 local staff increment:** `/staff/students` adds student profiles and reading/borrowing summaries; `/staff/dashboard` adds current library metrics and weekly lending trends. Circulation now supports searchable, paginated loans, seven-day overdue staff alerts, email drafts and shared contact history. Staff can see reading titles, status and counts; written reflections remain private. Apply the new staff-oversight migration before deploying these pages. This increment has not been applied to the hosted project. See [staff oversight and release verification](docs/STAFF_OVERSIGHT_2026-10-26.md).
+
 The approved cream-and-green reading-room design uses a slim glass navigation bar, a browse-first homepage at `/`, and an optional bilingual guide at `/start`. Existing live catalogue, account, reading and staff workflows retain their data and access boundaries. The old isolated design preview has been retired. See [design rationale and verification](docs/CREAM_GLASS_DESIGN.md).
 
 - Primary navigation: Home, Library, My reading, Explore and Together. Home also links directly to activities. The quick guide and footer links remain available; authorised staff get their own operations links. Compact screens retain all five labelled student destinations.

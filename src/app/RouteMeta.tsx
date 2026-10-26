@@ -14,7 +14,8 @@ export function RouteMeta() {
     const language = i18n.language === 'vi' ? 'vi' : 'en';
     const normalizedPath = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
     const isBookDetail = /^\/library\/[^/]+$/.test(normalizedPath);
-    const label = labels[language][normalizedPath as keyof typeof labels.en] ?? (isBookDetail ? labels[language]['/library'] : language === 'vi' ? 'Trang không tìm thấy' : 'Page not found');
+    const staffLabel = normalizedPath === '/staff/dashboard' ? (language === 'vi' ? 'Thống kê thư viện' : 'Library dashboard') : /^\/staff\/students(?:\/[^/]+)?$/.test(normalizedPath) ? (language === 'vi' ? 'Học sinh' : 'Students') : null;
+    const label = staffLabel ?? labels[language][normalizedPath as keyof typeof labels.en] ?? (isBookDetail ? labels[language]['/library'] : language === 'vi' ? 'Trang không tìm thấy' : 'Page not found');
     document.title = normalizedPath === '/' ? `EVG · ${label}` : `${label} · EVG`;
   }, [i18n.language, pathname]);
   return null;

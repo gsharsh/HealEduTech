@@ -103,3 +103,4 @@
   .evg-header.has-staff-action .evg-account-link, .evg-header.has-staff-action .evg-desk-link { padding-inline: 4px; font-size: .75rem; }
   .evg-header.has-staff-action .evg-language-toggle { width: 64px; }
 }
+.staff-alert-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; min-height: 24px; padding: 2px 6px; margin-inline-start: 6px; border-radius: 999px; background: #843c20; color: #fff; font: 700 12px/1.2 system-ui, sans-serif; }
