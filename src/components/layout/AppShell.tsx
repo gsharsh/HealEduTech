@@ -1,20 +1,23 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import { useAccount } from '../../features/auth/context';
 import { libraryTranslations } from '../../features/library/libraryTranslations';
 import { useStaffAlerts } from '../../features/admin/useStaffAlerts';
+import { getPublicRoute, publicPath } from '../../content/publicPages';
 import './app-shell.css';
 
 export function AppShell() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const { user, accessStatus, staffRole } = useAccount();
   const copy = libraryTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
-  const { pathname, search } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const followupActive = pathname === '/staff/circulation' && new URLSearchParams(search).get('status') === 'followup';
   const alerts = useStaffAlerts(pathname);
   const isVietnamese = i18n.language === 'vi';
+  const language = isVietnamese ? 'vi' : 'en';
   const isStaffArea = /^\/(staff|admin)(\/|$)/.test(pathname);
   const canOpenDesk = Boolean(user && accessStatus === 'ready' && (staffRole === 'librarian' || staffRole === 'administrator'));
   const [mobileNavPath, setMobileNavPath] = useState<string | null>(null);
@@ -145,12 +148,12 @@ export function AppShell() {
     <div className="evg-shell">
       <a className="evg-skip-link" href="#main-content">{t('skip')}</a>
       <header className={`evg-header ${canOpenDesk ? 'has-staff-action' : ''}`}>
-        <NavLink className="evg-brand" to="/" aria-label="EVG Learn & Grow">
+        <NavLink className="evg-brand" to={publicPath('/', language)} aria-label="EVG Learn & Grow">
           <span className="evg-brand-name">EVG</span>
         </NavLink>
         <nav id="evg-primary-nav" ref={primaryNavRef} className={`evg-primary-nav ${mobileNavOpen ? 'is-mobile-open' : ''}`} aria-label={t('navigation')}>
           <span ref={activePillRef} className="evg-primary-nav__pill" aria-hidden="true" />
-          <NavLink end to="/" onClick={closeMobileNavFromLink}>{isVietnamese ? 'Trang chủ' : 'Home'}</NavLink>
+          <NavLink end to={publicPath('/', language)} onClick={closeMobileNavFromLink}>{isVietnamese ? 'Trang chủ' : 'Home'}</NavLink>
           <NavLink to="/library" onClick={closeMobileNavFromLink}>{t('library')}</NavLink>
           <NavLink to="/learning" onClick={closeMobileNavFromLink}>{isVietnamese ? 'Sách của em' : 'My reading'}</NavLink>
           <NavLink to="/explore" onClick={closeMobileNavFromLink}>{t('explore')}</NavLink>
@@ -166,7 +169,12 @@ export function AppShell() {
               role="switch"
               aria-checked={isVietnamese}
               aria-label="Tiếng Việt / Vietnamese"
-              onClick={() => void i18n.changeLanguage(isVietnamese ? 'en' : 'vi')}
+              onClick={() => {
+                const nextLanguage = isVietnamese ? 'en' : 'vi';
+                const publicRoute = getPublicRoute(pathname);
+                if (publicRoute) navigate(`${publicPath(publicRoute.path, nextLanguage)}${search}${hash}`);
+                else void i18n.changeLanguage(nextLanguage);
+              }}
             >
               <span className="evg-language-option">EN</span>
               <span className="evg-language-option">VI</span>
@@ -194,7 +202,7 @@ export function AppShell() {
           <NavLink to="/staff/dashboard">{isVietnamese ? 'Thống kê' : 'Dashboard'}</NavLink>
           <NavLink to="/staff/students">{isVietnamese ? 'Học sinh' : 'Students'}</NavLink>
           <NavLink to="/staff/catalogue">{t('access.catalogue')}</NavLink>
-          <NavLink to="/staff/circulation" className={({ isActive }) => isActive && !followupActive ? 'active' : ''}>{t('access.circulation')}</NavLink>
+          <NavLink to="/staff/circulation" aria-current={followupActive ? false : 'page'} className={({ isActive }) => isActive && !followupActive ? 'active' : ''}>{t('access.circulation')}</NavLink>
           <Link to="/staff/circulation?status=followup" className={followupActive ? 'active' : undefined} aria-current={followupActive ? 'page' : undefined}>{isVietnamese ? 'Cần theo dõi' : 'Needs attention'}{alerts.count !== null && alerts.count > 0 && <span className="staff-alert-badge">{alerts.count}</span>}</Link>
           <NavLink to="/staff/training">{t('staffTraining.nav')}</NavLink>
           {staffRole === 'administrator' && <NavLink to="/admin/settings">{t('access.administration')}</NavLink>}
@@ -212,8 +220,11 @@ export function AppShell() {
 
       <footer className="evg-footer">
         <span lang="en">EVG · Learn &amp; grow</span>
-        {pathname === '/' && <a href="https://storyset.com/people" lang="en">People illustrations by Storyset</a>}
+        {(pathname === '/' || pathname === '/vi') && <a href="https://storyset.com/people" lang="en">People illustrations by Storyset</a>}
         <nav aria-label={isVietnamese ? 'Liên kết bổ sung' : 'More links'}>
+          <NavLink to={publicPath('/start', language)}>{isVietnamese ? 'Hướng dẫn nhanh' : 'Quick guide'}</NavLink>
+          <NavLink to={publicPath('/help', language)}>{isVietnamese ? 'Trợ giúp' : 'Help'}</NavLink>
+          <NavLink to={publicPath('/privacy', language)}>{isVietnamese ? 'Quyền riêng tư' : 'Privacy'}</NavLink>
           <NavLink to="/explore">{t('explore')}</NavLink>
           <NavLink to="/community">{t('community')}</NavLink>
         </nav>

@@ -2,7 +2,7 @@
 .account-page__heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
 .account-page__heading h1 { margin: 5px 0 8px; max-width: 720px; }
 .account-page__heading p { max-width: 700px; margin: 0; }
-.account-identity { display: flex; align-items: center; gap: 18px; padding: 24px; border: 1px solid var(--line); border-radius: 22px; background: var(--paper); box-shadow: var(--shadow-soft); }
+.account-identity { display: flex; align-items: center; gap: 18px; padding: 24px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper); box-shadow: var(--shadow-soft); }
 .account-identity__avatar { display: grid; place-items: center; flex: 0 0 64px; width: 64px; height: 64px; border-radius: 18px; background: var(--green); color: #fff; font-size: 1.5rem; font-weight: 750; letter-spacing: -.04em; }
 .account-identity__copy { min-width: 0; }
 .account-identity__copy h2 { margin: 0 0 4px; font-size: 1.35rem; overflow-wrap: anywhere; }
@@ -15,7 +15,7 @@
 .account-page [id] { scroll-margin-top: 110px; }
 .account-section__heading h2 { margin: 0 0 5px; }
 .account-section__heading p { margin: 0; max-width: 700px; }
-.account-card { min-width: 0; padding: 26px; border: 1px solid var(--line); border-radius: 22px; background: var(--paper); box-shadow: 0 5px 18px #17392c04; }
+.account-card { min-width: 0; padding: 26px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper); box-shadow: 0 5px 18px #17392c04; }
 .account-page .account-card { width: 100%; max-width: none; }
 .account-stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 .account-stat { display: grid; align-content: start; gap: 8px; min-height: 152px; padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
@@ -39,21 +39,21 @@
 .account-empty p { margin: 0; }
 .account-profile-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px 24px; }
 .account-profile-grid label { display: grid; gap: 7px; font-size: .875rem; font-weight: 650; }
-.account-profile-grid input, .account-profile-grid select { width: 100%; min-height: 48px; padding: 11px 13px; border: 1px solid #bbc9bd; border-radius: 10px; background: #fff; color: var(--ink); font: inherit; }
+.account-profile-grid input, .account-profile-grid select { width: 100%; min-height: var(--control-height); padding: 12px 14px; border: 1px solid var(--control-border); border-radius: var(--radius-md); background: var(--control-fill); color: var(--ink); font: inherit; font-size: 1rem; }
 .account-profile-grid input[readonly] { color: var(--muted); background: #f5f7f0; }
 .account-profile-form fieldset { min-width: 0; padding: 0; border: 0; margin: 0; }
 .account-profile-grid small { color: var(--muted); font-size: .75rem; font-weight: 400; }
 .account-profile-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
 .account-profile-actions .primary { min-width: 150px; }
 .account-status { margin: 0; font-size: .8125rem; }
-.account-status--success { color: #265c4b; }
-.account-status--error { color: #99362c; }
+.account-status--success { color: var(--success); }
+.account-status--error { color: var(--error); }
 .account-security { display: grid; gap: 14px; }
 .account-security__copy { margin: 0; max-width: 720px; }
 .account-security__actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .account-security__actions .secondary { min-width: 190px; }
 .account-guide > .secondary { justify-self: start; }
-.account-page .reading-interests { margin-top: 0; padding: 26px; border: 1px solid var(--line); border-radius: 22px; background: var(--paper); box-shadow: 0 5px 18px #17392c04; }
+.account-page .reading-interests { margin-top: 0; padding: 26px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper); box-shadow: 0 5px 18px #17392c04; }
 .account-page .reading-interests h2 { margin-top: 0; }
 .account-page .reading-interests > p { font-size: .875rem; }
 .account-page .interest-options { display: flex; flex-wrap: wrap; gap: 8px; }

@@ -5,6 +5,7 @@ import { authRedirectUrl, passwordResetRedirectUrl, supabase } from '../../lib/s
 import { useAccount } from './context';
 import { authCallbackErrorFromUrl, authErrorField, authErrorKey, safeBrowseTarget, safeNextPath, validEmail, validPassword, type AuthField } from './validation';
 import './auth.css';
+import { publicPath } from '../../content/publicPages';
 
 type Mode = 'sign-in' | 'register' | 'recover' | 'reset' | 'magic-link';
 type PendingEmail = { email: string; signup: boolean; recovery?: boolean };
@@ -132,7 +133,7 @@ export function SignInPage() {
   const passwordDescriptions = [mode !== 'sign-in' ? 'password-help' : '', fieldErrors.password ? 'auth-password-error' : ''].filter(Boolean).join(' ') || undefined;
   if (!loading && !busy && user && !recovery && mode !== 'reset' && !callbackNext && !error && notice !== 'auth.passwordUpdatedSignOutFailed') return <Navigate to="/account" replace />;
   return <main ref={mainRef} tabIndex={-1} className="sign-in-page"><section className="sign-in-card account-card" aria-labelledby="auth-title">
-    <span className="brand-mark" aria-hidden="true">e.</span><span className="eyebrow">EVG VIETNAM</span><h1 id="auth-title">{t(title)}</h1>{mode === 'sign-in' && !user && <p className="auth-subtitle">{t('auth.signInSubtitle')}</p>}
+    <Link className="auth-brand" to={publicPath('/', i18n.language)} aria-label="EVG Learn & Grow">EVG</Link><span className="eyebrow">EVG VIETNAM</span><h1 id="auth-title">{t(title)}</h1>{mode === 'sign-in' && !user && <p className="auth-subtitle">{t('auth.signInSubtitle')}</p>}
     {loading ? <p role="status">{t('auth.loading')}</p> : user && mode !== 'reset' ? <div className="signed-in-account"><p className="signed-in-account__email">{user.email}</p><div className="signed-in-account__actions"><Link className="primary signed-in-account__continue" to={next}>{t('auth.continue')}</Link>{accessStatus === 'loading' && <p className="muted signed-in-account__status" role="status">{t('access.checking')}</p>}<div className="signed-in-account__secondary-actions">{accessStatus === 'ready' && staffRole && <Link className="secondary" to="/staff">{t('access.openDesk')}</Link>}<button className="secondary" type="button" disabled={busy} onClick={() => void signOut()}>{t('auth.signOut')}</button></div></div><p className="muted auth-shared-device signed-in-account__note">{t('auth.sharedDevice')}</p></div> : !supabase ? <><p role="status">{t('auth.notConfigured')}</p><p className="muted auth-shared-device">{t('auth.sharedDevice')}</p></> : <>
       <p className="muted auth-shared-device">{t('auth.sharedDevice')}</p>
       {!pending && mode !== 'reset' && <nav className="account-tabs" aria-label={t('auth.methods')}><button type="button" aria-pressed={mode === 'sign-in'} disabled={busy} onClick={() => changeMode('sign-in')}>{t('auth.signIn')}</button><button type="button" aria-pressed={mode === 'register'} disabled={busy} onClick={() => changeMode('register')}>{t('auth.register')}</button></nav>}
@@ -147,5 +148,6 @@ export function SignInPage() {
       {pending && <div className="form-actions"><button type="button" className="secondary" disabled={busy || cooldown > 0} onClick={() => void resend()}>{cooldown > 0 ? t('auth.resendAfter', { seconds: cooldown }) : t('auth.resend')}</button><button type="button" className="secondary" disabled={busy} onClick={() => changeMode(mode === 'recover' || mode === 'magic-link' ? 'sign-in' : 'register')}>{t('auth.back')}</button></div>}
     </>}
     <div className="auth-card-footer">{notice && <p role="status" className="form-success">{t(notice)}</p>}{error && <p role="alert" className="form-error">{t(error)}</p>}{error === 'auth.unconfirmed' && !pending && <button type="button" className="text-link" disabled={busy || cooldown > 0} onClick={() => void resendConfirmation()}>{t(cooldown > 0 ? 'auth.resendAfter' : 'auth.resendConfirmation', { seconds: cooldown })}</button>}<div className="auth-card-footer__links"><Link className="text-link" to={browseTarget}>{t('auth.browse')}</Link><button type="button" className="language-button" onClick={() => void i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')}>{i18n.language === 'vi' ? 'English' : 'Tiếng Việt'}</button></div></div>
+    <nav className="auth-support-links" aria-label={i18n.language === 'vi' ? 'Trợ giúp và quyền riêng tư' : 'Help and privacy'}><Link to={publicPath('/help', i18n.language)}>{i18n.language === 'vi' ? 'Trợ giúp' : 'Help'}</Link><Link to={publicPath('/privacy', i18n.language)}>{i18n.language === 'vi' ? 'Quyền riêng tư' : 'Privacy'}</Link></nav>
   </section></main>;
 }

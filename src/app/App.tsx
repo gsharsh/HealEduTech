@@ -18,6 +18,7 @@ import { supabase } from "../lib/supabase";
 import { HomePage, QuickGuidePage } from "../features/home/HomePage";
 import { NotFoundPage } from "./NotFoundPage";
 import { RouteMeta } from "./RouteMeta";
+import { InformationPage } from "../features/information/InformationPage";
 
 const AdminPage = lazy(() => import("../features/admin/AdminPage").then(module => ({ default: module.AdminPage })));
 const AdministratorDashboard = lazy(() => import("../features/admin/AdministratorDashboard").then(module => ({ default: module.AdministratorDashboard })));
@@ -66,7 +67,13 @@ export function App() {
       <Route path="/reset-password" element={<SignInPage />} />
       <Route element={<AppShell />}>
         <Route index element={<HomePage />} />
+        <Route path="/vi" element={<HomePage />} />
         <Route path="/start" element={<QuickGuidePage />} />
+        <Route path="/vi/start" element={<QuickGuidePage />} />
+        <Route path="/help" element={<InformationPage kind="help" />} />
+        <Route path="/vi/help" element={<InformationPage kind="help" />} />
+        <Route path="/privacy" element={<InformationPage kind="privacy" />} />
+        <Route path="/vi/privacy" element={<InformationPage kind="privacy" />} />
         <Route path="/learning" element={supabase ? <LiveLearningPage /> : <MyLearningPage />} />
         <Route path="/account" element={<AccountRoute />} />
         <Route path="/library" element={supabase ? <LiveLibraryPage /> : <LibraryPage />} />

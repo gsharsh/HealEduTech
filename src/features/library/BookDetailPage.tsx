@@ -8,6 +8,7 @@ import { getBook, listRelatedBooks, type CatalogueBook } from './catalogue';
 import { libraryTranslations } from './libraryTranslations';
 import { libraryReturnPath } from './libraryState';
 import './library.css';
+import { defaultSiteUrl, pageMetadata, setPageMetadata } from '../../app/pageMetadata';
 
 type DetailState = {
   bookId: string;
@@ -82,6 +83,15 @@ export function BookDetailPage() {
     return () => controller.abort();
   }, [attempt, bookId]);
 
+  useEffect(() => {
+    const book = state.book;
+    if (!book || state.loading || state.bookId !== bookId) return;
+    const language = i18n.language === 'vi' ? 'vi' : 'en';
+    const title = language === 'vi' ? book.title_vi : book.title_en;
+    const description = (language === 'vi' ? book.description_vi : book.description_en).replace(/\s+/g, ' ').trim().slice(0, 200);
+    setPageMetadata({ ...pageMetadata(`/library/${bookId}`, language), title: `${title} · EVG`, description: description || copy.noDescription }, import.meta.env.VITE_SITE_URL || defaultSiteUrl);
+  }, [bookId, copy.noDescription, i18n.language, state.book, state.bookId, state.loading]);
+
   if (state.loading || state.bookId !== bookId) return <p role="status">{t('catalogue.loading')}</p>;
   if (state.failed) return <section className="empty-state" role="alert"><h1>{t('catalogue.loadError')}</h1><button className="secondary" onClick={() => { setState(value => ({ ...value, loading: true, failed: false })); setAttempt(value => value + 1); }}>{t('catalogue.retry')}</button></section>;
   if (!state.book) return <section className="empty-state"><h1>{copy.notFoundTitle}</h1><p>{copy.notFoundBody}</p><Link className="secondary" to="/library">{copy.back}</Link></section>;
@@ -105,7 +115,7 @@ export function BookDetailPage() {
           <h2 id="find-heading">{copy.availabilityTitle}</h2>
           <p className="availability">{availability}</p>
           <p>{deskMessage}</p>
-          <p className="muted">{copy.borrowingPaused}</p>
+          <p className="muted">{copy.deskCheckout}</p>
           <p className="book-reading-prompt">{copy.readingPrompt}</p>
           <BookReadingAction bookId={book.id} returnTo={returnTo} />
         </section>

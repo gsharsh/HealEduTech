@@ -9,8 +9,16 @@ coverage
 
 .vercel
 .env*
+!.env.example
 
 # Supabase CLI machine-local metadata
 supabase/.temp/
 .planning/.local/
 .planning/.state-fingerprint.json
+
+# Local release evidence
+test-results/
+playwright-report/
+database-test-results/
+backup-test-results/
+__pycache__/

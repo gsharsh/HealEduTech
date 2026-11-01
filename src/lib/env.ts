@@ -1,15 +1,7 @@
-export interface PublicEnv {
-  supabaseUrl: string;
-  supabaseAnonKey: string;
-}
+import { resolvePublicEnvironment, type PublicEnvironment } from './environmentValidation';
+
+export type PublicEnv = PublicEnvironment;
 
 export function getPublicEnv(): PublicEnv | null {
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return null;
-  }
-
-  return { supabaseUrl, supabaseAnonKey };
+  return resolvePublicEnvironment(import.meta.env, import.meta.env.PROD);
 }

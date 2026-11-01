@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { ProjectFeedbackPrototype } from './ProjectFeedbackPrototype';
 import './community.css';
 export function CommunityPage() {
   const { t } = useTranslation();
@@ -32,7 +31,6 @@ export function CommunityPage() {
       <p>{t('communityNextStep.body')}</p>
       <Link className="secondary" to="/explore">{t('communityNextStep.action')} →</Link>
     </section>
-    <ProjectFeedbackPrototype />
     <aside className="future-panel">
       <span className="future-label">{t('later')}</span>
       <div>

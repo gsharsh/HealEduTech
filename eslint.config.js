@@ -22,4 +22,5 @@ export default tseslint.config(
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
     },
   },
+  { files: ['scripts/**/*.ts', 'tests/**/*.ts', 'api/**/*.ts', 'playwright.config.ts', 'vite.config.ts'], languageOptions: { globals: globals.node } },
 );

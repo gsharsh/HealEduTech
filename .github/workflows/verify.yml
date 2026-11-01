@@ -10,6 +10,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -24,5 +25,57 @@ jobs:
         run: node --test tests/*.test.ts
       - name: Lint
         run: npm run lint
-      - name: Build
+      - name: Build an explicitly labelled demo candidate
         run: npm run build
+        env:
+          VITE_APP_MODE: demo
+      - name: Install Chromium for release journeys
+        run: npx playwright install --with-deps chromium
+      - name: Run isolated browser journeys
+        run: npm run test:browser
+      - name: Retain browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-failure-evidence
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js for backup-tool regressions
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
+      - name: Install PostgreSQL 17 client and disposable-cluster tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-common
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get install --yes postgresql-17
+          echo '/usr/lib/postgresql/17/bin' >> "$GITHUB_PATH"
+      - name: Replay migrations, permissions and concurrent-client regressions
+        run: python3 supabase/tests/run-local.py --output database-test-results
+      - name: Exercise synthetic backup and isolated restore
+        run: python3 scripts/test-backup-drill.py --output backup-test-results
+      - name: Install the verified age CLI for synthetic encryption checks
+        run: node scripts/install-age.ts --output "$RUNNER_TEMP/evg-test-age"
+      - name: Verify encrypted export recovery and rejection cases
+        env:
+          EVG_AGE_BINARY: ${{ runner.temp }}/evg-test-age/age/age
+        run: node --test tests/encrypted-backup.integration.ts
+      - name: Retain synthetic database evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-test-evidence
+          path: |
+            database-test-results/
+            backup-test-results/
+          retention-days: 7

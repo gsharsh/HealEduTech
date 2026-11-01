@@ -32,7 +32,7 @@
 .reading-character-count { color: var(--muted); font-size: 12px; text-align: right; }
 .reading-save { justify-self: start; }
 .reading-action-link { color: var(--green); text-decoration: underline; font-size: 13px; }
-.reading-error { color: #8d3d2c; font-size: 13px; margin: 0; }
+.reading-error { color: var(--error); font-size: 13px; margin: 0; }
 .reading-empty { display: grid; align-content: start; gap: 8px; }
 .reading-interests { margin-top: 24px; }
 .reading-interest-actions { margin-top: 14px; }
@@ -54,7 +54,7 @@
   flex-wrap: wrap;
   background: #e4efdf;
   border-color: #ccddc4;
-  border-radius: 26px;
+  border-radius: var(--radius-lg);
   padding: clamp(26px, 4vw, 44px);
   min-height: 330px;
 }
@@ -63,19 +63,18 @@
 .continue-copy h2 { max-width: 360px; font-size: clamp(1.6rem, 2.7vw, 2.25rem); letter-spacing: -.04em; }
 .continue-copy p { font-size: .9375rem; max-width: 340px; }
 .quiet-note { font-size: .75rem; line-height: 1.5; }
-.goal-panel { border-radius: 26px; padding: 30px; box-shadow: 0 5px 18px #17392c04; }
+.goal-panel { border-radius: var(--radius-lg); padding: 30px; box-shadow: 0 5px 18px #17392c04; }
 .goal-panel h2 { font-size: 1.5rem; }
 .goal-panel > p { font-size: .9375rem; }
 .goal-panel .section-kicker { font-size: .75rem; line-height: 1.5; }
 .goal-editor { gap: 10px; }
 .goal-editor label { font-size: .8125rem; }
-.goal-editor input, .goal-editor select { border-radius: 12px; padding: 12px 14px; }
 .goal-summary { border-radius: 16px; padding: 18px; }
 .goal-title { font-size: 1rem; }
-.goal-check { padding: 14px; border-radius: 12px; font-size: .875rem; }
+.goal-check { padding: 14px; border-radius: var(--radius-md); font-size: .875rem; }
 .goal-status { font-size: .6875rem; letter-spacing: .06em; }
 .goal-preview-note, .goal-result { font-size: .8125rem !important; line-height: 1.5; }
-.reading-card, .reading-empty, .reading-dashboard > .goal-panel { border-radius: 26px; padding: 30px; min-height: 340px; }
+.reading-card, .reading-empty, .reading-dashboard > .goal-panel { border-radius: var(--radius-lg); padding: 30px; min-height: 340px; }
 .reading-card { gap: 24px; box-shadow: 0 5px 18px #17392c04; }
 .reading-card > .eyebrow { font-size: .75rem; }
 .reading-cover { border-radius: 5px 10px 10px 5px; box-shadow: 5px 9px 15px #17392c12; }
@@ -85,16 +84,17 @@
 .reading-review { margin-top: 6px; padding-top: 22px; }
 .reading-reflection-label { font-weight: 650; font-size: .9375rem; }
 .reading-review-prompt { padding: 12px 0 4px; font-size: .875rem; }
-.reading-action textarea { min-height: 126px; padding: 16px; border-radius: 12px; background: #fff; }
+.reading-action textarea { min-height: 126px; padding: 12px 14px; border: 1px solid var(--control-border); border-radius: var(--radius-md); background: var(--control-fill); color: var(--ink); font-size: 1rem; }
 .reading-character-count { font-size: .75rem; }
 .reading-summary { flex-wrap: wrap; padding: 26px; border-radius: 20px; }
 .reading-summary .text-link { max-width: 100%; white-space: normal; }
 .reading-summary h2 { font-size: 1.0625rem; }
 .reading-summary p { font-size: .875rem; }
-.signed-out-reading__content { border: 1px solid var(--line); border-radius: 28px; background: var(--paper); box-shadow: var(--shadow); }
+.signed-out-reading__content { border: 1px solid var(--line); border-radius: var(--radius-xl); background: var(--paper); box-shadow: var(--shadow); }
+.reading-dashboard > .reading-empty { grid-column: 1 / -1; min-height: 240px; justify-items: start; align-content: center; }
 @media (max-width: 600px) {
-  .continue-panel { padding: 24px; min-height: 290px; border-radius: 22px; }
-  .goal-panel, .reading-card, .reading-empty, .reading-dashboard > .goal-panel { padding: 22px; border-radius: 22px; }
+  .continue-panel { padding: 24px; min-height: 290px; border-radius: var(--radius-lg); }
+  .goal-panel, .reading-card, .reading-empty, .reading-dashboard > .goal-panel { padding: 22px; border-radius: var(--radius-lg); }
   .continue-copy h2 { font-size: 1.5rem; }
   .continue-copy p { font-size: .875rem; }
   .reading-summary { padding: 20px; }

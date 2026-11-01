@@ -1,5 +1,7 @@
 # EVG project handover plan
 
+**1 November production candidate:** see [the release checks and executable backup/restore procedure](PRODUCTION_RELEASE_2026-11-01.md) for current tooling. Hosted account, email, inventory and operator evidence remain separate acceptance gates.
+
 **Status:** draft for a future handover; handover has not happened.
 **Prepared:** 29 September 2026.
 **Approvers:** EVG programme owner, EVG technical successor and project creator — names and date to be recorded.

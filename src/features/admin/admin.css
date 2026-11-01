@@ -29,9 +29,9 @@
 .admin-notice { margin: 0; padding: 12px 16px; border-radius: 8px; background: #eef5ef; color: #235f4d; }
 .admin-inventory { display: grid; gap: 16px; }
 .admin-inventory__heading { padding-bottom: 12px; border-bottom: 1px solid #dce5dd; }
-.admin-inventory__empty { padding: 34px; text-align: center; border: 1px dashed #bac8bd; border-radius: 12px; }
+.admin-inventory__empty { padding: 34px; text-align: center; border: 1px dashed #bac8bd; border-radius: var(--radius-md); }
 .admin-book-list { display: grid; gap: 10px; }
-.admin-book-row { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 16px; border: 1px solid #dce5dd; border-radius: 12px; background: #fff; }
+.admin-book-row { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 16px; border: 1px solid #dce5dd; border-radius: var(--radius-md); background: #fff; }
 .admin-book-row__cover { display: grid; place-items: center; width: 64px; aspect-ratio: 4 / 5; border-radius: 7px; background: #e7eddf; background-position: center; background-size: cover; color: #285e4c; font: 700 26px/1 Georgia, serif; }
 .admin-book-row h3 { margin: 0 0 5px; font-size: 18px; }
 .admin-book-row p { margin: 0; }
@@ -39,13 +39,13 @@
 .admin-book-row__description { margin-top: 6px !important; max-width: 760px; }
 .admin-book-row__stock { margin-top: 9px !important; color: #235f4d; font-size: 13px; font-weight: 700; }
 
-.workspace-card { padding: 28px; border-radius: 22px; gap: 20px; box-shadow: 0 5px 18px #17392c04; }
+.workspace-card { padding: 28px; border-radius: var(--radius-lg); gap: 20px; box-shadow: 0 5px 18px #17392c04; }
 .workspace-card h2 { font-size: 1.375rem; letter-spacing: -.025em; }
 .workspace-card p { font-size: .9375rem; }
 .workspace-card__number { color: var(--green); font-size: .8125rem; }
-.workspace-card .secondary { border-radius: 12px; }
+.workspace-card .secondary { border-radius: 999px; }
 .admin-editor { border-radius: 24px; }
-.admin-editor__note, .admin-notice { border-radius: 12px; padding: 16px 18px; }
+.admin-editor__note, .admin-notice { border-radius: var(--radius-md); padding: 16px 18px; }
 .admin-book-list { gap: 14px; }
 .admin-book-row { padding: 20px; border-radius: 18px; }
 .admin-book-row__cover { box-shadow: 3px 5px 10px #17392c10; }

@@ -111,7 +111,7 @@
   "recommendationsTitle": "Gợi ý cùng em trưởng thành",
   "recommendationsBody": "Hiện tại, em hãy tự do khám phá. Sau này, EVG có thể dùng sở thích của em để gợi ý chủ đề đã duyệt. Chỉ cân nhắc AI khi gợi ý đơn giản chưa đáp ứng được nhu cầu.",
   "communityTitle": "Cùng nhau tìm cảm hứng.",
-  "communityBody": "Xem các ví dụ học sinh hư cấu, rồi thử biểu mẫu dự án trên trang này. Chỉ dùng thông tin tưởng tượng.",
+  "communityBody": "Tìm ý tưởng từ các ví dụ hư cấu này, rồi thử một hoạt động hoặc chia sẻ khám phá trực tiếp với tình nguyện viên EVG.",
   "communityNextStep": {
     "title": "Bắt đầu bằng một hoạt động nhỏ",
     "body": "Chọn một hoạt động mẫu trong mục Khám phá. Em sẽ thấy gợi ý sách liên quan để xem tiếp.",
@@ -120,14 +120,14 @@
   "staffTraining": {
     "nav": "Đào tạo cộng đồng",
     "kicker": "XEM THỬ ĐÀO TẠO NHÂN VIÊN",
-    "title": "Ví dụ xem xét bài chia sẻ",
-    "body": "Chỉ là màn hình đào tạo hư cấu. Thao tác chỉ lưu trong bản xem thử này; không có bài gửi, phần thưởng, bình luận hay kiểm soát truy cập thật."
+    "title": "Ví dụ học tập và cộng đồng",
+    "body": "Thực hành với mục tiêu, dự án và ví dụ xét duyệt hư cấu. Chỉ dùng thông tin tưởng tượng. Rời trang hoặc tải lại sẽ xóa nội dung thực hành; không có nội dung nào được gửi, đăng hay trao thưởng."
   },
   "sampleProject": "MỘT KHÁM PHÁ NHỎ",
   "exampleOnly": "BÀI CHIA SẺ MẪU",
   "fictionalWork": "Bài mẫu · Không phải bài của học sinh thật",
   "sharingLater": "Một không gian thân thiện",
-  "sharingBody": "Biểu mẫu dự án phía trên chỉ là bản xem thử. Việc đăng bài, bình luận và phần thưởng sẽ có sau, cùng quy trình duyệt của EVG và người kiểm duyệt phụ trách.",
+  "sharingBody": "Trang này chưa nhận bài gửi trực tuyến. Em hãy chia sẻ khám phá trực tiếp với tình nguyện viên EVG. Việc đăng bài, bình luận và phần thưởng trực tuyến cần có quy trình xét duyệt của EVG trước khi mở.",
   "projectPrototype": {
     "kicker": "XEM THỬ DỰ ÁN",
     "title": "Ghi lại một khám phá nhỏ",

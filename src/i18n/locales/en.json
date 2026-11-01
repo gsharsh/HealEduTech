@@ -111,7 +111,7 @@
   "recommendationsTitle": "Suggestions that grow with you",
   "recommendationsBody": "For now, browse freely. Later, EVG can use your interests to suggest reviewed topics. AI will only be considered after simple recommendations prove insufficient.",
   "communityTitle": "A little inspiration, together.",
-  "communityBody": "See fictional student examples, then try a short project preview on this page. Use made-up information only.",
+  "communityBody": "Find ideas in these fictional examples, then try an activity or share a discovery with an EVG volunteer in person.",
   "communityNextStep": {
     "title": "Start with a small activity",
     "body": "Pick one sample activity in Explore. It will suggest a related book to browse next.",
@@ -120,14 +120,14 @@
   "staffTraining": {
     "nav": "Community training",
     "kicker": "STAFF TRAINING PREVIEW",
-    "title": "Community review examples",
-    "body": "Fictional training screens only. Actions stay in this page preview; there are no real submissions, awards, comments or access controls."
+    "title": "Learning and community examples",
+    "body": "Practise with fictional goals, projects and review examples. Use made-up information only. Leaving or reloading clears this training work; nothing is submitted, published or awarded."
   },
   "sampleProject": "A SMALL DISCOVERY",
   "exampleOnly": "EXAMPLE SHOWCASE",
   "fictionalWork": "Example work · Not a real student submission",
   "sharingLater": "A kind, supported space",
-  "sharingBody": "The project form above is only a preview. Publishing, comments, and rewards come later, with an EVG review process and a named moderator.",
+  "sharingBody": "There is no online submission on this page. Share your discovery with an EVG volunteer in person. Online publishing, comments and rewards need an EVG review process before they can open.",
   "projectPrototype": {
     "kicker": "PROJECT PREVIEW",
     "title": "Record a small discovery",

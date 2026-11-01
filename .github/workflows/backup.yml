@@ -1,0 +1,101 @@
+name: Encrypted database backup
+
+on:
+  schedule:
+    # 10:17 Singapore time. GitHub schedules can be delayed; this is not an exact-time SLA.
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: encrypted-database-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    # Keep disabled until the owner confirms the shared free quota and $0 paid overage.
+    if: ${{ vars.BACKUPS_FREE_TIER_CONFIRMED == 'true' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      AGE_BACKUP_RECIPIENT: ${{ vars.AGE_BACKUP_RECIPIENT }}
+      BACKUPS_FREE_TIER_CONFIRMED: ${{ vars.BACKUPS_FREE_TIER_CONFIRMED }}
+    steps:
+      - name: Check out the reviewed default-branch tools
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.sha }}
+      - name: Set up Node.js without a dependency cache
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
+      - name: Require the separately configured database connection
+        env:
+          EVG_BACKUP_DATABASE_URL: ${{ secrets.EVG_BACKUP_DATABASE_URL }}
+        run: |
+          node --input-type=module <<'JS'
+          if (!process.env.EVG_BACKUP_DATABASE_URL) throw new Error('Configure the EVG_BACKUP_DATABASE_URL repository secret before enabling live backups.');
+          JS
+      - name: Check the daily and repository storage limits before exporting
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/guard-backup-storage.ts
+      - name: Install the PostgreSQL 17 export tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-common
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get install --yes postgresql-client-17
+          echo '/usr/lib/postgresql/17/bin' >> "$GITHUB_PATH"
+      - name: Install the checksum-verified official age release
+        run: node scripts/install-age.ts --output "$RUNNER_TEMP/evg-age"
+      - name: Export schema, data and password-free role definitions
+        env:
+          EVG_BACKUP_DATABASE_URL: ${{ secrets.EVG_BACKUP_DATABASE_URL }}
+        run: |
+          umask 077
+          node scripts/backup-database.ts --database-url-env EVG_BACKUP_DATABASE_URL --output "$RUNNER_TEMP/evg-plain-backup" --use-supabase-ca --execute
+      - name: Encrypt the completed export before any upload
+        env:
+          EVG_AGE_BINARY: ${{ runner.temp }}/evg-age/age/age
+        run: node scripts/encrypt-backup.ts --source "$RUNNER_TEMP/evg-plain-backup" --output "$RUNNER_TEMP/evg-encrypted-backup"
+      - name: Recheck the exact encrypted size and current repository inventory
+        id: guard
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/guard-backup-storage.ts --directory "$RUNNER_TEMP/evg-encrypted-backup"
+      - name: Retain only ciphertext and its checksum for 14 days
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ${{ steps.guard.outputs.artifact_name }}
+          path: |
+            ${{ runner.temp }}/evg-encrypted-backup/database-backup.tar.age
+            ${{ runner.temp }}/evg-encrypted-backup/SHA256SUMS
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+          overwrite: false
+      - name: Record the encrypted backup location
+        env:
+          BACKUP_ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+          BACKUP_ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          node --input-type=module <<'JS'
+          import { appendFileSync } from 'node:fs';
+          const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+          appendFileSync(process.env.GITHUB_STEP_SUMMARY, `Encrypted backup saved: ${process.env.BACKUP_ARTIFACT_URL}\n\nSource commit: ${process.env.GITHUB_SHA}\n\nWorkflow run: ${runUrl}\n\nArtifact digest: ${process.env.BACKUP_ARTIFACT_DIGEST}\n\nRetention: 14 days. The private age recovery key remains outside GitHub. This export still needs a verified restore drill.\n`);
+          JS
+      - name: Remove temporary plaintext and tool files
+        if: always()
+        run: |
+          node --input-type=module <<'JS'
+          import { rmSync } from 'node:fs';
+          import { join } from 'node:path';
+          if (process.env.GITHUB_ACTIONS !== 'true' || !process.env.RUNNER_TEMP) throw new Error('Cleanup is limited to the GitHub-hosted temporary workspace.');
+          for (const name of ['evg-plain-backup', 'evg-encrypted-backup', 'evg-age']) rmSync(join(process.env.RUNNER_TEMP, name), { recursive: true, force: true });
+          JS

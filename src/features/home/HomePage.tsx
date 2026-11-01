@@ -9,6 +9,7 @@ import { supabase } from '../../lib/supabase';
 import { homeCopy, type HomeLanguage } from './homeCopy';
 import { useScrollStack } from '../../components/ui/ScrollStack';
 import './home.css';
+import { publicPath } from '../../content/publicPages';
 
 const topics: Topic[] = ['nature', 'stories', 'science'];
 
@@ -108,7 +109,7 @@ export function HomePage() {
           <div className="home-actions">
             <Link to="/library">{copy.browse} <span aria-hidden="true">→</span></Link>
             <Link to="/explore">{copy.tryActivity} <span aria-hidden="true">→</span></Link>
-            <Link to="/start">{copy.guide}</Link>
+            <Link to={publicPath('/start', language)}>{copy.guide}</Link>
           </div>
         </div>
         <div className="home-hero__art" aria-hidden="true">

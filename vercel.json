@@ -19,14 +19,81 @@
         {
           "key": "Permissions-Policy",
           "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+        }
+      ]
+    },
+    {
+      "source": "/(account|learning|sign-in|reset-password|staff|admin)(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/release.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
         }
       ]
     }
   ],
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/library/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/learning/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/account/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/explore/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/community/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/sign-in/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/reset-password/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/staff/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/design-preview/:path*",
+      "destination": "/app.html"
     }
   ]
 }

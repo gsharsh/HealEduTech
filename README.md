@@ -1,5 +1,7 @@
 # EVG Learning Platform
 
+**1 November 2026 production-readiness candidate:** see [release verification and operations](docs/PRODUCTION_RELEASE_2026-11-01.md). The isolated `codex/production-readiness` candidate adds consistent learner/staff/account controls, bilingual Help/Privacy pages and public URLs, pre-rendered public content/metadata, crash recovery, strict build configuration, and automated browser/database/backup checks. The hosted database now has all 20 current migrations; the frontend changes remain a local preview until separately published. Temporary goal/project editors are limited to staff training. Older dated implementation/deployment notes below remain historical evidence.
+
 Bilingual library, reading, exploration, and peer-learning platform for EVG Vietnam. Students will find and borrow books, track their learning, share discoveries, and explore new topics. EVG staff will manage the library and support students through simple administration screens.
 
 ## How to use these documents
