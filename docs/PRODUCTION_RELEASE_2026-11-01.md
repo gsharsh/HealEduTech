@@ -1,30 +1,32 @@
 # Production release and operating checks
 
-Prepared 1 November 2026. This document describes the production-readiness candidate in `codex/production-readiness`. A local pass is not a deployment or approval to enrol learners. Record the exact deployed commit and hosted evidence below before acceptance.
+Updated 1 November 2026. This document records the published website and completed technical verification, including provider-aware recovery. Technical passes do not constitute EVG's approval to enrol learners; the operating and acceptance decisions below remain separate.
 
 ## Evidence recorded on 1 November 2026
 
 | Check | Recorded outcome | Boundary |
 | --- | --- | --- |
 | TypeScript, lint and build | Passed, including the new Node tools and browser-test source | Local candidate; public pages pre-rendered from the same React components |
-| Node regression tests | 66 passed on the publication candidate | Includes emitting/running the API with the root hosting compiler options, in addition to the application and backup regressions |
-| Browser journeys | 26 desktop/phone checks passed | Synthetic intercepted APIs; no production learner records used |
+| Node regression tests | 80 passed after the recovery tools were added | Includes emitted API execution, archive/profile/service-tool guards and application/backup regressions |
+| Browser journeys | 28 desktop/phone checks passed on `1f841560` CI | Synthetic intercepted APIs; includes same-browser-profile account persistence and cross-tab isolation regressions |
 | SQL regression | 20 migrations, seven suites, eight concurrency probes passed | Disposable local PostgreSQL with an Auth shim |
 | Index coverage | All 18 public foreign keys covered; replay introduces no duplicate indexes | Local schema verification; matching migration also applied live |
-| Backup mechanism | Synthetic data, roles, RLS and grants restored; tampered archive rejected | Does not establish a hosted backup schedule or provider-compatible restore |
+| Backup mechanism | Synthetic data, roles, RLS and grants restored; tampered archive rejected | Supplemented by the real off-site recovery below |
 | Real protected backup | Read-only hosted export encrypted with age; recovery-key decryption reproduced all three source files exactly | Certificate and hostname verified with the official Supabase CA; encrypted payload 553,378 bytes; local only |
-| Real restore attempt | Strict isolated restore stopped at incompatible managed-role grants; disposable cluster removed | Full recovery remains unverified; no errors were skipped and no hosted records were modified |
-| First off-site backup | [Run 41296898107](https://github.com/gsharsh/HealEduTech/actions/runs/41296898107) succeeded; downloaded artifact digest, ciphertext checksum, recovery-key decryption and recovered export checksums passed | PostgreSQL 17.11 client; only ciphertext and checksum retained through 15 November; temporary recovery plaintext removed; full Supabase restoration remains unverified |
+| Provider-aware database recovery | Existing off-site archive strictly restored: all 50 COPY tables, 368 rows and two sequence states matched their archived counts/SHA-256s | Fresh offline Supabase PostgreSQL 17.6 target; all 16 logical catalog categories, extension owners and database properties matched the separately captured source baseline; no errors skipped |
+| Restored service recovery | 54 local Auth/PostgREST learner/staff checks passed with real local JWTs | Auth 2.197.0 and PostgREST 14.18; no migration overlays; supplemental provider profile/bootstrap required |
+| First off-site backup | [Run 41296898107](https://github.com/gsharsh/HealEduTech/actions/runs/41296898107) succeeded; artifact digest, ciphertext checksum, decryption and recovered export checksums passed | PostgreSQL 17.11 client; encrypted artifact retained through 15 November; that exact archived snapshot was used for the provider-aware drill |
 | Free backup billing | Existing account-wide Actions budget is $0 with usage blocked; current included storage shows 0 GB of 0.5 GB | Observed in signed-in GitHub settings; actual successful workflow runs establish operating status |
-| Built HTTP report | 40 technical checks passed, including supplied actual hosted migration export | Loopback build preview with production headers/routing; not a Vercel deployment |
+| Hosted HTTP report | 44 technical checks passed against deployed `1f8415606982b89d7dea456d054e1ece4c6ffb46` | Exact release/mode, public routes/headers, migration parity and diagnostic API rejection checks; earlier loopback preview had 40 checks |
 | Hosted migration state | All 20 source migrations present | Four pending migrations and one index migration applied; filenames aligned to recorded versions without rewriting the live ledger |
 | Hosted SQL role checks | Guest/student restrictions, learner separation, staff dashboard/directory and private-reflection exclusion passed | Read-only SQL under actual roles with transaction-local claims; not signed-JWT/PostgREST browser tests |
+| Real hosted learner isolation | Two normally signed-in learners passed UI reload/re-login persistence, shared-device sign-out and bidirectional API read/update/delete isolation | Genuine JWTs validated by hosted Auth; forged-owner inserts, owner reassignment and learner access to staff/admin APIs denied; two temporary reading rows removed; original learner records unchanged |
 | Email and callbacks | Recovery and signup requests accepted; user confirmed both emails arrived and both flows completed; both test accounts confirmed in Auth | No password/token copied into evidence; custom sender configuration and learner-scale delivery limits still need explicit verification |
 | Dependencies | Zero known vulnerabilities in the final installed dependency scan | Patched build packages and a minimatch override verified by lint/build |
 
 Sanitised evidence and screenshots are retained in the workspace `outputs/production-readiness-2026-11-01/` folder. The development preview is `http://127.0.0.1:4177`; the built preview with production headers is `http://127.0.0.1:4180`. `release.json` explicitly records whether its source worktree is dirty, so its base commit must not be presented as a committed release.
 
-The main source checkout was preserved. The user approved publication of the reviewed frontend and activation of the encrypted backup workflow on 1 November; the protected repository connection secret is configured. Live schema changes and the authorised test signup/email requests were completed before publication. A real hosted export was read-only and its encrypted recovery was checked locally. Verify the exact public commit and the first retained off-site artifact through the release and workflow checks below. Lending remains disabled. Full signed-in persistence/isolation through real browser JWT sessions, a provider-compatible restore, named ownership/retention/support arrangements, and physical inventory/lending acceptance remain open launch evidence.
+The main source checkout was preserved. Publication and encrypted backup activation were authorised on 1 November; the protected repository connection secret is configured. Real hosted learner persistence/isolation passed against deployed commit `1f8415606982b89d7dea456d054e1ece4c6ffb46`. That release fixes cross-tab Auth BroadcastChannel leakage while preserving reload persistence; CI and the real shared-profile rehearsal cover the correction. The existing off-site snapshot also passed provider-aware local database and service recovery. Sanitised records are `live-account-isolation-final.json`, `provider-restore-final.json` and `restored-services-final.json` in the evidence folder. Original restore reports remain preserved. Lending remains disabled. Named ownership, retention/support arrangements, physical inventory/lending acceptance and EVG's launch decision remain open.
 
 The former security-definer availability-view error is resolved and foreign-key indexing advisories are resolved. Remaining [security-definer function notices](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable) refer to intentionally callable RPCs with explicit staff checks; read-only hosted checks verified student denial. RLS without direct policies on bootstrap/contact tables intentionally denies direct access. [Leaked-password protection](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection) remains disabled on the current Free plan; Supabase requires Pro or above for that feature. No paid upgrade was purchased.
 
@@ -76,6 +78,8 @@ The report checks delivered public HTML/metadata, bilingual public routes, machi
 
 Use authorised synthetic identities and dedicated non-student mailboxes. Do not enter real learner data for a release test. Record expected/actual results and cleanup without copying tokens or passwords into evidence.
 
+Recorded on 1 November: both real learner accounts completed normal sign-in, UI persistence through reload and sign-out/re-login, shared-browser A-to-B sign-in, guest/history/refresh checks and bidirectional backend isolation. Negative write probes left both accounts' own rows intact; the two temporary test rows were removed and test tabs closed. This is completed hosted account-isolation evidence. The remaining staff/operator journeys below still require their own acceptance; positive local staff JWT checks are recorded separately in the recovery evidence.
+
 | Journey | Required result |
 | --- | --- |
 | External-address signup | Email is actually received, confirmation opens the accepted origin, and sign-in succeeds |
@@ -91,7 +95,7 @@ Confirm supported custom SMTP/email-hook delivery, sender identity, redirect all
 
 ## Backup and restore procedure
 
-The selected free off-site mechanism is documented in [Free encrypted backups](FREE_ENCRYPTED_BACKUPS.md). Its daily workflow, encrypted-only artifacts and quota gates are prepared; current connection/billing/enablement facts are recorded there.
+The selected free off-site mechanism is documented in [Free encrypted backups](FREE_ENCRYPTED_BACKUPS.md). Its daily workflow, encrypted-only artifacts and quota gates are enabled; current connection/billing/enablement facts are recorded there.
 
 The user delegated the free backup choice. The mechanism uses daily GitHub Actions exports, age encryption and 14-day encrypted artifact retention, with conservative storage limits and no paid overage. The existing $0 Actions account budget was verified and the protected repository connection secret was configured with explicit user approval. Inspect the [backup runs](https://github.com/gsharsh/HealEduTech/actions/workflows/backup.yml) for a successful default-branch run and retained artifact; configuration alone does not establish operation. A named recovery owner, alert routing and acceptable loss/recovery times still need operational acceptance.
 
@@ -105,15 +109,40 @@ The default prints a plan and does not connect. After approving the destination 
 
 Database exports do not contain Storage file bytes, SMTP/provider settings, signing keys or the platform configuration. Record separate recovery steps for those. A partial/failed export is never labelled restore-verified. Only restore trusted archives produced by the authorised backup process.
 
-For a compatible local PostgreSQL installation, a disposable drill is available:
+The generic PostgreSQL drill remains useful for synthetic tests. The completed Supabase recovery uses the provider-aware tool instead:
+
+Prepare a free local container engine and pre-pull the exact digest-pinned images in `restore-supabase-local.ts` and `verify-restored-services.ts`: Supabase PostgreSQL 17.6.1.166, Auth 2.197.0 and PostgREST 14.18. The tools do not pull images during recovery. Review the versioned provider inputs and copy them to private files outside Git before starting.
 
 ```sh
-node scripts/backup-database.ts --restore-drill /protected/new-backup-directory/database.dump --output /protected/new-drill-report-directory
+DOCKER_HOST=unix:///explicit/local/docker.sock node scripts/restore-supabase-local.ts \
+  --container evg-restore-new-unique-name \
+  --archive /protected/recovered-export/database.dump \
+  --provider-profile /protected/provider-profile.json \
+  --provider-bootstrap-sql /protected/provider-bootstrap.sql \
+  --locale en_US.UTF-8 \
+  --output /protected/new-restore-report \
+  --keep-for-service-checks
 ```
 
-The default is again a plan. `--execute` creates a **brand-new local cluster with no TCP listener**, restores password-free roles and the archive, checks table/RLS presence, then stops/removes that cluster. It never accepts an existing destination database. The private socket isolates database state rather than the operating system; restore only trusted exports in a disposable test environment because SQL restoration can exercise source-superuser capabilities. Missing source extensions or incompatible provider features correctly fail the drill. Retained reports/logs are sensitive and require the same protection as the archive.
+The default prints a plan. After reviewing the inputs, `--execute` creates new owned container/volume resources using the pinned ARM64 Supabase image, with no network, published ports or host binds. It restores schemas, each extension under its recorded owner, then every remaining archive entry exactly once. It preserves exported roles, ownership, ACLs, defaults and RLS; unsupported entries or restore errors stop the drill. `--keep-for-service-checks` explicitly retains a successful offline target for the subsequent local Auth/PostgREST checks; otherwise owned resources are removed.
 
-A local archive restore is supporting evidence. Complete a provider-compatible isolated staging restore and repeat real Auth, roles, private reading, inventory/availability and lending checks before accepting recovery. Disable outbound email in that restored environment. Record elapsed time and recoverable data loss. Production restoration needs the incident owner's explicit approval because it may replace later work.
+The versioned [provider profile](../supabase/recovery/provider-profile-2026-11-01.json) and [provider bootstrap SQL](../supabase/recovery/provider-bootstrap-2026-11-01.sql) are supplemental recovery inputs, not contents of the original three-file encrypted archive. Review and copy them into private mode-0600 files outside Git before running the tool. Their hashes are recorded; the pinned bootstrap hash must match. Bootstrap SQL contains no credentials, transaction commands or psql metacommands. It reproduces the source's provider-owned objects/grants and database owner/ACL/settings that the raw dump alone does not establish. No fresh application/Auth/Storage migrations were layered over the snapshot. Refresh these inputs when provider ownership, privileges or database settings change; the daily three-file export does not capture them automatically.
+
+Generate the matching source/local comparison query with `node scripts/restore-supabase-local.ts --print-verification-sql`; capture results privately. For a source capture matching the recovery point, add `--expected-metadata /protected/source-metadata.json` to require exact equality, including rows and sequence states. When newer live Auth activity has advanced those values, independently compute and retain a static-catalog/extension/database comparison alongside the tool's exact archive-data comparison. That evidence can support a separate fully verified report with its comparison scope recorded; preserve the original raw restore report unchanged. `--execute` without a baseline does not itself produce a service-ready verified report, and changing a status field alone establishes nothing.
+
+Only after those checks pass, use the retained fully verified report with a separate **new sibling** output directory:
+
+```sh
+DOCKER_HOST=unix:///explicit/local/docker.sock node scripts/verify-restored-services.ts \
+  --restore-report /protected/new-restore-report/verified-report.json \
+  --output /protected/new-service-report
+```
+
+Review the plan, then add `--execute`. The service tool requires the successful ownership-labelled restore and both archive/source verification results. It shares the database's `network=none` container namespace, publishes no host ports and mounts no host files. It starts Auth without migrations and REST with fresh isolated credentials, then removes only its own service containers; database/volume cleanup remains the recovery owner's responsibility.
+
+Verification separately matches the exact archived data and the current logical source catalog. Live sign-ins naturally advance Auth sessions and sequences; current live rows must not be substituted for the archived recovery point. The completed drill matched 50 tables/368 rows/two sequences against the archive, then all 16 catalog categories plus extension owners and database properties against the source baseline. Local Auth 2.197.0/PostgREST 14.18 passed 54 real-JWT learner/staff checks using four fresh local fixture accounts. Original account passwords were not tested on the restored copy. SMTP/OAuth, hosted signing keys and Storage file bytes remain separate recovery concerns. Storage objects and Vault secrets were both zero; the drill therefore did not test nonempty Storage recovery or original Vault-key portability.
+
+This completes the recorded provider-aware local recovery drill, not a production replacement or owner acceptance. Cleanup removed both restored database containers/volumes, the task VM, temporary decrypted copies and detailed temporary configurations; the encrypted backup and private recovery key were retained. Keep outbound email disabled during future drills, retain protected reports, record the recovery point/elapsed time and repeat after provider or schema changes. Production restoration needs the incident owner's explicit approval because it may replace later work.
 
 ## Content, privacy and operator acceptance
 

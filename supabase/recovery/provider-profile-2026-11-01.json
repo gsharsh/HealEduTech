@@ -1,0 +1,12 @@
+{
+  "format": 1,
+  "extension_owners": {
+    "pg_stat_statements": "postgres",
+    "pgcrypto": "postgres",
+    "uuid-ossp": "postgres",
+    "unaccent": "supabase_admin",
+    "supabase_vault": "supabase_admin",
+    "plpgsql": "supabase_admin"
+  },
+  "bootstrap_sha256": "8255e21dc6ae1442293f973597dd7b38b03052299e3be06b8ba083693c48b138"
+}
