@@ -1,16 +1,16 @@
 import { createClient } from "@supabase/supabase-js";
 import { getPublicEnv } from "./env";
 import { buildAuthRedirectUrl } from "../features/auth/validation";
-import { createSessionAuthStorage } from "./sessionAuthStorage";
+import { createTabScopedAuthStorage } from "./sessionAuthStorage";
 
 const env = getPublicEnv();
 
 export const supabase = env
   ? createClient(env.supabaseUrl, env.supabaseAnonKey, {
       auth: {
-        // Tab-scoped sessions reduce accidental account sharing on centre devices.
+        // Isolate SDK auth broadcasts as well as persisted sessions by tab.
+        ...createTabScopedAuthStorage(env.supabaseUrl),
         persistSession: true,
-        storage: createSessionAuthStorage(),
         autoRefreshToken: true,
         detectSessionInUrl: true,
       },
