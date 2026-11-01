@@ -7,13 +7,14 @@ Prepared 1 November 2026. This document describes the production-readiness candi
 | Check | Recorded outcome | Boundary |
 | --- | --- | --- |
 | TypeScript, lint and build | Passed, including the new Node tools and browser-test source | Local candidate; public pages pre-rendered from the same React components |
-| Node regression tests | 65 passed on the publication candidate | Helpers, configuration safety, diagnostic payloads, metadata, migration parsing, encrypted-backup policy and pinned provider trust |
+| Node regression tests | 66 passed on the publication candidate | Includes emitting/running the API with the root hosting compiler options, in addition to the application and backup regressions |
 | Browser journeys | 26 desktop/phone checks passed | Synthetic intercepted APIs; no production learner records used |
 | SQL regression | 20 migrations, seven suites, eight concurrency probes passed | Disposable local PostgreSQL with an Auth shim |
 | Index coverage | All 18 public foreign keys covered; replay introduces no duplicate indexes | Local schema verification; matching migration also applied live |
 | Backup mechanism | Synthetic data, roles, RLS and grants restored; tampered archive rejected | Does not establish a hosted backup schedule or provider-compatible restore |
 | Real protected backup | Read-only hosted export encrypted with age; recovery-key decryption reproduced all three source files exactly | Certificate and hostname verified with the official Supabase CA; encrypted payload 553,378 bytes; local only |
 | Real restore attempt | Strict isolated restore stopped at incompatible managed-role grants; disposable cluster removed | Full recovery remains unverified; no errors were skipped and no hosted records were modified |
+| First off-site backup | [Run 41296898107](https://github.com/gsharsh/HealEduTech/actions/runs/41296898107) succeeded; downloaded artifact digest, ciphertext checksum, recovery-key decryption and recovered export checksums passed | PostgreSQL 17.11 client; only ciphertext and checksum retained through 15 November; temporary recovery plaintext removed; full Supabase restoration remains unverified |
 | Free backup billing | Existing account-wide Actions budget is $0 with usage blocked; current included storage shows 0 GB of 0.5 GB | Observed in signed-in GitHub settings; actual successful workflow runs establish operating status |
 | Built HTTP report | 40 technical checks passed, including supplied actual hosted migration export | Loopback build preview with production headers/routing; not a Vercel deployment |
 | Hosted migration state | All 20 source migrations present | Four pending migrations and one index migration applied; filenames aligned to recorded versions without rewriting the live ledger |
@@ -67,7 +68,7 @@ GitHub Actions is configured to run browser and database checks; it must run on 
 node scripts/check-release.ts --url https://your-accepted-origin.example --hosted-migrations /protected/hosted-migrations.txt
 ```
 
-The report checks delivered public HTML/metadata, bilingual public routes, machine-readable sitemap/robots and security headers. Missing human/account/restore evidence is reported as **unverified**, never silently marked passed.
+The report checks delivered public HTML/metadata, bilingual public routes, machine-readable sitemap/robots and security headers. On a real HTTPS deployment it also checks that the diagnostic function rejects unsupported methods and cross-site requests, so a failed function compilation cannot hide behind successful static-page checks. Missing human/account/restore evidence is reported as **unverified**, never silently marked passed.
 5. Repeat the signed-in rehearsal below. Verify guest denial of staff data using the actual public API, and student denial of staff endpoints with an authenticated student token. An anonymous error alone does not establish successful staff operation.
 6. Roll back the frontend only to a commit compatible with the current schema. A website rollback does not reverse migrations or restore deleted records.
 

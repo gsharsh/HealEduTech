@@ -55,7 +55,11 @@ await writeFile(path.join(root, 'dist/robots.txt'), `User-agent: *\nAllow: /\nDi
 let commit = 'unknown';
 let dirty_worktree = true;
 try { commit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(); } catch { /* Source archives may not include Git metadata. */ }
-try { dirty_worktree = Boolean(execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim()); } catch { /* An archive cannot establish clean Git provenance. */ }
+try {
+  const changes = execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim();
+  dirty_worktree = Boolean(changes);
+  if (dirty_worktree) console.warn('Uncommitted build file paths (contents omitted):\n' + changes);
+} catch { /* An archive cannot establish clean Git provenance. */ }
 const required_migrations = (await readdir(path.join(root, 'supabase/migrations'))).filter(name => name.endsWith('.sql')).sort();
 await writeFile(path.join(root, 'dist/release.json'), JSON.stringify({ version: '2026-11-01', commit, dirty_worktree, app_mode: values.VITE_APP_MODE === 'demo' ? 'demo' : 'live', required_migrations, public_routes: routes }, null, 2));
 console.log(`Pre-rendered ${routes.length} bilingual public pages; generated sitemap, robots, 404, and release manifest.`);

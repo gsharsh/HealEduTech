@@ -43,6 +43,16 @@ for (const [path, expected] of [['/robots.txt', /User-agent:/i], ['/sitemap.xml'
     record(path, response.ok && expected.test(await response.text()), `HTTP ${response.status}; expected machine-readable content`);
   } catch { record(path, false, 'Request failed'); }
 }
+// Static loopback previews do not run Vercel Functions; check the real hosted boundary.
+if (origin.protocol === 'https:') {
+  try {
+    const endpoint = new URL('/api/client-error', origin);
+    const get = await fetch(endpoint, { signal: AbortSignal.timeout(15000), redirect: 'error' });
+    record('Client diagnostics: method boundary', get.status === 405 && get.headers.get('allow') === 'POST', `HTTP ${get.status}; GET must be rejected by the running function`);
+    const crossSite = await fetch(endpoint, { method: 'POST', headers: { origin: 'https://release-check.invalid', 'sec-fetch-site': 'cross-site', 'content-type': 'application/json' }, body: '{}', signal: AbortSignal.timeout(15000), redirect: 'error' });
+    record('Client diagnostics: origin boundary', crossSite.status === 403, `HTTP ${crossSite.status}; cross-site requests must be rejected without logging an event`);
+  } catch { record('Client diagnostics: hosted function', false, 'Request failed'); }
+}
 const requiredMigrations = (await readdir(resolve('supabase/migrations'))).filter(name => /^\d+.*\.sql$/.test(name)).sort();
 try {
   const response = await fetch(new URL('/release.json', origin), { signal: AbortSignal.timeout(15000), redirect: 'error' });

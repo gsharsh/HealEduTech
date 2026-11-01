@@ -6,6 +6,7 @@ import { useAccount } from '../../features/auth/context';
 import { libraryTranslations } from '../../features/library/libraryTranslations';
 import { useStaffAlerts } from '../../features/admin/useStaffAlerts';
 import { getPublicRoute, publicPath } from '../../content/publicPages';
+import { persistLanguage } from '../../i18n/languageStorage';
 import './app-shell.css';
 
 export function AppShell() {
@@ -172,7 +173,12 @@ export function AppShell() {
               onClick={() => {
                 const nextLanguage = isVietnamese ? 'en' : 'vi';
                 const publicRoute = getPublicRoute(pathname);
-                if (publicRoute) navigate(`${publicPath(publicRoute.path, nextLanguage)}${search}${hash}`);
+                if (publicRoute) {
+                  // A reload can start as soon as the URL changes, before the
+                  // route effect updates i18next and saves the new language.
+                  persistLanguage(nextLanguage);
+                  navigate(`${publicPath(publicRoute.path, nextLanguage)}${search}${hash}`);
+                }
                 else void i18n.changeLanguage(nextLanguage);
               }}
             >
