@@ -24,6 +24,8 @@ sequenceDiagram
         end
     end
     Operator->>UI: Record usable/damaged return or loss
+    UI-->>Operator: Review selected copy and resolution; cancel or confirm
+    Operator->>UI: Confirm resolution
     UI->>API: resolve_circulation_loan with retry-stable request_id
     API->>DB: Verify staff and validate matching retry
     API->>DB: Lock and revalidate physical copy and loan

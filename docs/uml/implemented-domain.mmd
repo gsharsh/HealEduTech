@@ -77,6 +77,14 @@ classDiagram
         string event_type
         JSON payload
     }
+    class LoanContact {
+        UUID id
+        UUID loan_id
+        UUID actor_user_id
+        string actor_name
+        timestamp contacted_at
+        string channel
+    }
     class ReadingRecord {
         UUID user_id
         UUID book_id
@@ -84,6 +92,8 @@ classDiagram
         string reflection
         timestamp created_at
         timestamp updated_at
+        timestamp reading_started_at
+        timestamp reading_finished_at
     }
     class LearnerInterest {
         UUID user_id
@@ -104,6 +114,8 @@ classDiagram
     Borrower "1" -- "0..*" Loan : borrower_user_id
     PhysicalCopy "1" -- "0..*" Loan : copy_id
     Loan "1" -- "0..*" CirculationEvent : loan_id
+    Loan "1" -- "0..*" LoanContact : loan_id
+    AuthUser "0..1" -- "0..*" LoanContact : actor_user_id
     AuthUser "1" -- "0..*" ReadingRecord : user_id
     Book "1" -- "0..*" ReadingRecord : book_id
     AuthUser "1" -- "0..*" LearnerInterest : user_id
@@ -117,8 +129,56 @@ classDiagram
     BookAvailability ..> Loan : excludes active loans
     note for ProfileMetadata "JSON fields on auth.users; no public.profiles table. Never a staff-role authority."
     note for StaffMember "PK=user_id. Roles=librarian or administrator. No cohort/facilitator role."
-    note for ReadingRecord "PK=(user_id,book_id). Owner-only RLS. Reflection at most 2000 characters."
+    note for ReadingRecord "PK=(user_id,book_id). Owner-only table access. Checked staff RPCs expose titles/status, never reflections. Reflection at most 2000 characters."
     note for LearnerInterest "PK=(user_id,topic). Topics=nature,stories,science. Owner-only RLS."
     note for Loan "request_id unique; partial unique index permits one active loan per copy."
     note for CirculationEvent "RPC checkout writes an event. FK alone permits zero events. Append-only to clients; not a general staff-role audit."
+    note for LoanContact "No direct client table access. Staff-only RPCs record email contact history. id is retry-stable; no proof of email delivery."
     note for CirculationPolicy "Singleton id=1; enabled defaults false."
+    class LearningProject {
+        <<PrivateSchema>>
+        UUID id
+        UUID owner_id
+        string book_title
+        string title
+        string format
+        string summary
+        string takeaways
+        string recommendation
+        string question
+        string status
+        string review_note
+        timestamp updated_at
+        timestamp published_at
+    }
+    class LearningComment {
+        <<PrivateSchema>>
+        UUID id
+        UUID project_id
+        UUID owner_id
+        string body
+        string status
+        string review_note
+        timestamp updated_at
+    }
+    class Encouragement {
+        <<PrivateSchema>>
+        UUID project_id
+        UUID user_id
+    }
+    class RequestBudget {
+        <<PrivateSchema>>
+        UUID user_id
+        timestamp window_started_at
+        int request_count
+    }
+    AuthUser "1" -- "0..25" LearningProject : owner_id
+    LearningProject "1" -- "0..50" LearningComment : project_id
+    AuthUser "1" -- "0..50" LearningComment : owner_id
+    LearningProject "1" -- "0..*" Encouragement : project_id
+    AuthUser "1" -- "0..*" Encouragement : user_id
+    AuthUser "1" -- "0..1" RequestBudget : user_id
+    note for LearningProject "Candidate migration pending hosted rollout. No raw client access. Owner drafts; staff review of explicitly submitted work. Public projection excludes identity and review notes. book_title is learner-entered; no Book FK."
+    note for LearningComment "Plain text, maximum 500 characters. Staff approval required for public projection. Owner can remove even when parent is private. Maximum 5 per owner per project."
+    note for Encouragement "Unique (project_id,user_id), only for published projects. Public count only. Reset when project becomes private."
+    note for RequestBudget "Atomic per-account committed-write budget: 120 per 60-second fixed window. Read-only transactions and rolled-back writes are outside accounting."

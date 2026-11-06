@@ -1,5 +1,7 @@
 # EVG Vietnam — System Requirements and Delivery Plan
 
+**7 November 2026 implementation addendum:** the [sprint release report](docs/SPRINT_RELEASE_2026-11-07.md) and [current flow map](docs/SPRINT_DESIGN_AND_FLOWS_2026-11-07.md) supersede the implementation-status statements below for this review branch. They include individual Explore recommendations/resources, Together notebooks/publication/moderation, teacher reading timelines, catalogue removal safeguards, dashboard design, and request controls. The requirements baseline below is retained for traceability; it is not evidence that the new hosted deployment gates have passed.
+
 **Version:** 0.5 · **Status:** source-aligned requirements baseline; hosted release gates remain open · **Updated:** 2 October 2026
 
 **Delivery policy:** preserve the frontend and authorised Supabase accounts/catalogue/reading implementation, verify the core learner journey, then expand private learning workflows. Lending activation, project/goal persistence and working recommendations retain their individual release gates.

@@ -1,6 +1,8 @@
 # EVG Learning Platform
 
-**1 November 2026 production-readiness candidate:** see [release verification and operations](docs/PRODUCTION_RELEASE_2026-11-01.md). The isolated `codex/production-readiness` candidate adds consistent learner/staff/account controls, bilingual Help/Privacy pages and public URLs, pre-rendered public content/metadata, crash recovery, strict build configuration, and automated browser/database/backup checks. The hosted database now has all 20 current migrations; the frontend changes remain a local preview until separately published. Temporary goal/project editors are limited to staff training. Older dated implementation/deployment notes below remain historical evidence.
+**7 November 2026 review candidate — `get-stuff-done-harshith`:** the current sprint improves the visual system, learner and staff workflows, request efficiency, server-enforced mutation quotas, and the individual Explore / classroom Together journeys. Start the local review with `npm run dev:review` at `http://127.0.0.1:4177`. The [sprint report](docs/SPRINT_RELEASE_2026-11-07.md) records the delivered features, verification and remaining deployment gates; the [free-first architecture decision](docs/FREE_FIRST_ARCHITECTURE_2026-11-07.md) explains costs and request protection. This is a branch candidate, not a main merge or production deployment. New migrations remain pending on the hosted backend.
+
+The [1 November production-readiness report](docs/PRODUCTION_RELEASE_2026-11-01.md) and older dated notes below are historical evidence. The hosted backend had 20 migrations at the start of this sprint; use the current sprint report for the candidate's migration and test status.
 
 Bilingual library, reading, exploration, and peer-learning platform for EVG Vietnam. Students will find and borrow books, track their learning, share discoveries, and explore new topics. EVG staff will manage the library and support students through simple administration screens.
 
@@ -11,18 +13,18 @@ Bilingual library, reading, exploration, and peer-learning platform for EVG Viet
 - **[Frontend verification](./docs/FRONTEND_VERIFICATION.md):** completed prototype checks and remaining release evidence.
 - **[Phase 1C validation guide](./docs/PHASE_1C_VALIDATION.md):** simple learner/staff walkthroughs, Vietnamese review, accessibility checks, and decision record.
 - **[Design research](./docs/DESIGN_RESEARCH.md):** reference platforms, EVG design decisions, and usability validation.
-- **[Recommendation design](./PLAN.md#6-topic-discovery-with-little-initial-data):** the later recommendation system and its approach to limited data.
+- **[Explore learning design](./docs/EXPLORE_LEARNING_DESIGN_2026-11-07.md):** current deterministic suggestions and their limits; [the wider recommendation roadmap](./PLAN.md#6-topic-discovery-with-little-initial-data) includes future AI evaluation.
 - **[October improvement and readiness review](./docs/PRODUCTION_READINESS_2026-10-02.md):** current work, remaining release gates and the January 2027 rollout boundary.
 - **[Project-history audit](./docs/PROJECT_HISTORY_AUDIT_2026-10-02.md):** available project conversations, Git history and unfinished requirements.
 - **[Education research](./docs/EDTECH_RESEARCH_2026-10-02.md)** and **[design research](./docs/DESIGN_RESEARCH_2026-10-02.md):** source-backed improvements and the preferences-first recommendation plan.
 - **[Typography, glass and verification](./docs/VERIFICATION_2026-10-02.md):** the refined type/material system, browser coverage and local backend regression results.
-- **[Current system UML and access matrix](./docs/SYSTEM_UML_2026-10-02.md):** implemented versus planned models, transaction boundaries and remaining production gates. [Open the interactive domain diagram](./docs/uml/rendered.html).
+- **[Historical system UML and access matrix](./docs/SYSTEM_UML_2026-10-02.md):** October models and transaction boundaries. [The interactive domain diagram](./docs/uml/rendered.html) is historical; use the [current design and flow map](./docs/SPRINT_DESIGN_AND_FLOWS_2026-11-07.md) for this candidate.
 
 System IDs are shared with the plan. Use them in tasks and pull requests, for example `S03: record a book return`. These systems are parts of one application, not separate services.
 
 ## Systems we will build
 
-The table below describes the full roadmap. The current implementation includes accounts, catalogue persistence, private reading/interests, and a staff circulation workflow gated by an approved lending policy. September release evidence records the reading and circulation migrations as hosted; successful real-account journeys remain to be verified. Remaining systems are planned or demonstrated with fictional data. See [Supabase pilot setup and release gates](docs/SUPABASE_PILOT.md) for configuration, permissions and verification status.
+The table below describes the full roadmap and its original phase allocation. The current candidate implements accounts, catalogue persistence, private reading/interests, staff circulation and oversight, deterministic Explore suggestions, and Together notebooks, teacher review, approved publication and moderated feedback. The new Together, reading-timeline, guarded-removal and quota migrations remain pending on the hosted backend. Goals, rewards, resource authoring and AI remain roadmap work. Use the [current sprint report](docs/SPRINT_RELEASE_2026-11-07.md) for verification and deployment gates, alongside [Supabase pilot setup](docs/SUPABASE_PILOT.md).
 
 | ID | System | Main functions | First working phase |
 |---|---|---|---|
@@ -56,7 +58,7 @@ S05 Weekly goals → S06 Projects and feedback → S07 Rewards
 
 S02 Book topics + S04 Explicit interests + S10 Approved resources
                               ↓
-                      S11 Recommendations (later)
+                      S11 Deterministic suggestions (candidate); AI later
 
 S12 Staff operations supports each system as it becomes available
 ```
@@ -78,9 +80,11 @@ S12 Staff operations supports each system as it becomes available
 | 6 | Implement transparent topic recommendations using approved content |
 | 7 | Evaluate limited AI assistance with staff review and usage controls |
 
-Build and verify one usable workflow at a time. Working recommendations and AI stay at the end; earlier screens must identify examples and educator picks honestly.
+This is the original delivery sequence. The 7 November candidate advances bounded deterministic suggestions and parts of projects, showcases and feedback; goals, rewards and AI remain deferred. Each capability still needs its documented deployment and acceptance checks.
 
-## Current frontend preview
+## Historical frontend preview (through 1 November)
+
+This section preserves the previous delivery record. For current Explore, Together, and reliability changes, use the [7 November sprint report](docs/SPRINT_RELEASE_2026-11-07.md).
 
 **26 October 2026 local staff increment:** `/staff/students` adds student profiles and reading/borrowing summaries; `/staff/dashboard` adds current library metrics and weekly lending trends. Circulation now supports searchable, paginated loans, seven-day overdue staff alerts, email drafts and shared contact history. Staff can see reading titles, status and counts; written reflections remain private. Apply the new staff-oversight migration before deploying these pages. This increment has not been applied to the hosted project. See [staff oversight and release verification](docs/STAFF_OVERSIGHT_2026-10-26.md).
 
@@ -147,9 +151,14 @@ The app can run without Supabase credentials while developing the interface. Set
 
 ```sh
 npm run dev       # start the local Vite server
+npm run dev:review # review at http://127.0.0.1:4177 (strict port)
 npm run lint      # check TypeScript and React source
 npm run build     # type-check and build for production
 npm run preview   # preview the production build; run npm run build first
+npm test          # domain, request, security and tooling regressions
+npm run test:browser # isolated desktop/phone journeys; install Playwright Chromium first
+npm run test:accessibility # automated axe checks (not a complete accessibility audit)
+npm run test:db   # disposable local PostgreSQL: migrations, permissions and concurrency
 ```
 
 ## Project structure
