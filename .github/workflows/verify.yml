@@ -62,6 +62,14 @@ jobs:
           echo '/usr/lib/postgresql/17/bin' >> "$GITHUB_PATH"
       - name: Replay migrations, permissions and concurrent-client regressions
         run: python3 supabase/tests/run-local.py --output database-test-results
+      - name: Install checksum-verified PostgREST for real HTTP quota checks
+        run: |
+          mkdir -p "$RUNNER_TEMP/evg-postgrest"
+          curl --fail --silent --show-error --location --retry 3 --max-time 90 https://github.com/PostgREST/postgrest/releases/download/v14.18/postgrest-v14.18-linux-static-x86-64.tar.xz --output "$RUNNER_TEMP/evg-postgrest/archive.tar.xz"
+          printf '%s  %s\n' '98de1c0be7787aea5f5e11a25f303ea0077634d6fc1000b687bfa825fd27d299' "$RUNNER_TEMP/evg-postgrest/archive.tar.xz" | sha256sum --check --strict
+          tar --extract --file "$RUNNER_TEMP/evg-postgrest/archive.tar.xz" --directory "$RUNNER_TEMP/evg-postgrest"
+      - name: Verify signed-JWT request quotas over disposable PostgREST HTTP
+        run: python3 supabase/tests/run-http-budget.py --postgrest "$RUNNER_TEMP/evg-postgrest/postgrest" --output database-http-test-results
       - name: Exercise synthetic backup and isolated restore
         run: python3 scripts/test-backup-drill.py --output backup-test-results
       - name: Install the verified age CLI for synthetic encryption checks
@@ -77,5 +85,6 @@ jobs:
           name: database-test-evidence
           path: |
             database-test-results/
+            database-http-test-results/
             backup-test-results/
           retention-days: 7

@@ -20,5 +20,6 @@ supabase/.temp/
 test-results/
 playwright-report/
 database-test-results/
+database-http-test-results/
 backup-test-results/
 __pycache__/
