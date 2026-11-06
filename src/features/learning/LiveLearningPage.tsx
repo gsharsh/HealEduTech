@@ -1,13 +1,14 @@
-import { useEffect, useId, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount } from '../auth/context';
 import { useTranslation } from 'react-i18next';
-import { getMyReading, listBooksForReading, listMyReading, saveReading, type ReadingBook, type ReadingRecord, type ReadingStatus } from './reading';
+import { listBooksForReading, listMyReading, saveReading, type ReadingBook, type ReadingRecord, type ReadingStatus } from './reading';
 import { readingTranslations } from './readingTranslations';
 import { getCoverImageSources } from '../library/coverImages';
 import './reading.css';
+import { requestFailureMessage } from '../../lib/requestFeedback';
 
-type ReadingActionProps = { bookId: string; onSaved?: (record: ReadingRecord) => void };
+type ReadingActionProps = { initialRecord: ReadingRecord; userId: string; onSaved: (record: ReadingRecord) => void };
 // Verified public-domain cover for the seeded Peter Rabbit record:
 // https://www.gutenberg.org/ebooks/14838
 const PETER_RABBIT_BOOK_ID = '31000000-0000-4000-8000-000000000001';
@@ -21,69 +22,53 @@ function ReadingCover({ book, title }: { book: ReadingBook | undefined; title: s
   return <img className="reading-cover" src={sources.src} srcSet={sources.srcSet} sizes="(max-width: 480px) 90px, 120px" loading="lazy" decoding="async" alt="" onError={() => setFailedCoverUrl(coverUrl)} />;
 }
 
-function ReadingAction(props: ReadingActionProps) {
-  const { user, loading } = useAccount();
-  const { i18n } = useTranslation();
-  const copy = readingTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
-  if (loading) return <p role="status">{copy.loading}</p>;
-  if (!user) return <Link className="reading-action-link" to="/sign-in?next=/library">{copy.signIn}</Link>;
-  return <ReadingEditor key={`${user.id}:${props.bookId}`} {...props} userId={user.id} />;
-}
-
-function ReadingEditor({ bookId, userId, onSaved }: ReadingActionProps & { userId: string }) {
+function ReadingEditor({ initialRecord, userId, onSaved }: ReadingActionProps) {
   const reflectionId = useId();
   const reviewBodyId = useId();
   const reviewPromptId = useId();
   const reviewCountId = useId();
   const { i18n } = useTranslation();
   const copy = readingTranslations[i18n.language === 'vi' ? 'vi' : 'en'];
-  const [record, setRecord] = useState<ReadingRecord | null>(null);
-  const [status, setStatus] = useState<ReadingStatus>('currently_reading');
-  const [reflection, setReflection] = useState('');
-  const [loadState, setLoadState] = useState<'loading' | 'ready' | 'failed'>('loading');
-  const [attempt, setAttempt] = useState(0);
+  const [record, setRecord] = useState(initialRecord);
+  const [status, setStatus] = useState<ReadingStatus>(initialRecord.status);
+  const [reflection, setReflection] = useState(initialRecord.reflection ?? '');
+  const saveRequest = useRef(0);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState(false);
-  useEffect(() => {
-    let active = true;
-    void getMyReading(userId, bookId).then(value => {
-      if (!active) return;
-      setRecord(value); setStatus(value?.status ?? 'currently_reading');
-      setReflection(value?.reflection ?? ''); setLoadState('ready');
-    }).catch(() => { if (active) setLoadState('failed'); });
-    return () => { active = false; };
-  }, [bookId, userId, attempt]);
-  if (loadState === 'loading') return <p role="status">{copy.loading}</p>;
-  if (loadState === 'failed') return <div role="alert"><p>{copy.loadError}</p><button className="secondary" onClick={() => { setLoadState('loading'); setAttempt(value => value + 1); }}>{copy.retry}</button></div>;
+  const [error, setError] = useState<unknown>(null);
+  useEffect(() => () => { saveRequest.current += 1; }, []);
   // Keep a finished review intact while the learner reopens a book. The editor
   // stays hidden during reading, but changing status must not erase saved thinking.
   const nextReflection = reflection.trim();
-  const clean = record?.status === status && (record?.reflection ?? '') === nextReflection;
+  const clean = record.status === status && (record.reflection ?? '') === nextReflection;
   async function save() {
     if (saving) return;
-    setSaving(true); setError(false);
+    const requestId = ++saveRequest.current;
+    setSaving(true); setError(null);
     try {
-      const saved = await saveReading(userId, { bookId, status, reflection: nextReflection });
-      setRecord(saved); setReflection(saved.reflection ?? ''); onSaved?.(saved);
-    } catch { setError(true); }
-    finally { setSaving(false); }
+      const saved = await saveReading(userId, { bookId: record.book_id, status, reflection: nextReflection });
+      if (requestId !== saveRequest.current) return;
+      setRecord(saved); setReflection(saved.reflection ?? ''); onSaved(saved);
+    } catch (failure) { if (requestId === saveRequest.current) setError(failure); }
+    finally { if (requestId === saveRequest.current) setSaving(false); }
   }
   return <div className="reading-action">
     <fieldset disabled={saving} className="reading-fields">
       <legend className="reading-private">{copy.private}</legend>
       <div className="reading-action-buttons">
-        {status === 'currently_reading' ? <button type="button" className="secondary" onClick={() => setStatus('finished')}>{copy.markFinished}</button> : <button type="button" className="secondary" onClick={() => setStatus('currently_reading')}>{copy.stillReading}</button>}
+        {status === 'currently_reading' ? <button type="button" className="secondary" onClick={() => { setStatus('finished'); setError(null); }}>{copy.markFinished}</button> : <button type="button" className="secondary" onClick={() => { setStatus('currently_reading'); setError(null); }}>{copy.stillReading}</button>}
       </div>
       {status === 'finished' && <div className="reading-review">
         <label className="reading-reflection-label" htmlFor={reflectionId}>{copy.review}</label>
         <p className="reading-action-muted" id={reviewBodyId}>{copy.reviewBody}</p>
         <p className="reading-review-prompt" id={reviewPromptId}>{copy.reviewPrompt}</p>
-        <textarea id={reflectionId} aria-describedby={`${reviewBodyId} ${reviewPromptId} ${reviewCountId}`} value={reflection} maxLength={2000} onChange={event => setReflection(event.target.value)} placeholder={copy.reflectionPlaceholder} />
-        <p className="reading-character-count" id={reviewCountId}>{reflection.length.toLocaleString()} / 2,000 {copy.reviewCount}</p>
+        <textarea id={reflectionId} aria-describedby={`${reviewBodyId} ${reviewPromptId} ${reviewCountId}`} value={reflection} maxLength={2000} onChange={event => { setReflection(event.target.value); setError(null); }} placeholder={copy.reflectionPlaceholder} />
+        <p className="reading-character-count" id={reviewCountId}>{reflection.length.toLocaleString(i18n.language === 'vi' ? 'vi-VN' : 'en-GB')} / {Number(2000).toLocaleString(i18n.language === 'vi' ? 'vi-VN' : 'en-GB')} {copy.reviewCount}</p>
       </div>}
       <button type="button" className="primary reading-save" disabled={saving || clean} onClick={() => void save()}>{saving ? copy.saving : clean ? copy.saved : copy.saveChanges}</button>
+      {!clean && <button type="button" className="secondary" onClick={() => { setStatus(record.status); setReflection(record.reflection ?? ''); setError(null); }}>{copy.cancelChanges}</button>}
+      <span className="reading-save-state" role="status">{saving ? copy.saving : clean ? '' : copy.unsaved}</span>
     </fieldset>
-    {error && <p className="reading-error" role="alert">{copy.saveError}</p>}
+    {error !== null && <p className="reading-error" role="alert">{requestFailureMessage(error, i18n.language, copy.saveError)}</p>}
   </div>;
 }
 
@@ -122,7 +107,7 @@ function ReadingHistory({ userId }: { userId: string }) {
   }, [attempt, userId]);
   const bookById = useMemo(() => new Map(books.map(book => [book.id, book])), [books]);
   return <section className="reading-page">
-    <div className="page-heading"><div><h1>{copy.title}</h1><p>{copy.intro}</p></div></div>
+    <div className="page-heading"><div><h1>{copy.title}</h1><p>{copy.intro}</p></div><Link className="secondary" to="/library">{copy.start}</Link></div>
     <div className="reading-dashboard">
       {loading ? <div className="reading-empty" role="status"><p>{copy.loading}</p></div> : failed ? <div className="reading-empty" role="alert"><p>{copy.loadError}</p><button className="secondary" onClick={() => { setFailed(false); setLoading(true); setAttempt(value => value + 1); }}>{copy.retry}</button></div> : records.length === 0 ? <div className="reading-empty"><h2>{copy.emptyTitle}</h2><p>{copy.empty}</p><Link className="secondary" to="/library">{copy.start}</Link></div> : records.map(record => {
         const book = bookById.get(record.book_id);
@@ -131,9 +116,9 @@ function ReadingHistory({ userId }: { userId: string }) {
           <span className="eyebrow">{record.status === 'finished' ? copy.finished : copy.reading}</span>
           <div className="reading-book">
             <ReadingCover book={book} title={title} />
-            <div className="reading-book-copy"><h2>{title}</h2>{book?.author && <p className="reading-author">{book.author}</p>}{record.status === 'finished' && record.reflection && <p className="reading-reflection">“{record.reflection}”</p>}</div>
+            <div className="reading-book-copy"><h2>{book ? <Link to={`/library/${encodeURIComponent(record.book_id)}`}>{title}</Link> : title}</h2>{book?.author && <p className="reading-author">{book.author}</p>}{record.status === 'finished' && record.reflection && <p className="reading-reflection">“{record.reflection}”</p>}</div>
           </div>
-          <ReadingAction bookId={record.book_id} onSaved={saved => setRecords(current => current.map(item => item.book_id === saved.book_id ? saved : item))} />
+          <ReadingEditor initialRecord={record} userId={userId} onSaved={saved => setRecords(current => current.map(item => item.book_id === saved.book_id ? saved : item))} />
         </article>;
       })}
     </div>

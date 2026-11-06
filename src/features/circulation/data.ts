@@ -41,9 +41,11 @@ function requireClient() {
   return supabase;
 }
 
-export async function getCirculationPolicy() {
-  const { data, error } = await requireClient().from('circulation_policy')
-    .select('enabled,max_active_loans,timezone').eq('id', 1).single();
+export async function getCirculationPolicy(signal?: AbortSignal) {
+  let request = requireClient().from('circulation_policy')
+    .select('enabled,max_active_loans,timezone').eq('id', 1);
+  if (signal) request = request.abortSignal(signal);
+  const { data, error } = await request.single();
   if (error) throw error;
   return data as CirculationPolicy;
 }

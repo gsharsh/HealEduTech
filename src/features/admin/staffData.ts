@@ -5,8 +5,9 @@ export interface StudentSummary {
   user_id: string; display_name: string; email: string | null; preferred_language: 'en' | 'vi';
   created_at: string; registered: boolean; eligible: boolean;
   currently_reading_count: number; finished_count: number; active_loan_count: number; overdue_loan_count: number;
+  reading_topics?: { topic: 'nature' | 'stories' | 'science'; reading: number; finished: number }[];
 }
-export interface StaffReadingBook { book_id: string; title_en: string; title_vi: string; status: 'currently_reading' | 'finished' }
+export interface StaffReadingBook { book_id: string; title_en: string; title_vi: string; status: 'currently_reading' | 'finished'; topic?: 'nature' | 'stories' | 'science'; reading_started_at?: string | null; reading_finished_at?: string | null }
 export interface StaffLoan {
   id: string; borrower_user_id: string; borrower_name: string; borrower_email: string | null;
   preferred_language: 'en' | 'vi'; copy_id: string; inventory_code: string; book_id: string;

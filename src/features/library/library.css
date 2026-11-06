@@ -1,8 +1,8 @@
 .catalogue-book-card { min-width: 0; }
 .catalogue-book-link { display: flex; flex-direction: column; color: inherit; text-decoration: none; height: 100%; }
 .catalogue-book-link .book-cover { transition: box-shadow .18s ease; }
-.catalogue-book-link:hover .book-cover, .catalogue-book-link:focus-visible .book-cover { box-shadow: 0 10px 22px #243c3724; }
-.book-cover.has-cover-image { color: #fff; }
+.catalogue-book-link:hover .book-cover, .catalogue-book-link:focus-visible .book-cover { box-shadow: 0 10px 22px #2F352D24; }
+.book-cover.has-cover-image { color: #FEFEFE; }
 .cover-image-wash { position: absolute; inset: 0; background: linear-gradient(180deg, #10271b08 45%, #10271b24 100%); }
 .catalogue-author { color: var(--muted); font-size: 12px; margin-top: 5px; }
 .catalogue-book-link .availability { font-size: 12px; margin: 12px 0 0; }
@@ -20,7 +20,7 @@
 .book-find-panel p { margin: 7px 0; }
 .book-facts, .related-books { border-top: 1px solid var(--line); margin-top: 40px; padding-top: 28px; }
 .book-facts dl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 0; }
-.book-facts dl > div { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.book-facts dl > div { background: #FEFEFE; border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
 .book-facts dt { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
 .book-facts dd { margin: 7px 0 0; font-weight: 650; }
 .related-books .section-heading p { color: var(--muted); font-size: 13px; }
@@ -56,10 +56,10 @@
 .library-grid { gap: 26px; }
 .book-detail-back { gap: 10px; font-size: .875rem; }
 .book-detail-cover { padding: 24px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper); }
-.book-detail-cover .book-cover { box-shadow: 5px 8px 0 #1b38280d, 10px 18px 28px #1b382817; }
+.book-detail-cover .book-cover { box-shadow: 5px 8px 0 #2F352D0d, 10px 18px 28px #2F352D17; }
 .book-detail-copy h1 { font-size: clamp(2.125rem, 4.3vw, 3.5rem); line-height: 1.12; text-wrap: balance; }
 .book-detail-copy section > p { font-size: 1rem; }
-.book-find-panel { padding: 26px; border: 1px solid #d5e2d6; border-radius: 20px; background: #edf4ee; }
+.book-find-panel { padding: 26px; border: 1px solid var(--line); border-radius: 20px; background: var(--sage); }
 .book-facts dl > div { padding: 22px; border-radius: 16px; }
 .book-facts dt { font-size: .75rem; letter-spacing: .06em; }
 .book-facts dd { overflow-wrap: anywhere; }
@@ -71,4 +71,22 @@
 }
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
   .library-toolbar, .library-filters, .library-toolbar input, .library-toolbar select, .library-filters input, .library-filters select { -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; background: var(--paper); }
+}
+
+.library-results { margin-top: 22px; }
+.library-result-count { display: flex; align-items: baseline; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; margin: 0 2px 24px; color: var(--muted); font-size: .875rem; }
+.library-result-count:focus { outline: none; }
+.library-result-count:focus-visible { outline: 2px solid var(--green); outline-offset: 7px; border-radius: 4px; }
+.library-result-count > span { font-size: .8125rem; }
+.library-pagination { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 20px; padding: 28px 0 12px; margin-top: 18px; border-top: 1px solid var(--line); }
+.library-pagination > span { color: var(--muted); font-size: .875rem; }
+.library-skeleton { padding: 18px; border: 1px solid var(--line); border-radius: 22px; background: var(--paper); }
+.library-skeleton > div { width: min(100%, 220px); aspect-ratio: .72; margin: 0 auto 22px; border-radius: 4px 10px 10px 4px; background: var(--accent); }
+.library-skeleton > span { display: block; height: 14px; margin: 12px 0; border-radius: 4px; background: var(--accent); }
+.library-skeleton > span:last-child { width: 60%; }
+.book-detail-copy h1, .book-detail-copy section > p, .catalogue-book-link .book-title, .catalogue-book-link .catalogue-author { overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .library-skeleton { padding: 16px; border-radius: 18px; }
+  .library-pagination { gap: 10px; }
+  .library-pagination > span { font-size: .8125rem; }
 }

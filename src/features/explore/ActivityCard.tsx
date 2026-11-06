@@ -4,10 +4,11 @@ import { Link } from 'react-router-dom';
 import type { Topic } from '../../demo/catalogue';
 import './activity-card.css';
 
-export function ActivityCard({ topic }: { topic: Topic }) {
+export function ActivityCard({ topic, headingLevel = 2 }: { topic: Topic; headingLevel?: 2 | 3 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const activityId = `${topic}-activity`;
+  const Heading = headingLevel === 3 ? 'h3' : 'h2';
 
   return <article data-scroll-stack-card className={`topic-card topic-${topic}`}>
     <div className="topic-card__media" aria-hidden="true">
@@ -18,7 +19,7 @@ export function ActivityCard({ topic }: { topic: Topic }) {
     </div>
     <div className="topic-card__content">
       <span className="eyebrow">{t(`topics.${topic}`)}</span>
-      <h2>{t(`activities.${topic}.title`)}</h2>
+      <Heading>{t(`activities.${topic}.title`)}</Heading>
       <p>{t(`activities.${topic}.body`)}</p>
       <button type="button" className="secondary" aria-expanded={open} aria-controls={activityId} onClick={() => setOpen(!open)}>{t(open ? 'close' : 'tryActivity')}<span aria-hidden="true">+</span></button>
     </div>

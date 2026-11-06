@@ -21,7 +21,7 @@ export function BookCard({ book, onOpen }: {
   onOpen: (book: DemoBook) => void;
 }) {
   const { t, i18n } = useTranslation();
-  return <button type="button" className="book-card" onClick={() => onOpen(book)}>
+  return <button type="button" className="book-card" aria-haspopup="dialog" onClick={() => onOpen(book)}>
     <BookCover book={book} />
     <span className="book-meta">{t(`topics.${book.topic}`)} · {t('minutes', { count: book.minutes })}</span>
     <span className="book-title">{book.title[i18n.language === 'vi' ? 'vi' : 'en']}</span>
@@ -42,7 +42,7 @@ export function CatalogueBookCover({ book, title, size = 'card' }: { book: Catal
         className="book-cover-image"
         src={imageSources.src}
         srcSet={imageSources.srcSet}
-        sizes={size === 'detail' ? '(max-width: 760px) min(70vw, 230px), min(330px, 32vw)' : '(max-width: 430px) calc(100vw - 32px), (max-width: 760px) calc((100vw - 56px) / 2), 25vw'}
+        sizes={size === 'detail' ? '(max-width: 760px) min(70vw, 230px), min(330px, 32vw)' : '220px'}
         loading="lazy"
         decoding="async"
         alt=""
@@ -56,18 +56,19 @@ export function CatalogueBookCover({ book, title, size = 'card' }: { book: Catal
   </div>;
 }
 
-export function CatalogueBookCard({ book, availabilityLabel, returnTo = '/library' }: { book: CatalogueBook; availabilityLabel: string; returnTo?: string }) {
+export function CatalogueBookCard({ book, availabilityLabel, returnTo = '/library', headingLevel = 2 }: { book: CatalogueBook; availabilityLabel: string; returnTo?: string; headingLevel?: 2 | 3 }) {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === 'vi' ? 'vi' : 'en';
   const title = locale === 'vi' ? book.title_vi : book.title_en;
+  const Heading = headingLevel === 3 ? 'h3' : 'h2';
   return <article className="catalogue-book catalogue-book-card">
-    <Link className="catalogue-book-link" to={`/library/${encodeURIComponent(book.id)}?${new URLSearchParams({ returnTo }).toString()}`}>
+    <div className="catalogue-book-link">
       <CatalogueBookCover book={book} title={title} />
       <span className="book-meta">{t(`topics.${book.topic}`)} · {t(`catalogue.${book.language}`)}</span>
-      <span className="book-title">{title}</span>
+      <Heading className="book-title"><Link className="catalogue-book-title-link" to={`/library/${encodeURIComponent(book.id)}?${new URLSearchParams({ returnTo }).toString()}`}>{title}</Link></Heading>
       {book.author && <span className="catalogue-author">{book.author}</span>}
       <span className="availability">{availabilityLabel}</span>
-      <span className="text-link">{t('viewBook')} <span aria-hidden="true">→</span></span>
-    </Link>
+      <span className="text-link" aria-hidden="true">{t('viewBook')} →</span>
+    </div>
   </article>;
 }

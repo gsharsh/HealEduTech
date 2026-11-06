@@ -1,7 +1,22 @@
-.information-page { max-width: 52rem; margin-inline: auto; }
+.information-page { max-width: 68rem; margin-inline: auto; }
 .information-page .page-heading { margin-bottom: 2rem; }
-.information-sections { display: grid; gap: 1rem; }
-.information-card { padding: clamp(1.25rem, 3vw, 2rem); background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); }
-.information-card h2 { font-size: 1.125rem; }
+.information-page .page-heading p { max-width: 62ch; }
+.information-layout { display: grid; grid-template-columns: 14rem minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.information-index { position: sticky; top: calc(var(--evg-header-height, 72px) + 24px); padding-block: .5rem; }
+.information-index > p { margin: 0 0 .75rem; color: var(--ink); font-size: .8125rem; font-weight: 700; }
+.information-index ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .125rem; }
+.information-index a { display: flex; align-items: center; min-height: 44px; padding: .5rem .75rem; margin-left: -.75rem; border-radius: var(--radius-sm); color: var(--green); font-size: .875rem; line-height: 1.5; }
+.information-index a:hover { background: var(--accent); text-decoration: underline; text-underline-offset: .2em; }
+.information-sections { display: grid; gap: 0; min-width: 0; padding: .25rem clamp(1.25rem, 3vw, 2rem); background: var(--paper); border-radius: var(--radius-lg); }
+.information-card { padding-block: 1.5rem; }
+.information-card + .information-card { border-top: 1px solid var(--line); }
+.information-card h2 { font-size: 1.125rem; margin: 0 0 .75rem; }
 .information-card p { margin-bottom: 0; overflow-wrap: anywhere; }
 .information-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+@media (max-width: 760px) {
+  .information-layout { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .information-index { position: static; padding-bottom: 1.25rem; border-bottom: 1px solid var(--line); }
+  .information-index ul { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .25rem 1rem; }
+  .information-index a { overflow-wrap: anywhere; }
+}
+@media (max-width: 360px) { .information-index ul { grid-template-columns: minmax(0, 1fr); } }

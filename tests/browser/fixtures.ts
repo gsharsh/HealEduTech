@@ -69,7 +69,7 @@ export class ReleaseBackend {
     const method = route.request().method();
     const identity = requestIdentity(route);
     const reply = (data: unknown, status = 200, headers: Record<string, string> = {}) => route.fulfill({
-      status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', ...headers }, body: status === 204 ? undefined : JSON.stringify(data),
+      status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', 'access-control-expose-headers': 'content-range', ...headers }, body: status === 204 ? undefined : JSON.stringify(data),
     });
     if (method === 'OPTIONS') return reply({}, 200, { 'access-control-allow-headers': '*', 'access-control-allow-methods': 'GET, POST, PATCH, DELETE' });
     if (url.pathname === '/auth/v1/token') {
@@ -81,12 +81,15 @@ export class ReleaseBackend {
     if (url.pathname === '/auth/v1/logout') return reply(null, 204);
     if (url.pathname === '/auth/v1/recover' || url.pathname === '/auth/v1/otp' || url.pathname === '/auth/v1/resend') return reply({});
     const table = url.pathname.replace('/rest/v1/', '');
+    if (['rpc/list_published_learning_projects', 'rpc/list_my_learning_projects', 'rpc/staff_list_learning_projects', 'rpc/staff_list_learning_comments'].includes(table)) return reply([]);
     if (table === 'books' || table === 'rpc/search_books') {
       if (this.failCatalogue) return reply({ code: 'FIXTURE_UNAVAILABLE', message: 'Synthetic unavailable response' }, 400);
       const search = table === 'rpc/search_books' ? String((route.request().postDataJSON() as { p_query?: string }).p_query ?? '').toLowerCase() : '';
       const found = !search || 'a small discovery một khám phá nhỏ'.includes(search);
-      const rows = found ? [book] : [];
-      if (url.searchParams.get('id')?.startsWith('eq.')) return reply(rows[0] ?? null);
+      const excluded = url.searchParams.get('id') === `neq.${fixtureBookId}`;
+      const matchesTopic = !url.searchParams.has('topic') || url.searchParams.get('topic') === `eq.${book.topic}`;
+      const rows = found && !excluded && matchesTopic ? [book] : [];
+      if (url.searchParams.get('id')?.startsWith('eq.')) return reply(url.searchParams.get('id') === `eq.${fixtureBookId}` ? rows[0] ?? null : null);
       return reply(rows, 200, { 'content-range': rows.length ? `0-0/${rows.length}` : '*/0' });
     }
     if (table === 'book_availability') return reply([{ book_id: fixtureBookId, total_copies: 1, available_copies: 1 }]);

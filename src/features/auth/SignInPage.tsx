@@ -16,6 +16,8 @@ export function SignInPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const mainRef = useRef<HTMLElement>(null);
+  const mountedRef = useRef(false);
+  const requestRef = useRef(0);
   const isResetPath = location.pathname === '/reset-password';
   const isRecoveryPath = new URLSearchParams(location.search).get('mode') === 'recovery';
   const next = useMemo(() => safeNextPath(new URLSearchParams(location.search).get('next')), [location.search]);
@@ -29,8 +31,10 @@ export function SignInPage() {
   const [error, setError] = useState(() => authCallbackErrorFromUrl(window.location.href) ?? ''); const [notice, setNotice] = useState(''); const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
+    mountedRef.current = true;
     window.scrollTo(0, 0);
     mainRef.current?.focus({ preventScroll: true });
+    return () => { mountedRef.current = false; requestRef.current += 1; };
   }, []);
   useEffect(() => { if (authCallbackErrorFromUrl(window.location.href)) window.history.replaceState({}, document.title, window.location.pathname); }, []);
   useEffect(() => { if (!cooldown) return; const timer = window.setTimeout(() => setCooldown(value => Math.max(0, value - 1)), 1000); return () => window.clearTimeout(timer); }, [cooldown]);
@@ -70,7 +74,7 @@ export function SignInPage() {
   }
 
   function setAuthFailure(failure: unknown) {
-    const authFailure = failure as { code?: string; status?: number };
+    const authFailure = failure && typeof failure === 'object' ? failure as { code?: string; status?: number } : {};
     const key = authErrorKey(authFailure);
     const field = authErrorField(authFailure);
     const visibleField = field === 'name' ? mode === 'register' : field === 'email' ? mode !== 'reset' && !pending : field === 'password' ? ['sign-in', 'register', 'reset'].includes(mode) && !pending : false;
@@ -88,28 +92,32 @@ export function SignInPage() {
     if (mode === 'reset') { if (!validPassword(password)) { reportFieldError('password', 'auth.passwordHelp'); return; } if (password !== confirmation) { reportFieldError('confirmation', 'auth.passwordMismatch'); return; }
     }
     setBusy(true);
+    const request = ++requestRef.current;
+    const isCurrent = () => mountedRef.current && requestRef.current === request;
     try {
       if (mode === 'register') {
         const result = await supabase.auth.signUp({ email: address, password, options: { emailRedirectTo: authRedirectUrl(callbackNext), data: { display_name: name.trim(), preferred_language: i18n.language === 'vi' ? 'vi' : 'en' } } });
+        if (!isCurrent()) return;
         if (result.error) throw result.error; setPassword(''); setConfirmation('');
         if (!result.data.session) { setPending({ email: address, signup: true }); setCooldown(60); } else navigate(next, { replace: true });
       } else if (mode === 'sign-in') {
-        const result = await supabase.auth.signInWithPassword({ email: address, password }); if (result.error) throw result.error; setPassword(''); navigate(next, { replace: true });
+        const result = await supabase.auth.signInWithPassword({ email: address, password }); if (!isCurrent()) return; if (result.error) throw result.error; setPassword(''); navigate(next, { replace: true });
       } else if (mode === 'magic-link') {
-        const result = await supabase.auth.signInWithOtp({ email: address, options: { shouldCreateUser: false, emailRedirectTo: authRedirectUrl(callbackNext) } }); if (result.error) throw result.error; setPending({ email: address, signup: false }); setCooldown(60);
+        const result = await supabase.auth.signInWithOtp({ email: address, options: { shouldCreateUser: false, emailRedirectTo: authRedirectUrl(callbackNext) } }); if (!isCurrent()) return; if (result.error) throw result.error; setPending({ email: address, signup: false }); setCooldown(60);
       } else if (mode === 'recover') {
-        const result = await supabase.auth.resetPasswordForEmail(address, { redirectTo: passwordResetRedirectUrl(callbackNext) }); if (result.error) throw result.error; setPending({ email: address, signup: false, recovery: true }); setCooldown(60);
+        const result = await supabase.auth.resetPasswordForEmail(address, { redirectTo: passwordResetRedirectUrl(callbackNext) }); if (!isCurrent()) return; if (result.error) throw result.error; setPending({ email: address, signup: false, recovery: true }); setCooldown(60);
       } else {
         if (!recovery) { setError('auth.invalidRecovery'); return; }
-        const result = await supabase.auth.updateUser({ password }); if (result.error) throw result.error;
+        const result = await supabase.auth.updateUser({ password }); if (!isCurrent()) return; if (result.error) throw result.error;
         clearRecovery();
         let signOutFailed = false;
         try { const signOutResult = await supabase.auth.signOut({ scope: 'local' }); signOutFailed = Boolean(signOutResult.error); }
         catch { signOutFailed = true; }
+        if (!isCurrent()) return;
         changeMode('sign-in');
         setNotice(signOutFailed ? 'auth.passwordUpdatedSignOutFailed' : 'auth.passwordUpdated');
       }
-    } catch (failure) { setAuthFailure(failure); } finally { setBusy(false); }
+    } catch (failure) { if (isCurrent()) setAuthFailure(failure); } finally { if (isCurrent()) setBusy(false); }
   }
 
   async function resend() {
@@ -137,14 +145,14 @@ export function SignInPage() {
     {loading ? <p role="status">{t('auth.loading')}</p> : user && mode !== 'reset' ? <div className="signed-in-account"><p className="signed-in-account__email">{user.email}</p><div className="signed-in-account__actions"><Link className="primary signed-in-account__continue" to={next}>{t('auth.continue')}</Link>{accessStatus === 'loading' && <p className="muted signed-in-account__status" role="status">{t('access.checking')}</p>}<div className="signed-in-account__secondary-actions">{accessStatus === 'ready' && staffRole && <Link className="secondary" to="/staff">{t('access.openDesk')}</Link>}<button className="secondary" type="button" disabled={busy} onClick={() => void signOut()}>{t('auth.signOut')}</button></div></div><p className="muted auth-shared-device signed-in-account__note">{t('auth.sharedDevice')}</p></div> : !supabase ? <><p role="status">{t('auth.notConfigured')}</p><p className="muted auth-shared-device">{t('auth.sharedDevice')}</p></> : <>
       <p className="muted auth-shared-device">{t('auth.sharedDevice')}</p>
       {!pending && mode !== 'reset' && <nav className="account-tabs" aria-label={t('auth.methods')}><button type="button" aria-pressed={mode === 'sign-in'} disabled={busy} onClick={() => changeMode('sign-in')}>{t('auth.signIn')}</button><button type="button" aria-pressed={mode === 'register'} disabled={busy} onClick={() => changeMode('register')}>{t('auth.register')}</button></nav>}
-      {pending ? <div className="email-link-panel" role="status"><p>{t(pending.recovery ? 'auth.recoverCheckEmail' : 'auth.checkEmail', { email: pending.email })}</p><p className="muted">{t('auth.linkHelp')}</p></div> : mode === 'reset' && !recovery ? <p role="status" className="form-error">{t('auth.invalidRecovery')}</p> : <form className="data-form" onSubmit={event => void submit(event)} noValidate><fieldset disabled={busy}>
+      {pending ? <div className="email-link-panel" role="status"><p>{t(pending.recovery ? 'auth.recoverCheckEmail' : 'auth.checkEmail', { email: pending.email })}</p><p className="muted">{t('auth.linkHelp')}</p></div> : mode === 'reset' && !recovery ? <p role="status" className="form-error">{t('auth.invalidRecovery')}</p> : <form className="data-form" aria-busy={busy} onSubmit={event => void submit(event)} noValidate><fieldset disabled={busy}>
         {mode === 'register' && <><label htmlFor="display-name">{t('auth.name')}<input id="display-name" name="name" value={name} onChange={event => { setName(event.target.value); clearFieldError('name'); }} autoComplete="name" maxLength={80} required aria-invalid={Boolean(fieldErrors.name) || undefined} aria-describedby={fieldErrors.name ? 'auth-name-error' : undefined} /></label>{fieldErrors.name && <p className="field-error" id="auth-name-error">{t(fieldErrors.name)}</p>}</>}
-        {mode !== 'reset' && <><label htmlFor="auth-email">{t('auth.email')}<input id="auth-email" name="email" type="email" value={email} onChange={event => { setEmail(event.target.value); clearFieldError('email'); }} autoComplete="username" maxLength={254} required aria-invalid={Boolean(fieldErrors.email) || undefined} aria-describedby={fieldErrors.email ? 'auth-email-error' : undefined} /></label>{fieldErrors.email && <p className="field-error" id="auth-email-error">{t(fieldErrors.email)}</p>}</>}
+        {mode !== 'reset' && <><label htmlFor="auth-email">{t('auth.email')}<input id="auth-email" name="email" type="email" autoCapitalize="none" spellCheck={false} value={email} onChange={event => { setEmail(event.target.value); clearFieldError('email'); }} autoComplete="username" maxLength={254} required aria-invalid={Boolean(fieldErrors.email) || undefined} aria-describedby={fieldErrors.email ? 'auth-email-error' : undefined} /></label>{fieldErrors.email && <p className="field-error" id="auth-email-error">{t(fieldErrors.email)}</p>}</>}
         {mode === 'sign-in' || mode === 'register' || mode === 'reset' ? <><label htmlFor={mode === 'reset' || mode === 'register' ? 'new-password' : 'current-password'}>{t('auth.passwordLabel')}<input id={mode === 'reset' || mode === 'register' ? 'new-password' : 'current-password'} name="password" type={showPassword ? 'text' : 'password'} value={password} onChange={event => { setPassword(event.target.value); clearFieldError('password'); }} autoComplete={mode === 'reset' || mode === 'register' ? 'new-password' : 'current-password'} maxLength={128} required aria-invalid={Boolean(fieldErrors.password) || undefined} aria-describedby={passwordDescriptions} /></label>{mode !== 'sign-in' && <p className="muted" id="password-help">{t('auth.passwordHelp')}</p>}{fieldErrors.password && <p className="field-error" id="auth-password-error">{t(fieldErrors.password)}</p>}{(mode === 'register' || mode === 'reset') && <><label htmlFor="confirm-password">{t('auth.confirmPassword')}<input id="confirm-password" name="password-confirmation" type={showPassword ? 'text' : 'password'} value={confirmation} onChange={event => { setConfirmation(event.target.value); clearFieldError('confirmation'); }} autoComplete="new-password" maxLength={128} required aria-invalid={Boolean(fieldErrors.confirmation) || undefined} aria-describedby={fieldErrors.confirmation ? 'auth-confirmation-error' : undefined} /></label>{fieldErrors.confirmation && <p className="field-error" id="auth-confirmation-error">{t(fieldErrors.confirmation)}</p>}</>}<label className="checkbox-label" htmlFor="show-password"><input id="show-password" name="show-password" type="checkbox" checked={showPassword} onChange={event => setShowPassword(event.target.checked)} />{t('auth.showPassword')}</label></> : <p className="muted">{t(mode === 'recover' ? 'auth.recoverHelp' : 'auth.magicLinkHelp')}</p>}
         <button className="primary" type="submit">{t(busy ? 'auth.working' : mode === 'register' ? 'auth.create' : mode === 'sign-in' ? 'auth.signIn' : mode === 'recover' ? 'auth.sendReset' : mode === 'reset' ? 'auth.updatePassword' : 'auth.sendLink')}</button>
       </fieldset></form>}
-      {!pending && mode === 'sign-in' && <div className="auth-links"><button type="button" className="text-link" onClick={() => changeMode('recover')}>{t('auth.forgotPassword')}</button><button type="button" className="text-link" onClick={() => changeMode('magic-link')}>{t('auth.magicLink')}</button></div>}
-      {mode === 'reset' && !pending && <button type="button" className="secondary" onClick={() => changeMode('sign-in')}>{t('auth.back')}</button>}
+      {!pending && mode === 'sign-in' && <div className="auth-links"><button type="button" className="text-link" disabled={busy} onClick={() => changeMode('recover')}>{t('auth.forgotPassword')}</button><button type="button" className="text-link" disabled={busy} onClick={() => changeMode('magic-link')}>{t('auth.magicLink')}</button></div>}
+      {mode === 'reset' && !pending && <button type="button" className="secondary" disabled={busy} onClick={() => changeMode('sign-in')}>{t('auth.back')}</button>}
       {pending && <div className="form-actions"><button type="button" className="secondary" disabled={busy || cooldown > 0} onClick={() => void resend()}>{cooldown > 0 ? t('auth.resendAfter', { seconds: cooldown }) : t('auth.resend')}</button><button type="button" className="secondary" disabled={busy} onClick={() => changeMode(mode === 'recover' || mode === 'magic-link' ? 'sign-in' : 'register')}>{t('auth.back')}</button></div>}
     </>}
     <div className="auth-card-footer">{notice && <p role="status" className="form-success">{t(notice)}</p>}{error && <p role="alert" className="form-error">{t(error)}</p>}{error === 'auth.unconfirmed' && !pending && <button type="button" className="text-link" disabled={busy || cooldown > 0} onClick={() => void resendConfirmation()}>{t(cooldown > 0 ? 'auth.resendAfter' : 'auth.resendConfirmation', { seconds: cooldown })}</button>}<div className="auth-card-footer__links"><Link className="text-link" to={browseTarget}>{t('auth.browse')}</Link><button type="button" className="language-button" onClick={() => void i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi')}>{i18n.language === 'vi' ? 'English' : 'Tiếng Việt'}</button></div></div>

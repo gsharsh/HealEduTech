@@ -8,6 +8,7 @@ import { getBook, listRelatedBooks, type CatalogueBook } from './catalogue';
 import { libraryTranslations } from './libraryTranslations';
 import { libraryReturnPath } from './libraryState';
 import './library.css';
+import { requestFailureMessage } from '../../lib/requestFeedback';
 import { defaultSiteUrl, pageMetadata, setPageMetadata } from '../../app/pageMetadata';
 
 type DetailState = {
@@ -37,6 +38,7 @@ function SignedInReadingAction({ bookId, userId }: { bookId: string; userId: str
   const [record, setRecord] = useState<ReadingRecord | null>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'adding' | 'failed'>('loading');
   const [attempt, setAttempt] = useState(0);
+  const [saveFailure, setSaveFailure] = useState<unknown>(null);
 
   useEffect(() => {
     let active = true;
@@ -48,18 +50,18 @@ function SignedInReadingAction({ bookId, userId }: { bookId: string; userId: str
 
   async function addToReading() {
     if (state === 'adding') return;
-    setState('adding');
+    setState('adding'); setSaveFailure(null);
     try {
       const saved = await saveReading(userId, { bookId, status: 'currently_reading' });
       setRecord(saved);
       setState('ready');
-    } catch {
-      setState('failed');
+    } catch (failure) {
+      setSaveFailure(failure); setState('failed');
     }
   }
 
   if (state === 'loading') return <p className="muted" role="status">{copy.readingLoading}</p>;
-  if (state === 'failed') return <div className="book-reading-error" role="alert"><p>{copy.readingSaveError}</p><button type="button" className="secondary" onClick={() => { setState('loading'); setAttempt(value => value + 1); }}>{copy.tryAgain}</button></div>;
+  if (state === 'failed') return <div className="book-reading-error" role="alert"><p>{saveFailure !== null ? requestFailureMessage(saveFailure, i18n.language, copy.readingSaveError) : copy.readingLoadError}</p><button type="button" className="secondary" onClick={() => { setState('loading'); setAttempt(value => value + 1); }}>{copy.tryAgain}</button></div>;
   if (record) return <div className="book-reading-saved"><p role="status">{record.status === 'finished' ? copy.finishedRecord : copy.readingRecord}</p><Link className="secondary" to="/learning">{copy.openMyReading}</Link></div>;
   return <button type="button" className="primary" disabled={state === 'adding'} onClick={() => void addToReading()}>{state === 'adding' ? copy.addingToReading : copy.addToReading}</button>;
 }
@@ -75,8 +77,12 @@ export function BookDetailPage() {
   useEffect(() => {
     const controller = new AbortController();
     void getBook(bookId, controller.signal).then(async book => {
-      const related = book ? await listRelatedBooks(book, controller.signal).catch(() => []) : [];
-      if (!controller.signal.aborted) setState({ bookId, book, related, loading: false, failed: false });
+      if (controller.signal.aborted) return;
+      // The selected book remains usable even when optional related titles are slow.
+      setState({ bookId, book, related: [], loading: false, failed: false });
+      if (!book) return;
+      const related = await listRelatedBooks(book, controller.signal).catch(() => []);
+      if (!controller.signal.aborted) setState(current => ({ ...current, related }));
     }).catch(() => {
       if (!controller.signal.aborted) setState({ bookId, book: null, related: [], loading: false, failed: true });
     });
@@ -92,16 +98,17 @@ export function BookDetailPage() {
     setPageMetadata({ ...pageMetadata(`/library/${bookId}`, language), title: `${title} · EVG`, description: description || copy.noDescription }, import.meta.env.VITE_SITE_URL || defaultSiteUrl);
   }, [bookId, copy.noDescription, i18n.language, state.book, state.bookId, state.loading]);
 
+  const returnTo = libraryReturnPath(new URLSearchParams(location.search).get('returnTo'));
+
   if (state.loading || state.bookId !== bookId) return <p role="status">{t('catalogue.loading')}</p>;
-  if (state.failed) return <section className="empty-state" role="alert"><h1>{t('catalogue.loadError')}</h1><button className="secondary" onClick={() => { setState(value => ({ ...value, loading: true, failed: false })); setAttempt(value => value + 1); }}>{t('catalogue.retry')}</button></section>;
-  if (!state.book) return <section className="empty-state"><h1>{copy.notFoundTitle}</h1><p>{copy.notFoundBody}</p><Link className="secondary" to="/library">{copy.back}</Link></section>;
+  if (state.failed) return <section className="empty-state" role="alert"><h1>{t('catalogue.loadError')}</h1><button className="secondary" onClick={() => { setState(value => ({ ...value, loading: true, failed: false })); setAttempt(value => value + 1); }}>{t('catalogue.retry')}</button><Link className="book-detail-back" to={returnTo}>← {copy.back}</Link></section>;
+  if (!state.book) return <section className="empty-state"><h1>{copy.notFoundTitle}</h1><p>{copy.notFoundBody}</p><Link className="secondary" to={returnTo}>{copy.back}</Link></section>;
 
   const book = state.book;
   const title = i18n.language === 'vi' ? book.title_vi : book.title_en;
   const description = (i18n.language === 'vi' ? book.description_vi : book.description_en).trim() || copy.noDescription;
   const availability = book.available_copies === undefined ? copy.availabilityUnknown : copy.availableLabel(book.available_copies);
   const deskMessage = book.available_copies === 0 ? copy.noCopies : copy.borrowAtDesk;
-  const returnTo = libraryReturnPath(new URLSearchParams(location.search).get('returnTo'));
   return <article className="book-detail-page">
     <Link className="book-detail-back" to={returnTo}>← {copy.back}</Link>
     <div className="book-detail-hero">
@@ -132,7 +139,7 @@ export function BookDetailPage() {
     </section>
     {state.related.length > 0 && <section className="related-books" aria-labelledby="related-heading">
       <div className="section-heading"><div><h2 id="related-heading">{copy.relatedTitle}</h2><p>{copy.relatedBody}</p></div></div>
-      <div className="book-grid">{state.related.map(related => <CatalogueBookCard key={related.id} book={related} returnTo={returnTo} availabilityLabel={related.available_copies === undefined ? copy.availabilityUnknown : copy.availableLabel(related.available_copies)} />)}</div>
+      <div className="book-grid">{state.related.map(related => <CatalogueBookCard headingLevel={3} key={related.id} book={related} returnTo={returnTo} availabilityLabel={related.available_copies === undefined ? copy.availabilityUnknown : copy.availableLabel(related.available_copies)} />)}</div>
     </section>}
   </article>;
 }

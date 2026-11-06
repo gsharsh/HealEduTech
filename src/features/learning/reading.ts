@@ -27,6 +27,8 @@ export interface ReadingBook {
 }
 
 const MAX_REFLECTION_LENGTH = 2000;
+const READING_PAGE_SIZE = 1000;
+const BOOK_BATCH_SIZE = 100;
 
 function requireClient() {
   if (!supabase) throw new Error('Database is not configured');
@@ -41,16 +43,28 @@ function cleanReflection(value: string | undefined) {
   return reflection || null;
 }
 
+/** Read a stable cursor sequence, then present the newest reading first. */
 export async function listMyReading(userId: string, signal?: AbortSignal): Promise<ReadingRecord[]> {
   const client = requireClient();
-  const { data, error } = await client
-    .from('reading_records')
-    .select('book_id,status,reflection,updated_at')
-    .eq('user_id', userId)
-    .order('updated_at', { ascending: false })
-    .abortSignal(signal ?? new AbortController().signal);
-  if (error) throw error;
-  return (data ?? []) as ReadingRecord[];
+  const records: ReadingRecord[] = [];
+  let lastBookId = '';
+  for (;;) {
+    let request = client.from('reading_records')
+      .select('book_id,status,reflection,updated_at')
+      .eq('user_id', userId)
+      .order('book_id', { ascending: true })
+      .limit(READING_PAGE_SIZE);
+    if (lastBookId) request = request.gt('book_id', lastBookId);
+    const { data, error } = await request.abortSignal(signal ?? new AbortController().signal);
+    if (error) throw error;
+    const page = (data ?? []) as ReadingRecord[];
+    records.push(...page);
+    if (page.length < READING_PAGE_SIZE) break;
+    const nextBookId = page.at(-1)?.book_id;
+    if (!nextBookId || nextBookId <= lastBookId) throw new Error('Reading pagination did not advance');
+    lastBookId = nextBookId;
+  }
+  return records.sort((left, right) => Date.parse(right.updated_at) - Date.parse(left.updated_at) || left.book_id.localeCompare(right.book_id));
 }
 
 export async function getMyReading(userId: string, bookId: string): Promise<ReadingRecord | null> {
@@ -65,12 +79,22 @@ export async function getMyReading(userId: string, bookId: string): Promise<Read
   return data as ReadingRecord | null;
 }
 
+/** Keep catalogue lookups below practical URL limits for large reading histories. */
 export async function listBooksForReading(bookIds: string[], signal?: AbortSignal): Promise<ReadingBook[]> {
   if (bookIds.length === 0) return [];
   const client = requireClient();
-  const { data, error } = await client.from('books').select('id,title_en,title_vi,author,cover_url').in('id', bookIds).abortSignal(signal ?? new AbortController().signal);
-  if (error) throw error;
-  return (data ?? []) as ReadingBook[];
+  const uniqueIds = [...new Set(bookIds)];
+  const books: ReadingBook[] = [];
+  for (let start = 0; start < uniqueIds.length; start += BOOK_BATCH_SIZE) {
+    const batch = uniqueIds.slice(start, start + BOOK_BATCH_SIZE);
+    const { data, error } = await client.from('books')
+      .select('id,title_en,title_vi,author,cover_url')
+      .in('id', batch)
+      .abortSignal(signal ?? new AbortController().signal);
+    if (error) throw error;
+    books.push(...((data ?? []) as ReadingBook[]));
+  }
+  return books;
 }
 
 export async function saveReading(userId: string, input: ReadingRecordInput): Promise<ReadingRecord> {

@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase';
 import i18n from '../../i18n';
 import { AccountContext, type StaffRole } from './context';
 import { recoveryTokenMatches } from './validation';
+import { createRefreshGate } from '../../lib/readCache';
 
 const recoveryStorageKey = 'evg-auth-recovery-token';
 type StaffRecord = { userId: string; role: StaffRole } | null;
@@ -141,12 +142,20 @@ export function AccountProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!supabase || !userId) return;
+    const allowRefresh = createRefreshGate(5_000);
+    allowRefresh(true);
     function refreshOnFocus() {
-      // Focus checks must not unmount an in-progress form or draft.
+      if (document.visibilityState !== 'visible' || !allowRefresh()) return;
+      // Incidental focus/visibility bursts share one check. Explicit permission
+      // retries, account changes and Auth updates still revalidate immediately.
       setStaffAccessRevision(value => value + 1);
     }
     window.addEventListener('focus', refreshOnFocus);
-    return () => window.removeEventListener('focus', refreshOnFocus);
+    document.addEventListener('visibilitychange', refreshOnFocus);
+    return () => {
+      window.removeEventListener('focus', refreshOnFocus);
+      document.removeEventListener('visibilitychange', refreshOnFocus);
+    };
   }, [userId]);
 
   function clearRecovery() {

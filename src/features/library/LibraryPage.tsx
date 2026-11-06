@@ -27,7 +27,7 @@ export function LibraryPage() {
     <div className="library-toolbar">
       <label className="search-field">
         <span>{t('searchBooks')}</span>
-        <input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder={t('searchPlaceholder')} />
+        <input type="search" maxLength={100} value={query} onChange={event => setQuery(event.target.value)} placeholder={t('searchPlaceholder')} />
       </label>
       <label className="filter-field">{t('topic')}<select value={topic} onChange={event => setTopic(event.target.value as Topic | 'all')}>{['all', 'nature', 'stories', 'science'].map(key => <option key={key} value={key}>{t(`topics.${key}`)}</option>)}</select>
       </label>

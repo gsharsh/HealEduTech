@@ -1,19 +1,19 @@
 .circulation-grid { display: grid; gap: 1rem; }
-.circulation-card { padding: 1.25rem; border: 1px solid var(--line, #d8d3c6); border-radius: 1rem; background: var(--paper, #fffdf7); }
+.circulation-card { padding: 1.25rem; border: 1px solid var(--line, var(--line)); border-radius: 1rem; background: var(--paper, var(--paper)); }
 .circulation-card h2 { margin-top: 0; }
 .circulation-form { display: grid; gap: .75rem; }
 .circulation-form label { display: grid; gap: .35rem; font-weight: 600; }
-.circulation-form input, .circulation-form select { min-height: 2.75rem; padding: .55rem .7rem; border: 1px solid var(--line, #d8d3c6); border-radius: .5rem; font: inherit; }
+.circulation-form input, .circulation-form select { min-height: 2.75rem; padding: .55rem .7rem; border: 1px solid var(--line, var(--line)); border-radius: .5rem; font: inherit; }
 .circulation-form label.circulation-checkbox { display: flex; align-items: center; gap: .55rem; min-height: 2.75rem; }
-.circulation-checkbox input[type="checkbox"] { width: 20px; height: 20px; min-height: 0; flex: none; padding: 0; accent-color: var(--green, #286047); }
+.circulation-checkbox input[type="checkbox"] { width: 20px; height: 20px; min-height: 0; flex: none; padding: 0; accent-color: var(--green, var(--green)); }
 .circulation-form button { justify-self: start; }
 .circulation-table { width: 100%; border-collapse: collapse; }
-.circulation-table th, .circulation-table td { padding: .7rem .4rem; border-bottom: 1px solid var(--line, #d8d3c6); text-align: left; vertical-align: top; }
+.circulation-table th, .circulation-table td { padding: .7rem .4rem; border-bottom: 1px solid var(--line, var(--line)); text-align: left; vertical-align: top; }
 .circulation-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
-.circulation-muted { color: var(--muted, #716d64); }
-.loan-status { display: inline-flex; border-radius: 999px; background: #edf2eb; color: #3f5e45; font-size: .75rem; font-weight: 750; padding: .3rem .5rem; white-space: nowrap; }
+.circulation-muted { color: var(--muted, var(--muted)); }
+.loan-status { display: inline-flex; border-radius: 999px; background: var(--sage); color: var(--green); font-size: .75rem; font-weight: 750; padding: .3rem .5rem; white-space: nowrap; }
 .loan-status--overdue { background: #f8e8e4; color: #8a3328; }
-.circulation-card { padding: clamp(22px, 3vw, 30px); border-radius: var(--radius-lg); box-shadow: 0 5px 18px #17392c04; min-width: 0; }
+.circulation-card { padding: clamp(22px, 3vw, 30px); border-radius: var(--radius-lg); box-shadow: 0 5px 18px #2F352D04; min-width: 0; }
 .circulation-form { gap: 16px; }
 .circulation-form label { font-size: .875rem; gap: 8px; }
 .circulation-form input:not([type=checkbox]), .circulation-form select { min-height: var(--control-height); border: 1px solid var(--control-border); border-radius: var(--radius-md); padding: 12px 14px; background: var(--control-fill); color: var(--ink); font-size: 1rem; }
@@ -39,7 +39,7 @@
 .circulation-table td:first-child { min-width: 130px; }
 .circulation-table td:nth-child(2) { min-width: 140px; }
 .circulation-followup-row > td { padding-top: 0; }
-.loan-followup summary { cursor: pointer; color: var(--green, #286047); font-weight: 650; padding: 8px 0; width: fit-content; }
+.loan-followup summary { cursor: pointer; color: var(--green, var(--green)); font-weight: 650; padding: 8px 0; width: fit-content; }
 .loan-followup__content { display: grid; gap: 12px; max-width: min(650px, calc(100vw - 100px)); padding: 14px 0; }
 .loan-followup__content p, .loan-followup__content h3 { margin: 0; }
 .loan-followup__content input, .loan-followup__content textarea { width: 100%; box-sizing: border-box; }
@@ -49,3 +49,11 @@
 .loan-followup__content li { margin-bottom: 8px; }
 .circulation-filter-note { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 @media (max-width: 640px) { .circulation-filters { grid-template-columns: 1fr; } .circulation-card { padding: 18px; } }
+
+.circulation-form > fieldset { display: grid; gap: 16px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.circulation-notice { padding: 16px 20px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--sage); color: var(--green); }
+.circulation-notice--error { border-color: #dcbcaf; background: #fff5ee; color: #7c3e2b; }
+.circulation-notice p { margin-top: 0; }
+.circulation-form input, .circulation-form select { width: 100%; min-width: 0; }
+.circulation-form .circulation-checkbox input { width: 20px; }
+.circulation-empty { padding: 12px 0; }

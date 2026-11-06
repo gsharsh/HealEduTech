@@ -33,11 +33,35 @@ export function AppShell() {
   const primaryNavRef = useRef<HTMLElement | null>(null);
   const activePillRef = useRef<HTMLSpanElement | null>(null);
   const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    document.getElementById('main-content')?.focus({ preventScroll: true });
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    const frame = window.requestAnimationFrame(() => {
+      let target: HTMLElement | null = null;
+      try {
+        if (hash) target = document.getElementById(decodeURIComponent(hash.slice(1)));
+      } catch {
+        // A malformed fragment still opens the requested page normally.
+      }
+      (target ?? document.getElementById('main-content'))?.focus({ preventScroll: true });
+      if (target) target.scrollIntoView({ block: 'start' });
+      else window.scrollTo(0, 0);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname, hash]);
+
+  useLayoutEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const updateOffset = () => document.documentElement.style.setProperty('--evg-header-height', `${Math.ceil(header.getBoundingClientRect().height)}px`);
+    updateOffset();
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateOffset);
+    observer?.observe(header);
+    return () => {
+      observer?.disconnect();
+      document.documentElement.style.removeProperty('--evg-header-height');
+    };
+  }, []);
 
   useLayoutEffect(() => {
     const nav = primaryNavRef.current;
@@ -148,8 +172,9 @@ export function AppShell() {
   return (
     <div className="evg-shell">
       <a className="evg-skip-link" href="#main-content">{t('skip')}</a>
-      <header className={`evg-header ${canOpenDesk ? 'has-staff-action' : ''}`}>
+      <header ref={headerRef} className={`evg-header ${canOpenDesk ? 'has-staff-action' : ''}`}>
         <NavLink className="evg-brand" to={publicPath('/', language)} aria-label="EVG Learn & Grow">
+          <svg className="evg-brand-icon" aria-hidden="true" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M14 8c-3-2-6-2.8-10-2v16c4-.8 7 0 10 2 3-2 6-2.8 10-2V6c-4-.8-7 0-10 2Z" /><path d="M14 8v16M8 11l2 .5M18 11.5l2-.5" /></svg>
           <span className="evg-brand-name">EVG</span>
         </NavLink>
         <nav id="evg-primary-nav" ref={primaryNavRef} className={`evg-primary-nav ${mobileNavOpen ? 'is-mobile-open' : ''}`} aria-label={t('navigation')}>
@@ -225,16 +250,19 @@ export function AppShell() {
       </main>
 
       <footer className="evg-footer">
-        <span lang="en">EVG · Learn &amp; grow</span>
-        {(pathname === '/' || pathname === '/vi') && <a href="https://storyset.com/people" lang="en">People illustrations by Storyset</a>}
+        <div className="evg-footer-intro">
+          <Link className="evg-footer-brand" to={publicPath('/', language)} lang="en">EVG <span>Learn &amp; grow</span></Link>
+          <p>{t('footer')}</p>
+        </div>
         <nav aria-label={isVietnamese ? 'Liên kết bổ sung' : 'More links'}>
+          <NavLink to="/library">{t('library')}</NavLink>
           <NavLink to={publicPath('/start', language)}>{isVietnamese ? 'Hướng dẫn nhanh' : 'Quick guide'}</NavLink>
           <NavLink to={publicPath('/help', language)}>{isVietnamese ? 'Trợ giúp' : 'Help'}</NavLink>
           <NavLink to={publicPath('/privacy', language)}>{isVietnamese ? 'Quyền riêng tư' : 'Privacy'}</NavLink>
           <NavLink to="/explore">{t('explore')}</NavLink>
           <NavLink to="/community">{t('community')}</NavLink>
         </nav>
-        <span>{t('footer')}</span>
+        {(pathname === '/' || pathname === '/vi') && <a className="evg-footer-credit" href="https://storyset.com/people" lang="en">People illustrations by Storyset</a>}
       </footer>
     </div>
   );

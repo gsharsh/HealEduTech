@@ -1,9 +1,9 @@
 :root {
-  --glass-fill: rgba(255, 253, 247, .72);
-  --glass-fill-strong: rgba(255, 253, 247, .9);
-  --glass-edge: rgba(113, 137, 111, .34);
-  --glass-highlight: rgba(255, 255, 255, .82);
-  --glass-shadow: 0 16px 36px rgba(29, 56, 47, .1), 0 2px 7px rgba(29, 56, 47, .05);
+  --glass-fill: rgba(254, 254, 254, .84);
+  --glass-fill-strong: rgba(254, 254, 254, .94);
+  --glass-edge: rgba(204, 204, 204, .8);
+  --glass-highlight: rgba(254, 254, 254, .82);
+  --glass-shadow: 0 6px 24px rgba(47, 53, 45, .06), 0 1px 4px rgba(47, 53, 45, .03);
   --glass-blur: 18px;
   --glass-saturate: 1.2;
 }
