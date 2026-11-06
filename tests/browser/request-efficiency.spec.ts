@@ -8,6 +8,7 @@ test('typing a catalogue search burst sends only the completed query', async ({ 
   await page.goto('/library');
   await expect(page.getByRole('link', { name: 'A Small Discovery', exact: true })).toBeVisible();
   await page.getByRole('searchbox', { name: 'Search books', exact: true }).pressSequentially('Discovery', { delay: 20 });
+  await expect(page.getByRole('searchbox', { name: 'Search books', exact: true })).toHaveValue('Discovery');
   await expect(page.getByRole('link', { name: 'A Small Discovery', exact: true })).toBeVisible();
   expect(searches).toEqual(['Discovery']);
   await expect(page).toHaveURL(/q=Discovery/);
@@ -45,7 +46,11 @@ test('home and library navigation reuse the public catalogue until a staff chang
 });
 
 test('staff focus storms avoid duplicate reads while a real data-change notification refreshes immediately', async ({ page, backend }) => {
+  // Sign-in finishes before the staff-role lookup and header badge have settled.
+  // Keep requests from that departing document out of the dashboard counters.
+  const initialAlert = page.waitForResponse(response => new URL(response.url()).pathname === '/rest/v1/rpc/staff_alert_count');
   await backend.signIn('librarian');
+  await initialAlert;
   const counts = { dashboard: 0, alerts: 0, access: 0 };
   page.on('request', request => {
     const path = new URL(request.url()).pathname;

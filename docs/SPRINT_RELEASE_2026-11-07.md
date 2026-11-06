@@ -63,6 +63,7 @@ No email notifications, file uploads, automatic grading, reward system or AI ser
 
 - Public catalogue reads use a bounded 15-second cache and shared in-flight requests. Private learner data is excluded. Writes invalidate catalogue snapshots; inventory editing requests fresh data.
 - Catalogue typing uses a 300ms debounce. Explicit retry, navigation and pagination remain immediate.
+- URL-backed inputs update synchronously so fast typing cannot be overwritten by an older navigation state. Lazy routes retain their existing loading fallback.
 - Focus/visibility refreshes are coalesced for five seconds. Explicit refresh and real mutation events remain immediate, including circulation batches.
 - Reading histories use stable cursor pages and 100-ID book batches; reading editors reuse loaded records.
 - Database SDK automatic retries are disabled. Fetches have a 15-second deadline and preserve caller cancellation. Bilingual quota/timeout feedback preserves entered work.
@@ -86,6 +87,8 @@ The quota does **not** cover anonymous reads, Auth, Storage, read-only RPCs or r
 GitHub Actions independently repeats the Node, lint, build, browser, database, HTTP and backup checks on branch push. Review the [branch's Actions runs](https://github.com/gsharsh/HealEduTech/actions?query=branch%3Aget-stuff-done-harshith) alongside this local evidence; the delivery message records the final remote result. These local tests ran on Node 26.4 and PostgreSQL 18.4; CI uses Node 24 and PostgreSQL 17.
 
 Local browser logs: `/private/tmp/healedu-final-browser.log` (initial 174-case run) and `/private/tmp/healedu-timing-rerun.log` (50-case rerun). The five unverified release checks cover hosted migration parity, received confirmation/recovery email, real-account isolation/persistence, provider-backed backup recovery, and approved inventory/policy/operating ownership. A passed synthetic backup drill does not replace those operator checks.
+
+The first remote run additionally exposed a fast-typing character-loss race: React Router deferred URL state while the search input was controlled by that URL. Router updates now use its supported synchronous mode; the API-call debounce remains separate. A staff-count test also included a late request from the departing sign-in document. It now waits for that document's initial alert response before counting the new dashboard requests, retaining the exact-one assertions. All 40 repeated request regressions passed after these fixes (five repetitions across desktop and phone), alongside fresh lint, 108 Node tests and build. See `/private/tmp/healedu-ci-race-fix.log` and the branch Actions history for the complete rerun.
 
 Local evidence directories are ignored to avoid committing temporary test environments and bulky traces. Database evidence: `database-test-results/removal-snapshot-final-sql/results.json` and `database-test-results/removal-snapshot-final-http/results.json`. Both runners create and remove their own disposable services; they do not use hosted credentials. PostgreSQL uses an Auth shim; the separate HTTP suite uses synthetic signed JWTs with PostgREST 14.18.
 

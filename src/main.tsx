@@ -15,7 +15,8 @@ installErrorReporting();
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>
-      <BrowserRouter>
+      {/* URL-backed inputs need urgent updates; defer data requests, not typing. */}
+      <BrowserRouter useTransitions={false}>
         <App />
       </BrowserRouter>
     </ErrorBoundary>
