@@ -37,9 +37,11 @@ test('home and library navigation reuse the public catalogue until a staff chang
   // This is the same event emitted by successful library/loan mutations.
   await page.evaluate(() => window.dispatchEvent(new Event('staff-data-changed')));
   await page.getByRole('link', { name: 'Browse books', exact: true }).click();
+  await expect(page).toHaveURL('/library');
+  await expect(page.getByRole('region', { name: 'Books in the library' })).toHaveAttribute('aria-busy', 'false');
   await expect(page.getByRole('link', { name: /A Small Discovery/ })).toBeVisible();
-  expect(catalogueReads).toBe(2);
-  expect(availabilityReads).toBe(2);
+  await expect.poll(() => catalogueReads).toBe(2);
+  await expect.poll(() => availabilityReads).toBe(2);
 });
 
 test('staff focus storms avoid duplicate reads while a real data-change notification refreshes immediately', async ({ page, backend }) => {
