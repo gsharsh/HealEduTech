@@ -76,7 +76,7 @@ function ReviewDesk({ onPublicChange, studentId }: { onPublicChange: () => void;
     setReviewNotice(true); onPublicChange();
   }
   return <section className="together-review-desk" aria-labelledby="review-desk-title">
-    <div className="section-heading"><div><span className="eyebrow">{i18n.language === 'vi' ? 'DÀNH CHO THẦY CÔ' : 'FOR TEACHERS'}</span><h2 id="review-desk-title" tabIndex={-1}>{copy.teacher}</h2><p>{copy.teacherBody}</p></div><button type="button" className="secondary" disabled={loading || loadingMore || reviewing > 0} onClick={refresh}>{refreshLabel}</button></div>
+    <div className="section-heading"><div><h2 id="review-desk-title" tabIndex={-1}>{copy.teacher}</h2><p>{copy.teacherBody}</p></div><button type="button" className="secondary" disabled={loading || loadingMore || reviewing > 0} onClick={refresh}>{refreshLabel}</button></div>
     {reviewNotice && <p role="status">{i18n.language === 'vi' ? 'Đã ghi nhận kết quả duyệt. Làm mới danh sách để xem bài hoặc bình luận mới.' : 'Review recorded. Refresh the queue to see new submissions or comments.'}</p>}
     {studentId && <p><Link to={`/staff/students/${studentId}`}>{i18n.language === 'vi' ? 'Xem hồ sơ học sinh' : 'View student profile'}</Link> · <Link to="/community#review-desk-title">{i18n.language === 'vi' ? 'Xem tất cả bài cần duyệt' : 'Show everyone’s work'}</Link></p>}
     {loading ? <p role="status">{copy.loading}</p> : <>

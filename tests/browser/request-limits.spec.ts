@@ -31,6 +31,7 @@ test('Vietnamese interest quota feedback retains selected topics', async ({ page
   await backend.signIn();
   await page.goto('/explore');
   await page.getByRole('switch', { name: 'Tiếng Việt / Vietnamese' }).click();
+  await page.locator('.explore-preferences > summary').click();
   const option = page.locator('.interest-options button').first();
   await option.click();
   await expect(option).toHaveAttribute('aria-pressed', 'true');

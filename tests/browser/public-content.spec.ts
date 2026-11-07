@@ -36,7 +36,7 @@ test('book cards have concise links, navigable titles and a full-card click targ
 });
 
 test('community examples stay visibly labelled and readable at narrow widths', async ({ page }, testInfo) => {
-  await page.goto('/community');
+  await page.goto('/community#classroom-bookshelf');
   await page.locator('.together-examples > summary').click();
   const examples = page.locator('.community-page .showcase-grid');
   await expect(examples.getByRole('listitem')).toHaveCount(2);

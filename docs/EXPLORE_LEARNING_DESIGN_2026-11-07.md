@@ -1,5 +1,7 @@
 # Explore: an individual learning journey
 
+**Latest presentation update:** The [warm-palette refinement](UI_REFINEMENT_2026-11-07.md) replaces the original numbered page layout with Books, Resources and Activity views. Interests are collapsed by default, and generic recommendation filler is omitted. The underlying recommendation and privacy contracts below remain applicable.
+
 Implemented on `get-stuff-done-harshith` for review. This is local frontend work using the existing catalogue, reading, and interest data contracts; it adds no hosted migration, paid service, or AI integration.
 
 ## Product decision

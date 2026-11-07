@@ -2,11 +2,11 @@
 .catalogue-book-link {
   position: relative;
   height: 100%;
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  background: var(--paper);
-  box-shadow: 0 2px 3px #2F352D03, 0 8px 22px #2F352D04;
+  padding: 0 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: none;
   transition: border-color .22s ease, box-shadow .22s ease, transform .28s cubic-bezier(.22, 1, .36, 1);
 }
 .book-card .book-cover,
@@ -15,7 +15,7 @@
   margin-inline: auto;
   aspect-ratio: .72;
   border-radius: 4px 10px 10px 4px;
-  box-shadow: -2px 2px 0 #fff8, 4px 6px 0 #2F352D12, 8px 16px 24px #2F352D17;
+  box-shadow: -2px 2px 0 #fff8, 4px 6px 0 #2D2D2312, 8px 16px 24px #2D2D2317;
   transform-origin: 50% 90%;
   transition: transform .35s cubic-bezier(.22, 1, .36, 1), box-shadow .25s ease;
 }
@@ -27,23 +27,23 @@
 .catalogue-book-title-link { color: inherit; text-decoration: none; }
 .catalogue-book-title-link::after { position: absolute; inset: 0; border-radius: inherit; content: ''; }
 .catalogue-book-title-link:focus-visible { outline: none; }
-.catalogue-book-title-link:focus-visible::after { outline: 3px solid var(--focus); outline-offset: 5px; border-radius: 22px; }
+.catalogue-book-title-link:focus-visible::after { outline: 3px solid var(--focus); outline-offset: 5px; border-radius: 8px; }
 .catalogue-book-link:focus-within .book-title { text-decoration: underline; text-underline-offset: .2em; }
 .book-card .text-link,
 .catalogue-book-link .text-link { min-height: 44px; margin-top: auto; padding-top: 12px; font-size: .8125rem; }
-.catalogue-book-link .availability { align-self: flex-start; padding: 4px 9px; border-radius: 7px; font-size: .75rem; background: var(--accent); }
+.evg-shell .catalogue-book-link .availability { align-self: flex-start; min-height: 0; padding: 0; border-radius: 0; color: var(--muted); font-size: .75rem; background: transparent; }
 .catalogue-book-link .catalogue-author { font-size: .8125rem; }
 .book-card:focus-visible,
 .catalogue-book-link:focus-visible { outline-offset: 5px; }
 @media (hover: hover) and (pointer: fine) {
   .book-card:hover,
-  .catalogue-book-link:hover { border-color: var(--olive); transform: translateY(-4px); box-shadow: 0 5px 8px #2F352D05, 0 18px 34px #2F352D0d; }
+  .catalogue-book-link:hover { transform: translateY(-2px); box-shadow: none; }
   .book-card:hover .book-cover,
-  .catalogue-book-link:hover .book-cover { transform: translateY(-3px) rotate(-1.5deg); box-shadow: 5px 8px 0 #2F352D12, 10px 20px 28px #2F352D21; }
+  .catalogue-book-link:hover .book-cover { transform: translateY(-2px); box-shadow: 5px 8px 0 #2D2D2312, 10px 20px 28px #2D2D2317; }
 }
 @media (max-width: 600px) {
-  .book-card, .catalogue-book-link { padding: 16px; border-radius: 18px; }
-  .catalogue-book-title-link:focus-visible::after { border-radius: 18px; }
+  .book-card, .catalogue-book-link { padding: 0 0 12px; border-radius: 8px; }
+  .catalogue-book-title-link:focus-visible::after { border-radius: 8px; }
   .book-card .book-title, .catalogue-book-link .book-title { font-size: 1rem; }
 }
 @media (prefers-reduced-motion: reduce) {

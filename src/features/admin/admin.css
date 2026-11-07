@@ -15,13 +15,13 @@
 .administrator-workspace__heading p { max-width: 680px; margin: 0; color: var(--muted, var(--muted)); }
 .role-badge { display: inline-flex; align-items: center; min-height: 32px; padding: 5px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--sage); color: var(--green); font-size: 13px; font-weight: 800; text-transform: capitalize; }
 .workspace-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.workspace-card { display: grid; grid-template-rows: auto 1fr auto; gap: 16px; min-height: 240px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: #FEFEFE; }
+.workspace-card { display: grid; grid-template-rows: auto 1fr auto; gap: 16px; min-height: 240px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); }
 .workspace-card__number { color: var(--olive); font: 700 13px/1.2 ui-monospace, SFMono-Regular, monospace; }
 .workspace-card h2 { margin: 0 0 8px; font-size: 20px; }
 .workspace-card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
 .workspace-card .secondary { justify-self: stretch; width: 100%; min-height: 44px; }
 .staff-access-panel { scroll-margin-top: 24px; }
-.admin-editor { border-color: var(--olive); box-shadow: 0 18px 48px rgba(32, 74, 61, .08); }
+.admin-editor { border-color: var(--control-border); box-shadow: none; }
 .admin-editor__heading { border-bottom: 1px solid var(--line); padding-bottom: 16px; margin-bottom: 20px; }
 .admin-editor__heading .text-link { border: 0; background: none; cursor: pointer; padding: 8px; }
 .admin-editor__note { padding: 12px 14px; border-radius: 8px; background: var(--surface-secondary); color: var(--muted); font-size: 14px; }
@@ -31,7 +31,7 @@
 .admin-inventory__heading { padding-bottom: 12px; border-bottom: 1px solid var(--line); }
 .admin-inventory__empty { padding: 34px; text-align: center; border: 1px dashed var(--line); border-radius: var(--radius-md); }
 .admin-book-list { display: grid; gap: 10px; }
-.admin-book-row { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: #FEFEFE; }
+.admin-book-row { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--paper); }
 .admin-book-row__cover { display: grid; place-items: center; width: 64px; aspect-ratio: 4 / 5; border-radius: 7px; background: var(--sage); background-position: center; background-size: cover; color: var(--green); font: 700 26px/1 Georgia, serif; }
 .admin-book-row h3 { margin: 0 0 5px; font-size: 18px; }
 .admin-book-row p { margin: 0; }
@@ -39,16 +39,16 @@
 .admin-book-row__description { margin-top: 6px !important; max-width: 760px; }
 .admin-book-row__stock { margin-top: 9px !important; color: var(--green); font-size: 13px; font-weight: 700; }
 
-.workspace-card { padding: 28px; border-radius: var(--radius-lg); gap: 20px; box-shadow: 0 5px 18px #2F352D04; }
+.workspace-card { padding: 28px; border-radius: var(--radius-lg); gap: 20px; box-shadow: 0 5px 18px #2D2D2304; }
 .workspace-card h2 { font-size: 1.375rem; letter-spacing: -.025em; }
 .workspace-card p { font-size: .9375rem; }
 .workspace-card__number { color: var(--green); font-size: .8125rem; }
-.workspace-card .secondary { border-radius: 999px; }
+.workspace-card .secondary { border-radius: var(--radius-md); }
 .admin-editor { border-radius: 24px; }
 .admin-editor__note, .admin-notice { border-radius: var(--radius-md); padding: 16px 18px; }
 .admin-book-list { gap: 14px; }
 .admin-book-row { padding: 20px; border-radius: 18px; }
-.admin-book-row__cover { box-shadow: 3px 5px 10px #2F352D10; }
+.admin-book-row__cover { box-shadow: 3px 5px 10px #2D2D2310; }
 .admin-book-row h3 { letter-spacing: -.02em; }
 .role-badge { font-size: .75rem; letter-spacing: .02em; padding-inline: 13px; }
 .staff-table thead { background: var(--surface-secondary); }
@@ -84,12 +84,12 @@
 .administrator-workspace__actions { display:flex; flex-direction:column; align-items:end; gap:10px; flex:none; }
 .administrator-workspace__actions > a { display:inline-flex; align-items:center; gap:12px; min-height:44px; font-size:.8125rem; font-weight:600; color:var(--green-strong); }
 .administrator-workspace__actions > a:hover { text-decoration:underline; text-underline-offset:4px; }
-.administrator-workspace .role-badge { min-height:32px; padding:6px 12px; border:0; border-radius:8px; background:var(--sage); font-weight:650; }
+.administrator-workspace .role-badge { min-height:32px; padding:6px 0; border:0; border-radius:0; background:transparent; color:var(--muted); font-weight:650; }
 .administrator-workspace .workspace-card-grid { gap:18px; }
-.administrator-workspace .workspace-card { padding:26px; gap:18px; border-color:var(--line); border-radius:16px; background:var(--paper); box-shadow:none; }
+.administrator-workspace .workspace-card { padding:26px; gap:18px; border-color:var(--frame-border); border-radius:16px; background:linear-gradient(145deg,var(--paper) 45%,var(--surface-secondary)); box-shadow:var(--shadow-soft); }
 .administrator-workspace .workspace-card h2 { font-size:1.125rem; }
 .administrator-workspace .workspace-card p { color:var(--muted); font-size:.8125rem; line-height:1.7; }
-.workspace-card__icon { display:grid; place-items:center; width:42px; height:42px; border-radius:11px; background:var(--sage); color:var(--green); }
+.workspace-card__icon { display:grid; place-items:center; width:42px; height:42px; border-radius:0; background:transparent; color:var(--ink); }
 .workspace-card__icon svg { width:23px; height:23px; }
 .workspace-card__action { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:44px; padding-top:12px; border-top:1px solid var(--line); color:var(--green-strong); font-size:.8125rem; font-weight:650; }
 .workspace-card__action:hover { text-decoration:underline; text-underline-offset:4px; }

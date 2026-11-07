@@ -1,5 +1,7 @@
 # Morning review — HealEduTech / EVG
 
+**Later owner review:** the [warm-palette and simpler learning pages](UI_REFINEMENT_2026-11-07.md) supersede this report's Sorbet styling and long Explore/Together presentation. The feature and deployment boundaries below remain applicable; the screenshots in this original report show the earlier design.
+
 Review branch: `get-stuff-done-harshith`. Based on `b32e529`. No merge to `main`, Sites hosting, hosted database migration or production frontend deployment is part of this sprint.
 
 ## Open the local site

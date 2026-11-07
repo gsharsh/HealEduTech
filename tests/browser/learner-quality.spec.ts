@@ -55,11 +55,13 @@ test('interest loading failures are distinct and failed saves retain selected to
   await expect(page.getByRole('status').filter({ hasText: 'Interests saved' })).toBeVisible();
   await expect(save).toBeDisabled();
   await page.reload();
+  await page.locator('.explore-preferences > summary').click();
   await expect(nature).toHaveAttribute('aria-pressed', 'true');
   await page.getByRole('button', { name: 'Clear all', exact: true }).click();
   await save.click();
   await expect(save).toBeDisabled();
   await page.reload();
+  await page.locator('.explore-preferences > summary').click();
   await expect(nature).toHaveAttribute('aria-pressed', 'false');
 });
 

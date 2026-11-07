@@ -1,5 +1,5 @@
-.staff-action-dialog { width: min(480px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); overflow: auto; padding: clamp(22px, 4vw, 32px); border: 1px solid var(--line); border-radius: var(--radius-lg, 24px); background: var(--paper, var(--paper)); color: var(--ink, var(--ink)); box-shadow: 0 24px 80px #2F352D30; }
-.staff-action-dialog::backdrop { background: #102a23a8; }
+.staff-action-dialog { width: min(480px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); overflow: auto; padding: clamp(22px, 4vw, 32px); border: 1px solid var(--line); border-radius: var(--radius-lg, 24px); background: var(--paper, var(--paper)); color: var(--ink, var(--ink)); box-shadow: 0 24px 80px #2D2D2330; }
+.staff-action-dialog::backdrop { background: #2D2D2399; }
 .staff-action-dialog h2 { margin: 0 0 16px; font-size: 1.5rem; line-height: 1.25; }
 .staff-action-dialog p { line-height: 1.6; overflow-wrap: anywhere; }
 .staff-action-dialog__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 24px; }

@@ -13,7 +13,7 @@
 .circulation-muted { color: var(--muted, var(--muted)); }
 .loan-status { display: inline-flex; border-radius: 999px; background: var(--sage); color: var(--green); font-size: .75rem; font-weight: 750; padding: .3rem .5rem; white-space: nowrap; }
 .loan-status--overdue { background: #f8e8e4; color: #8a3328; }
-.circulation-card { padding: clamp(22px, 3vw, 30px); border-radius: var(--radius-lg); box-shadow: 0 5px 18px #2F352D04; min-width: 0; }
+.circulation-card { padding: clamp(22px, 3vw, 30px); border-radius: var(--radius-lg); box-shadow: 0 5px 18px #2D2D2304; min-width: 0; }
 .circulation-form { gap: 16px; }
 .circulation-form label { font-size: .875rem; gap: 8px; }
 .circulation-form input:not([type=checkbox]), .circulation-form select { min-height: var(--control-height); border: 1px solid var(--control-border); border-radius: var(--radius-md); padding: 12px 14px; background: var(--control-fill); color: var(--ink); font-size: 1rem; }

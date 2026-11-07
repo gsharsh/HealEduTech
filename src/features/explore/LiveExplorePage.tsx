@@ -27,6 +27,7 @@ function ExploreForIdentity({ userId }: { userId?: string }) {
   const [params, setParams] = useSearchParams();
   const [interests, setInterests] = useState<InterestTopic[]>([]);
   const [interestsLoaded, setInterestsLoaded] = useState(!userId);
+  const [interestsFailed, setInterestsFailed] = useState(false);
   const [reading, setReading] = useState<{ loaded: boolean; failed: boolean; records: RecentExploreReading[] }>({ loaded: !userId, failed: false, records: [] });
   const [readingAttempt, setReadingAttempt] = useState(0);
   const [bookAttempt, setBookAttempt] = useState(0);
@@ -34,6 +35,7 @@ function ExploreForIdentity({ userId }: { userId?: string }) {
   const onInterests = useCallback((values: InterestTopic[] | null) => {
     setInterests(values ?? []);
     setInterestsLoaded(true);
+    setInterestsFailed(values === null);
   }, []);
   const topic = readExploreTopic(params.get('topic')) ?? startingTopic(interests, reading.records);
   const ready = interestsLoaded && reading.loaded;
@@ -67,13 +69,13 @@ function ExploreForIdentity({ userId }: { userId?: string }) {
     <div aria-busy={loading}>
       {loading ? <p className="explore-loading" role="status">{copy.loading}</p> : shelf.failed ? <div className="explore-empty" role="alert"><p>{copy.booksError}</p><button type="button" className="secondary" onClick={() => { setShelf({ topic: '', books: [], failed: false }); setBookAttempt(value => value + 1); }}>{copy.retryBooks}</button></div> : recommendations.length ? <div className="explore-book-grid">{recommendations.map(({ book, reason, recentBook }) => <div className="explore-book-suggestion" key={book.id}>
         <CatalogueBookCard headingLevel={3} book={book} returnTo={`/library?topic=${topic}`} availabilityLabel={book.available_copies === undefined ? libraryCopy.availabilityUnknown : libraryCopy.availableLabel(book.available_copies)} />
-        <p className="explore-reason"><span>{copy.suggested}</span>{copy.reasons[reason]}{recentBook && <small>{copy.connection}: {locale === 'vi' ? recentBook.title_vi : recentBook.title_en}</small>}</p>
+        {reason !== 'topic' && <p className="explore-reason">{copy.reasons[reason]}{recentBook && <small>{copy.connection}: {locale === 'vi' ? recentBook.title_vi : recentBook.title_en}</small>}</p>}
       </div>)}</div> : <div className="explore-empty"><h3>{copy.noBooks}</h3><p>{copy.noBooksBody}</p></div>}
     </div>
     {userId && <details className="explore-explanation"><summary>{copy.how}</summary><p>{copy.howBody}</p></details>}
   </>;
 
-  return <LearningJourney topic={topic} onTopic={value => setParams({ topic: value }, { preventScrollReset: true })} books={books} preferences={userId
+  return <LearningJourney topic={topic} onTopic={value => setParams(current => { const next = new URLSearchParams(current); next.set('topic', value); return next; }, { preventScrollReset: true })} books={books} preferencesLabel={userId ? copy.preferences : undefined} preferencesAttention={interestsFailed} preferences={userId
     ? <InterestPicker onLoaded={onInterests} onSaved={onInterests} />
-    : <section className="explore-sign-in"><div><h2>{copy.guest}</h2><p>{copy.guestBody}</p></div><Link className="primary" to={`/sign-in?${new URLSearchParams({ next: `/explore?topic=${topic}` }).toString()}`}>{copy.signIn}</Link></section>} />;
+    : <aside className="explore-account-note"><Link to={`/sign-in?${new URLSearchParams({ next: `/explore?topic=${topic}` }).toString()}`}>{copy.signIn}</Link><p>{copy.guestBody}</p></aside>} />;
 }

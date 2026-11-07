@@ -1,16 +1,23 @@
 :root {
-  /* Sorbet palette supplied by the user, 7 November 2026. */
-  --sorbet-grey:#CCCCCC;
-  --sorbet-pale:#EDECEC;
-  --sorbet-olive:#B7C396;
-  --sorbet-white:#FEFEFE;
-  --sorbet-sage:#E0E7D7;
-  --sorbet-rose:#BA9A91;
-  --surface-secondary:var(--sorbet-pale);
-  --olive:var(--sorbet-olive);
-  --sage:var(--sorbet-sage);
-  --rose:var(--sorbet-rose);
-  --rose-soft:color-mix(in srgb,var(--rose) 22%,var(--sorbet-white));
+  /* User palette: warm paper, quiet supporting surfaces, restrained rust actions. */
+  --blanket:#F2E0CF;
+  --autumn-fern:#854628;
+  --oak:#B48954;
+  --khaki-moss:#7C7458;
+  --mushroom:#D4C7B4;
+  --kimber:#2D2D23;
+  --surface-secondary:#F2EBE2;
+  --surface-gradient:linear-gradient(135deg,var(--paper) 0%,var(--blanket) 100%);
+  --canvas-gradient:linear-gradient(145deg,var(--canvas) 12%,var(--surface-secondary) 64%,var(--blanket) 100%);
+  --frame-border:var(--mushroom);
+  --action:var(--autumn-fern);
+  --action-hover:#66361F;
+  --accent-soft:var(--blanket);
+  /* Compatibility aliases for established component styles. */
+  --olive:var(--mushroom);
+  --sage:var(--surface-secondary);
+  --rose:var(--blanket);
+  --rose-soft:var(--surface-secondary);
   font-family:var(--font-ui);
   color:var(--ink);
   background:var(--surface-secondary);
@@ -20,32 +27,32 @@
   -webkit-font-smoothing:antialiased;
   font-weight:400;
   line-height:var(--leading-copy);
-  --green:#465336;
-  --green-strong:#303D27;
-  --muted:#5B6056;
-  --line:var(--sorbet-grey);
-  --paper:var(--sorbet-white);
-  --canvas:var(--sorbet-white);
-  --glass:rgba(254,254,254,.86);
-  --ink:#2F352D;
-  --accent:var(--sage);
-  --focus:#465336;
-  --control-border:#7B8172;
-  --control-fill:var(--sorbet-white);
+  --green:var(--action);
+  --green-strong:var(--action-hover);
+  --muted:#655E51;
+  --line:#DDD3C5;
+  --paper:#FFFDFA;
+  --canvas:#FBF8F4;
+  --glass:rgba(255,253,250,.94);
+  --ink:var(--kimber);
+  --accent:var(--accent-soft);
+  --focus:var(--action);
+  --control-border:#8B7C68;
+  --control-fill:var(--paper);
   --control-height:48px;
   --success:#3E562E;
-  --success-fill:var(--sage);
+  --success-fill:#EDF0E6;
   --error:#8d3028;
   --error-fill:#fff0ec;
   --warning:#754415;
   --warning-fill:#fff9e9;
-  --shadow:0 16px 40px rgba(47, 53, 45,.08);
-  --shadow-soft:0 10px 28px rgba(47, 53, 45,.08);
-  --shadow-lift:0 18px 42px rgba(47, 53, 45,.14);
+  --shadow:0 12px 32px rgba(133,70,40,.08);
+  --shadow-soft:0 4px 18px rgba(133,70,40,.06);
+  --shadow-lift:0 14px 32px rgba(45,45,35,.09);
   --radius-sm:8px;
   --radius-md:12px;
-  --radius-lg:22px;
-  --radius-xl:28px;
+  --radius-lg:16px;
+  --radius-xl:20px;
   --duration-fast:160ms;
   --duration-normal:240ms;
   --ease-out:cubic-bezier(.2,.8,.2,1);
@@ -66,6 +73,7 @@ body {
   min-width:0;
   min-height:100vh;
   background:var(--canvas);
+  background-image:var(--canvas-gradient);
 }
 button,input,select,textarea {
   font:inherit;
@@ -142,7 +150,7 @@ main:focus {
   display:grid;
   place-items:center;
   background:var(--green);
-  color:#FEFEFE;
+  color:var(--paper);
   width:42px;
   height:42px;
   border-radius:13px;
@@ -217,7 +225,7 @@ main:focus {
 }
 .primary,.secondary {
   min-height:var(--control-height);
-  border-radius:999px;
+  border-radius:var(--radius-md);
   padding:12px 24px;
   display:inline-flex;
   gap:10px;
@@ -230,9 +238,9 @@ main:focus {
   transition:background-color .16s ease,border-color .16s ease,transform .16s ease;
 }
 .primary {
-  color:var(--ink);
-  background:var(--olive);
-  border:1px solid var(--olive);
+  color:var(--paper);
+  background:var(--action);
+  border:1px solid var(--action);
 }
 .primary:hover {
   background:var(--green-strong);
@@ -240,11 +248,9 @@ main:focus {
   border-color:var(--green-strong);
 }
 .secondary {
-  background:var(--glass-fill-strong);
-  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  box-shadow:var(--glass-shadow),inset 0 1px 0 var(--glass-highlight);
-  border:1px solid var(--glass-edge);
+  background:transparent;
+  box-shadow:none;
+  border:1px solid var(--control-border);
   color:var(--ink);
 }
 .secondary:hover {
@@ -269,10 +275,10 @@ main:focus {
 }
 .featured-cover .book-cover {
   aspect-ratio: .69;
-  box-shadow:9px 12px 15px #2F352D20;
+  box-shadow:9px 12px 15px #2D2D2320;
 }
 .goal-panel {
-  background:#FEFEFE;
+  background:var(--paper);
   border:1px solid var(--line);
   border-radius:16px;
   padding:25px;
@@ -453,7 +459,7 @@ main:focus {
   flex-direction:column;
   overflow:hidden;
   border-left:6px solid #00000012;
-  box-shadow:0 8px 18px rgba(47, 53, 45,.08);
+  box-shadow:0 8px 18px rgba(45, 45, 35,.08);
   transition:box-shadow .18s ease;
 }
 .book-cover-image {
@@ -464,7 +470,7 @@ main:focus {
   object-fit:cover;
 }
 .book-card:hover .book-cover {
-  box-shadow:0 13px 28px rgba(47, 53, 45,.16);
+  box-shadow:0 13px 28px rgba(45, 45, 35,.16);
 }
 .cover-edition {
   font-size:7px;
@@ -541,7 +547,7 @@ main:focus {
   border:1px solid var(--line);
   border-radius:12px;
   margin:30px 0 0;
-  background:#FEFEFE;
+  background:var(--paper);
 }
 .summary-icon {
   border-radius:50%;
@@ -720,7 +726,7 @@ input[type=search]:focus,select:focus { border-color:var(--green); box-shadow:0 
 .interests-panel {
   margin-top:30px;
   padding:27px;
-  background:#FEFEFE;
+  background:var(--paper);
   border:1px solid var(--line);
   border-radius:12px;
 }
@@ -737,7 +743,7 @@ input[type=search]:focus,select:focus { border-color:var(--green); box-shadow:0 
   border:1px solid var(--line);
   padding:10px 19px;
   border-radius:22px;
-  background:#FEFEFE;
+  background:var(--paper);
   color:var(--ink);
   font-size:13px;
 }
@@ -781,7 +787,7 @@ input[type=search]:focus,select:focus { border-color:var(--green); box-shadow:0 
   border:1px solid var(--line);
   border-radius:13px;
   overflow:hidden;
-  background:#FEFEFE;
+  background:var(--paper);
 }
 .showcase-art {
   height:200px;
@@ -804,10 +810,10 @@ input[type=search]:focus,select:focus { border-color:var(--green); box-shadow:0 
 }
 .staff-panel {
   border:1px solid var(--line);
-  background:#FEFEFE;
+  background:var(--paper);
   border-radius:16px;
   padding:clamp(22px,3vw,34px);
-  box-shadow:0 8px 30px rgba(47, 53, 45,.04);
+  box-shadow:0 8px 30px rgba(45, 45, 35,.04);
 }
 .staff-access-panel {
   margin-top:22px;
@@ -889,11 +895,11 @@ dialog {
   width:calc(100% - 32px);
   max-height:90vh;
   color:var(--ink);
-  background:#FEFEFE;
-  box-shadow:0 30px 90px rgba(21,44,57,.24);
+  background:var(--paper);
+  box-shadow:0 30px 90px rgba(45,45,35,.18);
 }
 dialog::backdrop {
-  background:rgba(20,39,31,.58);
+  background:rgba(45,45,35,.58);
   backdrop-filter:blur(2px);
 }
 .dialog-close {
@@ -932,7 +938,7 @@ dialog::backdrop {
   padding:45px;
   border:1px solid var(--line);
   border-radius:20px;
-  background:#FEFEFE;
+  background:var(--paper);
 }
 .sign-in-card .brand-mark {
   margin-bottom:30px;

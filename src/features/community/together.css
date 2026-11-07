@@ -1,131 +1,120 @@
-.together-page { --together-green: var(--green); --together-muted: var(--muted); }
-.together-hero { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(240px, .8fr); gap: 56px; align-items: center; padding: 36px 0 56px; }
-.together-hero h1 { max-width: 760px; margin: 16px 0 24px; font-family: var(--font-editorial); font-weight: 500; font-size: clamp(2.5rem, 5.5vw, 4.5rem); line-height: 1.06; letter-spacing: -.045em; color: var(--together-green); text-wrap: balance; }
-.together-hero p { max-width: 590px; font-size: 1.125rem; line-height: 1.7; color: var(--together-muted); }
-.together-jump-links { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 28px; }
-.together-jump-links a { min-height: 44px; display: inline-flex; align-items: center; color: var(--together-green); font-size: .875rem; font-weight: 700; text-decoration-thickness: 1px; text-underline-offset: 5px; }
-.together-hero-art { position: relative; isolation: isolate; min-height: 320px; display: flex; align-items: center; justify-content: center; border-radius: 50% 50% 38% 42%; background: var(--sage); }
-.together-book { display: block; width: 100px; height: 170px; padding: 28px 14px; font-weight: 700; line-height: 2; letter-spacing: .1em; font-size: .8125rem; border-radius: 4px 10px 10px 4px; box-shadow: inset 6px 0 #00000012, 7px 12px 20px #2F352D15; }
-.together-book--one { background: var(--rose); color: var(--ink); transform: rotate(-14deg) translate(20px, 10px); }
-.together-book--two { background: var(--olive); color: var(--ink); z-index: 1; transform: rotate(-3deg) translateY(-20px); }
-.together-book--three { background: var(--green); color: var(--paper); transform: rotate(12deg) translate(-10px, 14px); }
-.together-hero-note { position: absolute; bottom: 8px; max-width: 240px; text-align: center; color: var(--together-green); font-family: var(--font-editorial); font-style: italic; font-size: 1.1rem; }
-.together-page .section-heading p { max-width: 720px; line-height: 1.65; }
-.together-page h2[id] { scroll-margin-top: 140px; }
-.together-journey, .together-activities, .together-workspace, .together-public-shelf, .together-review-desk { margin-bottom: 64px; }
-.together-weeks { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); list-style: none; padding: 0; margin: 24px 0 0; border-top: 1px solid var(--line); }
-.together-weeks li { position: relative; min-width: 0; padding: 26px 18px 0 0; }
-.together-weeks li::before { position: absolute; top: -5px; left: 0; width: 9px; height: 9px; border-radius: 50%; background: var(--together-green); content: ''; }
-.together-week-number { font-size: .75rem; font-weight: 750; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
-.together-weeks h3 { font-size: 1.125rem; line-height: 1.4; margin: 12px 0; }
-.together-weeks p { font-size: .9375rem; line-height: 1.65; color: var(--together-muted); }
-.together-weeks strong { display: block; font-size: .8125rem; line-height: 1.6; color: var(--together-green); margin-top: 20px; }
-.together-template-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-.together-template { display: flex; flex-direction: column; padding: 28px; border-radius: 18px; background: var(--sage); }
-.together-template--1 { background: var(--rose-soft); }
-.together-template--2 { background: var(--sage); }
-.together-template h3 { font-family: var(--font-editorial); font-size: 1.75rem; font-weight: 500; line-height: 1.2; margin: 18px 0 14px; }
-.together-template .eyebrow { color: var(--ink); font-size: .6875rem; }
-.together-template p, .together-template blockquote { font-size: .9375rem; line-height: 1.7; }
-.together-template blockquote { margin: auto 0 0; padding-top: 18px; font-weight: 650; }
-.together-template .text-button { text-align: left; align-self: flex-start; margin-top: 18px; }
-.together-workspace { border-top: 1px solid var(--line); padding-top: 36px; }
-.together-notebook { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: clamp(20px, 4vw, 40px); }
-.together-notebook-toolbar { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--line); }
+.together-page { max-width: 1040px; margin-inline: auto; color: var(--ink); }
+.together-header { padding-block: 8px 32px; }
+.together-header h1 { margin: 0 0 10px; font-family: var(--font-ui); font-weight: 700; font-size: clamp(2rem, 4vw, 2.5rem); line-height: 1.15; letter-spacing: -.035em; }
+.together-header p { max-width: 660px; margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.65; }
+.together-tabs { display: flex; gap: 8px; border-bottom: 2px solid var(--frame-border); overflow-x: auto; scrollbar-width: thin; }
+.together-tabs [role=tab] { flex: 0 0 auto; min-height: 48px; padding: 12px 16px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: var(--muted); font: inherit; font-size: .9375rem; font-weight: 600; }
+.together-tabs [role=tab][aria-selected=true] { border-bottom-color: var(--action); color: var(--ink); background: linear-gradient(180deg, transparent, var(--blanket)); }
+.together-tabs [role=tab]:focus-visible { outline: 3px solid var(--focus); outline-offset: -4px; }
+.together-panel { padding-top: 28px; min-width: 0; }
+.together-panel[hidden] { display: none !important; }
+.together-panel > h2, .together-review-desk h2 { margin: 0 0 20px; font-size: 1.375rem; font-weight: 650; line-height: 1.35; letter-spacing: -.015em; }
+.together-page h2[id] { scroll-margin-top: calc(var(--evg-header-height, 72px) + 24px); }
+.together-view-intro { margin: -8px 0 24px; color: var(--muted); line-height: 1.6; }
+.together-format-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0 0 20px; padding: 0; border: 0; min-width: 0; }
+.together-page .together-format-choices > label { display: flex; gap: 12px; align-items: center; min-height: 86px; margin: 0; padding: 16px 18px; border: 1px solid var(--frame-border); border-radius: 10px; cursor: pointer; background: var(--paper); }
+.together-format-choices > label.is-selected { border-color: var(--action); background: linear-gradient(135deg, var(--blanket) 15%, var(--mushroom) 100%); box-shadow: inset 0 0 0 1px var(--action); }
+.together-format-choices > label.is-selected small { color: var(--ink); }
+.together-format-choices input { flex: 0 0 auto; width: 18px; height: 18px; margin: 0; accent-color: var(--action); }
+.together-format-choices strong { display: block; color: var(--ink); font-size: .9375rem; font-weight: 650; }
+.together-format-choices small { display: block; margin-top: 4px; color: var(--muted); font-size: .8125rem; font-weight: 400; }
+.together-activity-detail { padding: 24px 28px; background: var(--surface-gradient); border: 2px solid var(--frame-border); border-radius: 12px; box-shadow: var(--shadow-soft); }
+.together-activity-detail > p:first-child { margin-top: 0; font-weight: 600; }
+.together-activity-detail ol { display: grid; gap: 10px; margin-block: 16px 24px; padding-left: 22px; font-size: .9375rem; line-height: 1.6; }
+.together-start-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; }
+.together-text-link { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 0; border: 0; background: transparent; color: var(--action); font: inherit; font-size: .875rem; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+.together-service-notice { margin: 20px 0; padding-top: 16px; border-top: 1px solid var(--frame-border); color: var(--muted); font-size: .875rem; line-height: 1.65; }
+.together-teacher-plan { margin-top: 22px; padding-top: 6px; border-top: 1px solid var(--frame-border); color: var(--muted); }
+.together-page summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 600; line-height: 1.55; color: var(--ink); }
+.together-page summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+.together-teacher-plan > p { margin-block: 6px 18px; font-size: .875rem; }
+.together-weeks { list-style: none; padding: 0; margin: 0; }
+.together-weeks li { display: grid; grid-template-columns: 68px 1fr; gap: 12px; padding: 14px 0; border-top: 1px solid var(--line); font-size: .875rem; line-height: 1.6; }
+.together-weeks li > span { color: var(--muted); }
+.together-weeks strong { color: var(--ink); font-weight: 600; }
+.together-weeks p { margin: 4px 0 0; }
+.together-notebook { padding: clamp(20px, 4vw, 32px); border: 2px solid var(--frame-border); border-radius: 12px; background: linear-gradient(180deg, var(--blanket), var(--paper) 190px); box-shadow: var(--shadow-soft); }
+.together-notebook-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; padding-bottom: 22px; margin-bottom: 22px; border-bottom: 1px solid var(--line); }
 .together-notebook-toolbar label { flex: 1 1 260px; }
-.together-page label { display: block; font-size: .9375rem; line-height: 1.5; font-weight: 650; }
-.together-page input:not([type=checkbox]), .together-page select, .together-page textarea { display: block; width: 100%; min-width: 0; margin-top: 8px; border: 1px solid var(--control-border); border-radius: 10px; background: #FEFEFE; color: var(--ink); padding: 12px 14px; font: inherit; font-size: 1rem; line-height: 1.5; }
+.together-page label { display: block; font-size: .9375rem; line-height: 1.5; font-weight: 600; }
+.together-page input:not([type=checkbox]):not([type=radio]), .together-page select, .together-page textarea { display: block; width: 100%; min-width: 0; margin-top: 8px; border: 1px solid var(--control-border); border-radius: 8px; background: var(--control-fill); color: var(--ink); padding: 12px 14px; font: inherit; font-size: 1rem; line-height: 1.5; }
 .together-page textarea { resize: vertical; }
 .together-page :is(input, select, textarea):focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
-.together-page fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.together-editor fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
 .together-page fieldset:disabled { opacity: 1; }
 .together-page fieldset:disabled :is(input, select, textarea) { background: var(--surface-secondary); color: var(--ink); opacity: 1; -webkit-text-fill-color: var(--ink); }
 .together-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.together-text-field { margin-top: 28px; }
+.together-text-field { margin-top: 26px; }
 .together-text-field .field-help { margin: 6px 0 0; }
-.together-char-count { display: block; color: var(--together-muted); font-size: .75rem; margin-top: 8px; }
-.together-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 22px; }
+.together-char-count { display: block; color: var(--muted); font-size: .75rem; margin-top: 8px; }
+.together-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 20px; }
 .together-editor-status { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-bottom: 24px; font-size: .8125rem; }
-.together-status { display: inline-block; background: var(--sage); color: var(--green); padding: 6px 10px; border-radius: 6px; font-size: .75rem; font-weight: 700; line-height: 1.4; }
-.together-status--submitted { background: #f2e7cd; color: #614d21; }
-.together-status--published { background: var(--sage); color: var(--green); }
-.together-status--changes_requested { background: #efe6d7; color: #614526; }
-.together-sharing-controls { border-top: 1px solid var(--line); padding-top: 22px; margin-top: 26px; }
-.together-page .together-checkbox { display: flex; align-items: flex-start; gap: 12px; margin: 18px 0; font-weight: 450; line-height: 1.65; }
-.together-checkbox input { flex: 0 0 auto; width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--green); }
-.together-feedback { padding: 16px 20px; margin-bottom: 24px; border-left: 3px solid #c2a35a; background: #f7f1e1; }
+.together-status { display: inline-block; padding: 6px 10px; border-radius: 5px; background: var(--surface-secondary); color: var(--ink); font-size: .75rem; font-weight: 600; line-height: 1.4; }
+.together-status--submitted, .together-status--changes_requested { background: var(--blanket); }
+.together-sharing-controls { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 24px; }
+.together-page .together-checkbox { display: flex; align-items: flex-start; gap: 12px; margin: 18px 0; font-weight: 400; line-height: 1.65; }
+.together-checkbox input { flex: 0 0 auto; width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--action); }
+.together-feedback { padding: 16px 20px; margin-bottom: 24px; border-left: 3px solid var(--oak); background: var(--surface-secondary); }
 .together-feedback h3 { margin: 0 0 10px; font-size: 1rem; }
 .together-feedback p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
-.together-template-prompt, .together-service-notice, .together-guest-notebook, .together-empty-shelf { padding: 24px; background: var(--sage); border-radius: 14px; line-height: 1.7; }
-.together-template-prompt { margin-bottom: 20px; border-left: 3px solid #9d7950; }
-.together-template-prompt p { margin: 6px 0 0; }
-.together-published-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
-.together-discovery { min-width: 0; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: clamp(22px, 3vw, 32px); overflow-wrap: anywhere; }
-.together-discovery > h3 { font-family: var(--font-editorial); font-size: 1.75rem; line-height: 1.25; margin: 14px 0 12px; font-weight: 500; }
-.together-discovery-book { font-weight: 650; }
-.together-anonymous { font-size: .8125rem; color: var(--together-muted); }
-.together-page summary { cursor: pointer; padding: 12px 0; min-height: 44px; font-weight: 650; line-height: 1.55; }
-.together-page summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+.together-published-grid { display: grid; gap: 18px; margin-bottom: 24px; }
+.together-discovery { min-width: 0; padding: 24px; border: 1px solid var(--frame-border); border-radius: 12px; background: var(--surface-gradient); overflow-wrap: anywhere; }
+.together-discovery > h3 { margin: 10px 0; font-family: var(--font-editorial); font-size: 1.5rem; font-weight: 500; line-height: 1.3; }
+.together-discovery > .eyebrow { color: var(--muted); letter-spacing: 0; font-size: .8125rem; font-weight: 400; text-transform: none; }
+.together-discovery-book { margin-bottom: 6px; font-size: .9375rem; font-weight: 600; }
+.together-anonymous { margin-top: 0; color: var(--muted); font-size: .8125rem; }
+.together-empty-shelf { margin: 24px 0; color: var(--muted); }
 .together-project-content { display: grid; gap: 20px; margin-block: 20px; }
-.together-project-content dt { font-size: .8125rem; font-weight: 750; color: var(--together-green); margin-bottom: 6px; }
+.together-project-content dt { margin-bottom: 6px; color: var(--ink); font-size: .875rem; font-weight: 600; }
 .together-project-content dd { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .9375rem; line-height: 1.7; }
-.together-conversation { border-top: 1px solid var(--line); margin-top: 28px; padding-top: 22px; }
-.together-conversation h4 { font-size: 1.125rem; margin: 0 0 10px; }
+.together-conversation { border-top: 1px solid var(--line); margin-top: 24px; padding-top: 22px; }
+.together-conversation h4 { font-size: 1.0625rem; margin: 0 0 10px; }
 .together-conversation h5 { font-size: .9375rem; margin: 24px 0 12px; }
 .together-conversation p { line-height: 1.65; font-size: .9375rem; }
 .together-comment-list { list-style: none; padding: 0; display: grid; gap: 16px; }
 .together-comment-list li { border-left: 2px solid var(--line); padding: 4px 0 4px 16px; }
 .together-comment-list p { white-space: pre-wrap; overflow-wrap: anywhere; margin-block: 6px; }
-.together-examples { margin-top: 32px; border-top: 1px solid var(--line); padding-top: 12px; }
-.together-examples .showcase-grid { margin-top: 20px; }
-.together-examples .showcase-copy h3 { margin-block: .5rem .75rem; font-size: 1.5rem; font-family: var(--font-editorial); line-height: 1.25; }
-.together-encouragement { padding: 28px 32px; border-radius: 16px; background: var(--sage); margin-bottom: 64px; }
-.together-encouragement h2 { font-size: 1.4rem; margin-bottom: 12px; }
-.together-encouragement p { margin: 0; max-width: 850px; line-height: 1.75; }
-.together-review-desk { border-top: 2px solid var(--line); padding-top: 36px; }
-.together-review-list { display: grid; gap: 16px; margin-block: 24px; }
-.together-review-item { border: 1px solid var(--line); border-radius: 14px; padding: 12px 24px; background: var(--paper); }
+.together-examples { margin-top: 28px; padding-top: 12px; border-top: 1px solid var(--line); }
+.together-examples > p { color: var(--muted); font-size: .875rem; }
+.together-page .together-examples .showcase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 18px; }
+.together-examples article { padding-block: 8px; }
+.together-example-label { color: var(--muted); font-size: .75rem; }
+.together-examples h3 { margin: 10px 0; font-size: 1.125rem; }
+.together-examples p { font-size: .9375rem; line-height: 1.65; }
+.together-examples small { color: var(--muted); }
+.together-review-desk { margin: 0; padding: 0; border: 0; }
+.together-review-desk .section-heading { align-items: flex-start; gap: 18px; margin-bottom: 24px; }
+.together-review-desk .section-heading p { max-width: 600px; color: var(--muted); line-height: 1.6; }
+.together-review-list { display: grid; gap: 14px; margin-block: 24px; }
+.together-review-item { padding: 10px 22px; border: 1px solid var(--frame-border); border-radius: 10px; background: linear-gradient(180deg, var(--surface-secondary), var(--paper) 110px); }
 .together-review-item > summary { display: list-item; overflow-wrap: anywhere; }
 .together-review-item > summary .together-status { margin-left: 14px; }
 .together-review-item > p { white-space: pre-wrap; overflow-wrap: anywhere; }
-@media(max-width:1000px) {
-  .together-hero { gap: 28px; grid-template-columns: minmax(0, 1.4fr) minmax(200px, .8fr); }
-  .together-hero-art { min-height: 280px; }
-  .together-book { width: 80px; height: 145px; padding: 20px 10px; }
-  .together-weeks { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
-  .together-weeks li::before { content: none; }
-  .together-template-grid { gap: 14px; }
-  .together-template { padding: 22px; }
-}
-@media(max-width:760px) {
-  .together-hero { grid-template-columns: 1fr; padding-block: 20px 40px; gap: 24px; }
-  .together-hero-art { display: none; }
-  .together-hero h1 { font-size: clamp(2.5rem, 8vw, 3.5rem); }
-  .together-hero p { font-size: 1rem; }
-  .together-jump-links { gap: 6px 20px; }
-  .together-weeks { grid-template-columns: 1fr; border-top: 0; gap: 0; }
-  .together-weeks li { padding: 0 0 28px 26px; border-left: 1px solid var(--line); }
-  .together-weeks li:last-child { padding-bottom: 0; }
-  .together-weeks li::before { content: ''; top: 5px; left: -5px; }
-  .together-weeks p { margin-block: 8px; }
-  .together-weeks strong { margin-top: 10px; }
-  .together-template-grid, .together-published-grid, .together-field-row { grid-template-columns: 1fr; }
-  .together-template { padding: 24px; }
-  .together-journey, .together-activities, .together-workspace, .together-public-shelf, .together-review-desk { margin-bottom: 44px; }
-  .together-notebook-toolbar { align-items: stretch; }
-  .together-notebook-toolbar label { flex-basis: 100%; }
-  .together-review-item { padding-inline: 18px; }
-  .together-encouragement { padding: 24px; }
-}
-@media(forced-colors: active) {
-  .together-book, .together-status, .together-template, .together-notebook, .together-discovery { border: 1px solid CanvasText; }
-}
-.together-delete-dialog { width: min(520px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); overflow-y: auto; border: 1px solid var(--line); border-radius: 18px; padding: 28px; color: var(--ink); background: var(--paper); }
-.together-delete-dialog::backdrop { background: #1c3029a8; }
+.together-delete-dialog { width: min(520px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); overflow-y: auto; border: 1px solid var(--line); border-radius: 14px; padding: 28px; color: var(--ink); background: var(--paper); }
+.together-delete-dialog::backdrop { background: color-mix(in srgb, var(--ink) 65%, transparent); }
 .together-delete-dialog h2 { font-size: 1.5rem; margin-top: 0; }
 .together-delete-dialog p { line-height: 1.65; }
+.together-delete-dialog .primary { color: var(--paper); background: var(--error); border-color: var(--error); }
 .together-own-feedback { margin-top: 24px; border-top: 1px solid var(--line); padding-top: 12px; }
-.together-teacher-shortcut { margin-top: 12px; }
-
-.together-delete-dialog .primary { color:var(--paper); background:var(--error); border-color:var(--error); }
-.together-delete-dialog .primary:hover { background:#702720; border-color:#702720; }
+@media(max-width:760px) {
+  .together-header { padding-block: 12px 22px; }
+  .together-tabs { gap: 0; }
+  .together-tabs [role=tab] { padding-inline: 12px; font-size: .875rem; }
+  .together-panel { padding-top: 24px; }
+  .together-format-choices { gap: 8px; }
+  .together-page .together-format-choices > label { min-height: 94px; padding: 12px 10px; gap: 8px; flex-direction: column; align-items: flex-start; }
+  .together-format-choices strong { font-size: .875rem; }
+  .together-format-choices small { font-size: .75rem; }
+  .together-activity-detail { padding: 20px; }
+  .together-field-row { grid-template-columns: 1fr; }
+  .together-notebook-toolbar { align-items: stretch; }
+  .together-notebook-toolbar label { flex-basis: 100%; }
+  .together-page .together-examples .showcase-grid { grid-template-columns: 1fr; }
+  .together-review-item { padding-inline: 16px; }
+}
+@media(forced-colors: active) {
+  .together-status, .together-notebook, .together-discovery, .together-page .together-format-choices > label { border: 1px solid CanvasText; }
+  .together-tabs [role=tab][aria-selected=true] { border-bottom-color: Highlight; }
+  .together-format-choices > label.is-selected { outline: 2px solid Highlight; background: Canvas; box-shadow: none; }
+  .together-activity-detail { border-color: CanvasText; box-shadow: none; }
+}

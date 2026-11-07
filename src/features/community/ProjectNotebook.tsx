@@ -6,8 +6,8 @@ import { emptyProject, isReadyToShare, projectLimits, projectText, sameProject, 
 import { togetherCopy } from './togetherCopy';
 
 export interface NotebookHandle { startTemplate: (format: ProjectFormat) => void }
-type NotebookProps = { initialFormat: ProjectFormat; onPublicChange: () => void };
-export function ProjectNotebook({ initialFormat, onPublicChange, ref }: NotebookProps & { ref?: Ref<NotebookHandle> }) {
+type NotebookProps = { initialFormat: ProjectFormat; onPublicChange: () => void; startWithNew?: boolean };
+export function ProjectNotebook({ initialFormat, onPublicChange, startWithNew = false, ref }: NotebookProps & { ref?: Ref<NotebookHandle> }) {
   const { i18n } = useTranslation();
   const copy = togetherCopy[i18n.language === 'vi' ? 'vi' : 'en'];
   const [projects, setProjects] = useState<LearningProject[]>([]);
@@ -18,17 +18,21 @@ export function ProjectNotebook({ initialFormat, onPublicChange, ref }: Notebook
   const [locked, setLocked] = useState(false);
   const [newKey, setNewKey] = useState(0);
   const [newFormat, setNewFormat] = useState(initialFormat);
+  const newDraftRequested = useRef(startWithNew);
   const [templateNotice, setTemplateNotice] = useState('');
   useImperativeHandle(ref, () => ({ startTemplate(format) {
     if (locked) { setTemplateNotice(i18n.language === 'vi' ? 'Lưu hoặc bỏ thay đổi trước khi bắt đầu dàn ý mới. Nội dung đang viết vẫn được giữ nguyên.' : 'Save or discard your changes before starting a new outline. Your current writing is unchanged.'); return; }
     if (projects.length >= 25) { setTemplateNotice(copy.draftLimit); return; }
-    setSelected(''); setNewFormat(format); setNewKey(value => value + 1); setTemplateNotice('');
+    newDraftRequested.current = loading; setSelected(''); setNewFormat(format); setNewKey(value => value + 1); setTemplateNotice('');
   } }));
   useEffect(() => {
     const controller = new AbortController();
     void listMyProjects(controller.signal).then(value => {
       if (controller.signal.aborted) return;
-      setProjects(value); setSelected(value[0]?.id ?? ''); setLoading(false);
+      setProjects(value);
+      setSelected(newDraftRequested.current && value.length < 25 ? '' : value[0]?.id ?? '');
+      newDraftRequested.current = false;
+      setLoading(false);
     }).catch(() => { if (!controller.signal.aborted) { setError(true); setLoading(false); } });
     return () => controller.abort();
   }, [revision]);

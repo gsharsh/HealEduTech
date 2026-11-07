@@ -1,5 +1,7 @@
 # Together: a reading circle that becomes a shared bookshelf
 
+**Latest presentation update:** The [warm-palette refinement](UI_REFINEMENT_2026-11-07.md) replaces the original long page with activity selection and separate work, bookshelf and teacher-review views. The class plan is optional; a downloadable paper activity remains usable without the new backend. The underlying submission and moderation contracts below remain applicable.
+
 This document records the 7 November 2026 branch implementation. It is a local development candidate, not a hosted release or evidence of a completed EVG student pilot. The project's existing January 2027 learner-rollout gates and staff ownership decisions still apply.
 
 ## Audience and purpose

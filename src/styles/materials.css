@@ -1,11 +1,11 @@
 :root {
-  --glass-fill: rgba(254, 254, 254, .84);
-  --glass-fill-strong: rgba(254, 254, 254, .94);
-  --glass-edge: rgba(204, 204, 204, .8);
-  --glass-highlight: rgba(254, 254, 254, .82);
-  --glass-shadow: 0 6px 24px rgba(47, 53, 45, .06), 0 1px 4px rgba(47, 53, 45, .03);
+  --glass-fill: rgba(251, 248, 244, .94);
+  --glass-fill-strong: rgba(251, 248, 244, .98);
+  --glass-edge: var(--line);
+  --glass-highlight: rgba(255, 253, 250, .85);
+  --glass-shadow: 0 2px 10px rgba(45, 45, 35, .03);
   --glass-blur: 18px;
-  --glass-saturate: 1.2;
+  --glass-saturate: 1;
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {

@@ -1,122 +1,30 @@
-.activity-detail--steps {
-  margin: 0;
-  padding: 22px clamp(20px, 4vw, 42px);
-  border: 1px solid color-mix(in srgb, var(--topic-ink) 16%, transparent);
-  border-radius: 18px;
-  color: var(--topic-ink);
-  background: var(--topic-bg);
+.explore-activity-sheet {
+  max-width: 720px;
+  padding: 28px;
+  border: 1px solid var(--mushroom);
+  border-top: 3px solid var(--oak);
+  border-radius: 16px;
+  background: linear-gradient(120deg, var(--paper), color-mix(in srgb, var(--blanket) 60%, var(--paper)));
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--oak) 8%, transparent);
 }
-.activity-detail--steps h3 {
-  margin: 14px 0 4px;
-  color: var(--topic-ink);
-  font-size: .8125rem;
-}
-.activity-detail--steps p,
-.activity-detail--steps li {
-  font-size: .875rem;
-  line-height: 1.65;
-}
-.activity-detail--steps ol {
-  display: grid;
-  gap: 12px;
-  margin: 6px 0 0;
-  padding-left: 24px;
-}
-.activity-detail--steps li::marker { color: var(--green); font-weight: 750; }
-.activity-next-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  margin-top: 8px;
-  color: var(--green);
-  font-size: .875rem;
-  font-weight: 700;
-}
-.activity-next-link:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+.explore-activity-sheet > :is(h2, h3):first-child { margin-bottom: 12px; font-size: clamp(1.4rem, 2.4vw, 1.8rem); line-height: 1.3; }
+.explore-activity-sheet > p { margin-bottom: 24px; color: var(--muted); }
+.explore-activity-sheet > :is(h3, h4) { margin: 28px 0 12px; font-size: 1rem; }
+.explore-activity-materials { margin: 24px 0; }
+.explore-activity-materials dt { margin-bottom: 6px; font-weight: 650; }
+.explore-activity-materials dd { margin: 0; color: var(--muted); }
+.explore-activity-sheet ol { display: grid; gap: 14px; padding-left: 24px; }
+.explore-activity-sheet li { padding-left: 4px; }
+.explore-activity-sheet li::marker { color: var(--ink); font-weight: 650; }
 
-.activity-reveal { display: grid; grid-template-rows: 0fr; min-height: 0; opacity: 0; visibility: hidden; transition: grid-template-rows .32s cubic-bezier(.22, 1, .36, 1), opacity .2s ease, visibility .32s; }
-.activity-reveal[data-open=true] { grid-template-rows: 1fr; opacity: 1; visibility: visible; }
-.activity-reveal__clip { min-height: 0; overflow: hidden; }
-.activity-reveal[data-open=true] .activity-reveal__clip:focus-within { overflow: visible; }
-
-.topic-grid { align-items: start; gap: 24px; }
-.topic-card {
-  --topic-bg: var(--sage);
-  --topic-ink: var(--ink);
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  align-content: stretch;
-  gap: clamp(20px, 2.8vw, 28px);
-  min-height: clamp(340px, 42vh, 420px);
-  padding: clamp(24px, 3.5vw, 44px);
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--topic-ink) 20%, transparent);
-  border-radius: var(--radius-lg);
-  color: var(--topic-ink);
-  background: var(--topic-bg);
-  box-shadow: 0 18px 46px rgba(47, 53, 45, .12);
-  transform: none;
-  transform-origin: center top;
-}
-.topic-card.topic-nature { --topic-bg: var(--sage); --topic-ink: var(--ink); }
-.topic-card.topic-stories { --topic-bg: var(--rose-soft); --topic-ink: var(--ink); }
-.topic-card.topic-science { --topic-bg: var(--surface-secondary); --topic-ink: var(--green); }
-.topic-card__media { position: absolute; z-index: 0; inset: 0; overflow: hidden; }
-.topic-card__media picture, .topic-card__media img { display: block; width: 100%; height: 100%; }
-.topic-card__media img { object-fit: cover; object-position: right center; }
-.topic-card.topic-nature .topic-card__media picture { width: 70%; margin-left: auto; }
-.topic-card.topic-nature .topic-card__media img { object-position: center; }
-.topic-card__media::after {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, var(--topic-bg) 0%, var(--topic-bg) 28%, color-mix(in srgb, var(--topic-bg) 96%, transparent) 40%, color-mix(in srgb, var(--topic-bg) 83%, transparent) 51%, color-mix(in srgb, var(--topic-bg) 30%, transparent) 68%, transparent 92%);
-  content: '';
-}
-.topic-card__content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; align-self: center; width: min(56%, 650px); min-width: 0; }
-.topic-card .eyebrow { color: var(--topic-ink); font-size: .75rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
-.topic-card__content > :is(h2, h3) { max-width: 620px; margin: 16px 0; color: var(--topic-ink); font-family: var(--font-editorial); font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 500; letter-spacing: -.055em; line-height: 1.08; text-wrap: balance; overflow-wrap: anywhere; }
-.topic-card__content > p { max-width: 520px; margin: 0 0 16px; color: var(--topic-ink); font-size: clamp(1rem, 1.3vw, 1.05rem); line-height: 1.65; }
-.topic-card__content > .secondary { display: inline-flex; align-items: center; justify-content: space-between; gap: 20px; width: fit-content; min-width: 190px; min-height: 48px; padding: 10px 18px; border-radius: 13px; }
-.topic-card__content > .secondary > span { transition: transform .24s cubic-bezier(.22, 1, .36, 1); font-size: 1.25rem; }
-.topic-card__content > .secondary[aria-expanded=true] > span { transform: rotate(45deg); }
-.topic-card:has([aria-expanded=true]) { border-color: var(--olive); }
-.activity-reveal { position: relative; z-index: 1; grid-column: 1; width: 100%; }
-.activity-reveal[data-open=true] { padding-top: 4px; }
-
+/* Shared interest editor styles remain available wherever it is mounted. */
 .interests-panel { padding: 30px; border-radius: var(--radius-lg); background: var(--paper); }
 .interests-panel h2 { font-size: 1.5rem; }
 .interests-panel p { max-width: 650px; font-size: .9375rem; }
 .interest-options button { font-size: .9375rem; transition: background-color .18s ease, border-color .18s ease; }
-.interest-options button:hover { border-color: var(--green); }
-.interest-options button.selected { background: var(--green); color: #FEFEFE; border-color: var(--green); }
-
-.topic-grid.explore-stack { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; margin-inline: 0; gap: 24px; padding-bottom: 0; }
-.explore-stack__item { position: relative; }
-
-@media (max-width: 760px) {
-  .topic-card { min-height: 0; padding: clamp(190px, 48vw, 240px) 24px 24px; }
-  .topic-card__content { align-self: end; width: 100%; }
-  .topic-card__media { bottom: auto; height: clamp(190px, 48vw, 240px); }
-  .topic-card.topic-nature .topic-card__media picture { width: 100%; margin-left: 0; }
-  .topic-card.topic-nature .topic-card__media img { object-position: center; }
-  .topic-card.topic-stories .topic-card__media img { object-position: right center; }
-  .topic-card.topic-science .topic-card__media img { object-position: right center; }
-  .topic-card__media::after { background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--topic-bg) 12%, transparent) 42%, color-mix(in srgb, var(--topic-bg) 74%, transparent) 70%, var(--topic-bg) 100%); }
-  .topic-card.topic-science .topic-card__media::after { background: linear-gradient(180deg, transparent 45%, color-mix(in srgb, var(--topic-bg) 12%, transparent) 62%, var(--topic-bg) 100%); }
-  .topic-card__content > .secondary { width: 100%; }
-  .activity-detail--steps { padding: 20px; }
-  .interests-panel { padding: 24px; }
-}
-@media (max-width: 420px) {
-  .topic-card { padding-inline: 20px; }
-}
-@media (max-width: 760px) and (prefers-contrast: more) {
-  .topic-card__media::after { background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--topic-bg) 55%, transparent) 38%, var(--topic-bg) 78%); }
-  .topic-card.topic-science .topic-card__media::after { background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--topic-bg) 55%, transparent) 38%, var(--topic-bg) 78%); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .topic-card__content > .secondary > span, .activity-reveal { transition: none; }
-}
+.interest-options button:hover { border-color: var(--action); }
+.interest-options button.selected { background: var(--action); color: var(--paper); border-color: var(--action); }
+.topic-grid.explore-stack { display: grid; gap: 32px; }
+@media (max-width: 760px) { .interests-panel { padding: 24px; } }
+@media (max-width: 600px) { .explore-activity-sheet { padding: 22px; border-radius: 14px; } }
+@media (prefers-reduced-motion: reduce) { .interest-options button { transition: none; } }

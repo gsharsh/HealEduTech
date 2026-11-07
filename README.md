@@ -1,5 +1,7 @@
 # EVG Learning Platform
 
+**Latest visual review, 7 November:** the [warm-palette and learning-page refinement](docs/UI_REFINEMENT_2026-11-07.md) replaces the Sorbet colours and simplifies Explore and Together into focused views. The review branch and local URL below are unchanged.
+
 **7 November 2026 review candidate — `get-stuff-done-harshith`:** the current sprint improves the visual system, learner and staff workflows, request efficiency, server-enforced mutation quotas, and the individual Explore / classroom Together journeys. Start the local review with `npm run dev:review` at `http://127.0.0.1:4177`. The [sprint report](docs/SPRINT_RELEASE_2026-11-07.md) records the delivered features, verification and remaining deployment gates; the [free-first architecture decision](docs/FREE_FIRST_ARCHITECTURE_2026-11-07.md) explains costs and request protection. This is a branch candidate, not a main merge or production deployment. New migrations remain pending on the hosted backend.
 
 The [1 November production-readiness report](docs/PRODUCTION_RELEASE_2026-11-01.md) and older dated notes below are historical evidence. The hosted backend had 20 migrations at the start of this sprint; use the current sprint report for the candidate's migration and test status.
