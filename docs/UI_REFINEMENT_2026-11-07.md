@@ -10,15 +10,18 @@ The supplied palette now has defined roles:
 | --- | --- | --- |
 | Main canvas | Warm off-white `#FBF8F4`, paper `#FFFDFA` | Page backgrounds and readable content surfaces |
 | Supporting surfaces | Blanket `#F2E0CF`, Mushroom `#D4C7B4`, a lighter neutral `#F2EBE2` | Warm gradients, section frames, selected options and the homepage illustration |
+| Green supporting surfaces | Sage `#E0E7D7`, olive `#B7C396` | Larger green panels and gradients, reintroduced from the earlier supplied palette following the request for more green |
 | Primary action | Autumn Fern `#854628` | Main buttons, active navigation and actionable links |
 | Text | Kimber `#2D2D23`, muted `#655E51` | Headings, body text and supporting information |
 | Small supporting details | Oak `#B48954`, Khaki Moss `#7C7458` | Restrained illustration/chart details; not low-contrast small text |
 
 The 60–30–10 reference guides relative emphasis rather than an exact pixel quota. Neutral space leads; supporting colour groups content; the strongest colour points to actions. Semantic errors, destructive actions and warnings retain their own meaning. The existing homepage SVG and favicon were recoloured to match.
 
-Following the request to make the palette more visible, the canvas and header now have a broad warm gradient. Mushroom frames and soft warm shadows define the homepage artwork, topic cards, library filters and staff/account panels. Explore has a single cream gradient around its topic selector and tabs. Together uses a framed activity panel and a stronger Blanket-to-Mushroom selected state. Repeated badges and decorative containers remain reduced so these larger colour areas carry the hierarchy.
+The palette is deliberately visible in larger areas: the canvas has a warm wash, the header blends cream into green, and section frames use Mushroom or olive borders with soft shadows. Explore has a single sage-to-cream gradient around its topic selector and tabs. Together uses a green activity panel and an olive selected state. Green also appears in the homepage illustration and Nature card. Cream and rust retain their background/action roles, with dark text on green surfaces. Repeated badges and decorative containers remain reduced so these larger colour areas carry the hierarchy.
 
 Calculated contrast includes 13.13:1 for body text on the canvas, 6.06:1 for muted text on the canvas and 7.12:1 for primary-button text. Exact Mushroom needs dark ink; it is not a suitable background for the smaller muted or rust text colours.
+
+Green endpoints retain 7.45:1 for ink on olive and 5.07:1 for muted text on soft sage. Exact olive panels use ink; the darker green `#52613E` is reserved for borders, selection controls and text on lighter surfaces.
 
 ## Explore
 
@@ -50,6 +53,8 @@ The local review server is `http://127.0.0.1:4177`. Existing authenticated opera
 The browser suite covers English/Vietnamese, desktop/phone layouts, keyboard tabs, hidden views, retained writing, failure recovery and colour contrast. The [branch's CI history](https://github.com/gsharsh/HealEduTech/actions?query=branch%3Aget-stuff-done-harshith) records the integrated verification results.
 
 Local verification passed: ESLint, production build, 108 Node tests and a 178-check full browser run. After the stronger frames/gradients and notebook-capacity fix, 86 focused desktop/phone checks passed across accessibility, navigation, palette and Together flows. An independent source review confirmed the capacity fix. These checks do not replace the hosted acceptance items above.
+
+After adding the green surfaces, lint/build and 56 focused accessibility, palette and classroom checks passed again. All eight screenshots below show this final green-and-warm treatment.
 
 ## Screenshots
 

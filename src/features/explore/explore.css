@@ -5,10 +5,10 @@
 .explore-toolbar {
   margin-bottom: 30px;
   padding: 22px 24px 6px;
-  border: 1px solid var(--mushroom);
+  border: 1px solid var(--moss);
   border-radius: 16px;
-  background: linear-gradient(115deg, var(--blanket), var(--surface-secondary));
-  box-shadow: 0 5px 18px color-mix(in srgb, var(--oak) 12%, transparent);
+  background: linear-gradient(115deg, var(--moss-soft) 0%, var(--moss-soft) 45%, var(--blanket) 100%);
+  box-shadow: 0 5px 18px color-mix(in srgb, var(--khaki-moss) 12%, transparent);
 }
 .explore-topic-field { display: flex; align-items: center; gap: 14px; width: fit-content; max-width: 100%; margin-bottom: 20px; font-size: .9375rem; font-weight: 600; }
 .explore-topic-field select { width: min(240px, 66vw); min-height: 44px; padding: 10px 38px 10px 12px; border: 1px solid var(--control-border); border-radius: 6px; color: var(--ink); background-color: var(--paper); font-weight: 400; }

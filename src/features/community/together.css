@@ -13,17 +13,17 @@
 .together-view-intro { margin: -8px 0 24px; color: var(--muted); line-height: 1.6; }
 .together-format-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0 0 20px; padding: 0; border: 0; min-width: 0; }
 .together-page .together-format-choices > label { display: flex; gap: 12px; align-items: center; min-height: 86px; margin: 0; padding: 16px 18px; border: 1px solid var(--frame-border); border-radius: 10px; cursor: pointer; background: var(--paper); }
-.together-format-choices > label.is-selected { border-color: var(--action); background: linear-gradient(135deg, var(--blanket) 15%, var(--mushroom) 100%); box-shadow: inset 0 0 0 1px var(--action); }
+.together-format-choices > label.is-selected { border-color: var(--moss-strong); background: linear-gradient(135deg, var(--moss-soft) 15%, var(--moss) 100%); box-shadow: inset 0 0 0 1px var(--moss-strong); }
 .together-format-choices > label.is-selected small { color: var(--ink); }
-.together-format-choices input { flex: 0 0 auto; width: 18px; height: 18px; margin: 0; accent-color: var(--action); }
+.together-format-choices input { flex: 0 0 auto; width: 18px; height: 18px; margin: 0; accent-color: var(--moss-strong); }
 .together-format-choices strong { display: block; color: var(--ink); font-size: .9375rem; font-weight: 650; }
 .together-format-choices small { display: block; margin-top: 4px; color: var(--muted); font-size: .8125rem; font-weight: 400; }
-.together-activity-detail { padding: 24px 28px; background: var(--surface-gradient); border: 2px solid var(--frame-border); border-radius: 12px; box-shadow: var(--shadow-soft); }
+.together-activity-detail { padding: 24px 28px; background: linear-gradient(135deg, var(--moss-pale) 0%, var(--moss-soft) 100%); border: 2px solid var(--moss); border-radius: 12px; box-shadow: var(--shadow-soft); }
 .together-activity-detail > p:first-child { margin-top: 0; font-weight: 600; }
 .together-activity-detail ol { display: grid; gap: 10px; margin-block: 16px 24px; padding-left: 22px; font-size: .9375rem; line-height: 1.6; }
 .together-start-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; }
 .together-text-link { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 0; border: 0; background: transparent; color: var(--action); font: inherit; font-size: .875rem; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
-.together-service-notice { margin: 20px 0; padding-top: 16px; border-top: 1px solid var(--frame-border); color: var(--muted); font-size: .875rem; line-height: 1.65; }
+.together-service-notice { margin: 20px 0; padding-top: 16px; border-top: 1px solid var(--moss); color: var(--muted); font-size: .875rem; line-height: 1.65; }
 .together-teacher-plan { margin-top: 22px; padding-top: 6px; border-top: 1px solid var(--frame-border); color: var(--muted); }
 .together-page summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 600; line-height: 1.55; color: var(--ink); }
 .together-page summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 4px; }

@@ -6,6 +6,12 @@
   --khaki-moss:#7C7458;
   --mushroom:#D4C7B4;
   --kimber:#2D2D23;
+  /* Botanical accents pair the user's green references with the warm palette. */
+  --moss-soft:#E0E7D7;
+  --moss:#B7C396;
+  --moss-strong:#52613E;
+  --moss-pale:#F0F3EA;
+  --moss-gradient:linear-gradient(145deg,var(--moss-pale),var(--moss-soft));
   --surface-secondary:#F2EBE2;
   --surface-gradient:linear-gradient(135deg,var(--paper) 0%,var(--blanket) 100%);
   --canvas-gradient:linear-gradient(145deg,var(--canvas) 12%,var(--surface-secondary) 64%,var(--blanket) 100%);
@@ -15,7 +21,7 @@
   --accent-soft:var(--blanket);
   /* Compatibility aliases for established component styles. */
   --olive:var(--mushroom);
-  --sage:var(--surface-secondary);
+  --sage:var(--moss-soft);
   --rose:var(--blanket);
   --rose-soft:var(--surface-secondary);
   font-family:var(--font-ui);
