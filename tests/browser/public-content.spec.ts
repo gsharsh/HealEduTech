@@ -1,4 +1,46 @@
 import { test, expect } from './fixtures';
+import type { Locator } from '@playwright/test';
+
+function cardAppearance(card: Locator) {
+  return card.evaluate(element => {
+    const frame = getComputedStyle(element);
+    const cover = getComputedStyle(element.querySelector('.book-cover')!);
+    const textSizes = ['.book-meta', '.book-title', '.catalogue-author', '.availability', '.text-link']
+      .map(selector => getComputedStyle(element.querySelector(selector)!).fontSize);
+    return {
+      fill: frame.backgroundColor,
+      border: frame.borderTop,
+      radius: frame.borderRadius,
+      padding: frame.padding,
+      shadow: frame.boxShadow,
+      coverRadius: cover.borderRadius,
+      coverShadow: cover.boxShadow,
+      textSizes,
+    };
+  });
+}
+
+test('the same book has a consistent framed card on Home, Library and Explore', async ({ page }, testInfo) => {
+  const routes = [['home', '/'], ['library', '/library'], ['explore', '/explore?topic=nature']] as const;
+  let homeAppearance: Awaited<ReturnType<typeof cardAppearance>> | undefined;
+  for (const [name, route] of routes) {
+    await page.goto(route);
+    const title = page.getByRole('link', { name: 'A Small Discovery', exact: true });
+    const card = page.locator('.catalogue-book-link').filter({ has: title });
+    await expect(card).toBeVisible();
+    await page.mouse.move(0, 0);
+    const appearance = await cardAppearance(card);
+    if (name === 'home') {
+      expect(appearance.fill).toBe('rgb(255, 253, 250)');
+      expect(appearance.border).toMatch(/^[1-9][\d.]*px solid /);
+      expect(parseFloat(appearance.padding)).toBeGreaterThan(0);
+      homeAppearance = appearance;
+    } else {
+      expect(appearance, `The ${name} card matches the Home shelf`).toEqual(homeAppearance);
+    }
+    await card.screenshot({ path: testInfo.outputPath(`book-card-${name}-${testInfo.project.name}.png`) });
+  }
+});
 
 test('help contents links focus the chosen section without losing its language', async ({ page }, testInfo) => {
   for (const path of ['/help', '/vi/help']) {

@@ -3,7 +3,7 @@ status: awaiting_start
 phase: 02-site-palette
 source: [02-01-SUMMARY.md]
 prepared: 2026-11-19T00:44:35+08:00
-updated: 2026-11-19T00:44:35+08:00
+updated: 2026-11-19T01:06:08+08:00
 ---
 
 ## Current Test
@@ -25,7 +25,7 @@ expected: The administrator header uses sage. Staff access, catalogue and circul
 result: pending
 
 ### 4. Public navigation and mobile layout
-expected: Home, Library, Explore, Together, Help and sign-in share the green and warm colours. On a phone, the menu, topic choices and primary actions remain reachable in English and Vietnamese without sideways page scrolling.
+expected: Home, Library, Explore, Together, Help and sign-in share the green and warm colours. The same book has a cream card, rounded border and consistent cover treatment on Home, Library and Explore. On a phone, the menu, topic choices and primary actions remain reachable in English and Vietnamese without sideways page scrolling.
 result: pending
 
 ## Summary
@@ -38,4 +38,9 @@ skipped: 0
 
 ## Gaps
 
-None reported.
+Before the formal walkthrough, the user shared two screenshots of the same four books. Home framed each book in a cream card while the Library shelf showed standalone covers with heavier shadows.
+
+- Related test: 4, public navigation and mobile layout
+- Severity: cosmetic
+- Cause: Home applied its own card frame and cover treatment to the shared catalogue component.
+- Resolution: the shared component now owns the frame, spacing, typography and shadow. The local Home and Library pages were compared using the loaded cover for *The Tale of Peter Rabbit*. User review is pending.

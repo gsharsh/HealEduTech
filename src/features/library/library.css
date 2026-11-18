@@ -1,13 +1,6 @@
 .catalogue-book-card { min-width: 0; }
-.catalogue-book-link { display: flex; flex-direction: column; color: inherit; text-decoration: none; height: 100%; }
-.catalogue-book-link .book-cover { transition: box-shadow .18s ease; }
-.catalogue-book-link:hover .book-cover, .catalogue-book-link:focus-visible .book-cover { box-shadow: 0 10px 22px #2D2D2324; }
 .book-cover.has-cover-image { color: var(--paper); }
 .cover-image-wash { position: absolute; inset: 0; background: linear-gradient(180deg, #2D2D2308 45%, #2D2D2324 100%); }
-.catalogue-author { color: var(--muted); font-size: 12px; margin-top: 5px; }
-.catalogue-book-link .availability { font-size: 12px; margin: 12px 0 0; }
-.catalogue-book-link .text-link { margin-top: auto; padding-top: 5px; }
-@media (prefers-reduced-motion: reduce) { .catalogue-book-link .book-cover { transition: none; } }
 .book-detail-page { max-width: 1080px; margin: 0 auto; }
 .book-detail-back { display: inline-flex; align-items: center; min-height: 44px; color: var(--green); font-weight: 650; margin-bottom: 18px; }
 .book-detail-hero { display: grid; grid-template-columns: minmax(220px, 330px) minmax(0, 1fr); gap: clamp(32px, 6vw, 76px); align-items: start; }

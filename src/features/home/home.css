@@ -80,19 +80,10 @@
 }
 .home-shelf { padding-top:44px; }
 .home-book-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:22px; }
-.home-book-grid .catalogue-book-link,.home-demo-book__link { display:flex; flex-direction:column; height:100%; padding:16px; border:1px solid var(--frame-border); border-radius:var(--radius-lg); background:var(--paper); box-shadow:var(--shadow-soft); }
-.home-book-grid .catalogue-book-link:hover,.home-demo-book__link:hover { box-shadow:var(--shadow); }
-.home-book-grid .catalogue-book-link > :not(.book-cover),.home-demo-book__link > :not(.home-demo-cover) { margin-inline:0; }
-.home-book-grid .book-cover { border-radius:15px 15px 0 0; box-shadow:none; overflow:hidden; }
-.home-book-grid .book-meta,.home-book-grid .catalogue-author,.home-book-grid .availability,.home-book-grid .text-link { font-size:.8125rem; }
-.home-book-grid .book-title { font-size:1.0625rem; }
-.home-demo-cover { aspect-ratio:.83; padding:20px; display:flex; flex-direction:column; justify-content:space-between; border-radius:15px 15px 0 0; overflow:hidden; }
+.home-demo-cover { justify-content:space-between; }
 .home-demo-cover span { font-size:.6875rem; }
 .home-demo-cover strong { font-family:var(--font-editorial); font-size:1.5rem; font-weight:500; line-height:1.2; }
 .home-demo-cover b { font-size:2.5rem; font-weight:500; }
-.home-book-meta { color:var(--home-muted); margin-top:16px; font-size:.75rem; }
-.home-book-title { font-size:1.0625rem; font-weight:650; line-height:1.5; }
-.home-text-link { display:inline-flex; align-items:center; gap:6px; margin-top:auto; padding-top:12px; color:var(--home-green); font-size:.8125rem; font-weight:600; }
 .home-status { padding:28px; border:1px solid var(--home-line); border-radius:16px; background:var(--home-surface); }
 .home-status--error { border-color:color-mix(in srgb,var(--error) 30%,var(--paper)); background:var(--error-fill); }
 .home-status--error p { color:var(--error); }
@@ -162,16 +153,12 @@
   .home-topic__copy p { font-size:.8125rem; }
   .home-topic__action { font-size:.75rem; }
   .home-book-grid { gap:16px; }
-  .home-book-grid .catalogue-book-link > :not(.book-cover),.home-demo-book__link > :not(.home-demo-cover) { margin-inline:12px; }
-  .home-demo-cover { padding:14px; aspect-ratio:.72; }
   .home-demo-cover strong { font-size:1.25rem; }
-  .home-book-title { font-size:.875rem; }
   .home-demo-cover span { font-size:.625rem; }
   .home-guide { padding:24px; margin-block:20px; }
 }
 @media (max-width:359px) {
   .home-book-grid { grid-template-columns:minmax(0,1fr); }
-  .home-demo-cover { aspect-ratio:.9; }
 }
 @media (prefers-contrast:more) {
   .home-topic { --topic-border:currentColor; }

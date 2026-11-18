@@ -1,52 +1,58 @@
-.book-card,
-.catalogue-book-link {
+.shelf-card {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
   height: 100%;
-  padding: 0 0 12px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  box-shadow: none;
-  transition: border-color .22s ease, box-shadow .22s ease, transform .28s cubic-bezier(.22, 1, .36, 1);
+  padding: 16px;
+  border: 1px solid var(--frame-border);
+  border-radius: var(--radius-lg);
+  background: var(--paper);
+  box-shadow: var(--shadow-soft);
+  color: var(--ink);
+  text-align: start;
+  transition: box-shadow var(--duration-fast);
 }
-.book-card .book-cover,
-.catalogue-book-link .book-cover {
+.shelf-card .book-cover {
   width: min(100%, 220px);
   margin-inline: auto;
   aspect-ratio: .72;
-  border-radius: 4px 10px 10px 4px;
-  box-shadow: -2px 2px 0 #fff8, 4px 6px 0 #2D2D2312, 8px 16px 24px #2D2D2317;
-  transform-origin: 50% 90%;
-  transition: transform .35s cubic-bezier(.22, 1, .36, 1), box-shadow .25s ease;
+  border-radius: 15px 15px 0 0;
+  box-shadow: none;
 }
-.book-card .book-meta,
-.catalogue-book-link .book-meta { font-size: .75rem; line-height: 1.5; margin: 22px 0 7px; }
-.book-card .book-title,
-.catalogue-book-link .book-title { font-size: 1.0625rem; letter-spacing: -.02em; line-height: 1.4; }
-.catalogue-book-link .book-title { margin-block: 0; text-wrap: initial; }
+.shelf-card .book-meta,
+.shelf-card .catalogue-author,
+.shelf-card .availability,
+.shelf-card .text-link { font-size: .8125rem; }
+.shelf-card .book-meta { margin: 22px 0 7px; line-height: 1.5; }
+.shelf-card .book-title {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.4;
+  letter-spacing: -.02em;
+  overflow-wrap: anywhere;
+}
+.shelf-card .catalogue-author { margin-top: 5px; color: var(--muted); }
+.evg-shell .shelf-card .availability {
+  align-self: flex-start;
+  margin: 12px 0 0;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--muted);
+}
+.shelf-card .text-link { min-height: 44px; margin-top: auto; padding-top: 12px; }
 .catalogue-book-title-link { color: inherit; text-decoration: none; }
-.catalogue-book-title-link::after { position: absolute; inset: 0; border-radius: inherit; content: ''; }
+.catalogue-book-title-link::after { position: absolute; inset: 0; border-radius: var(--radius-lg); content: ''; }
 .catalogue-book-title-link:focus-visible { outline: none; }
-.catalogue-book-title-link:focus-visible::after { outline: 3px solid var(--focus); outline-offset: 5px; border-radius: 8px; }
-.catalogue-book-link:focus-within .book-title { text-decoration: underline; text-underline-offset: .2em; }
-.book-card .text-link,
-.catalogue-book-link .text-link { min-height: 44px; margin-top: auto; padding-top: 12px; font-size: .8125rem; }
-.evg-shell .catalogue-book-link .availability { align-self: flex-start; min-height: 0; padding: 0; border-radius: 0; color: var(--muted); font-size: .75rem; background: transparent; }
-.catalogue-book-link .catalogue-author { font-size: .8125rem; }
-.book-card:focus-visible,
-.catalogue-book-link:focus-visible { outline-offset: 5px; }
+.catalogue-book-title-link:focus-visible::after { outline: 3px solid var(--focus); outline-offset: 4px; }
+.shelf-card:focus-visible { outline-offset: 4px; }
+.shelf-card:focus-within .book-title { text-decoration: underline; text-underline-offset: .2em; }
 @media (hover: hover) and (pointer: fine) {
-  .book-card:hover,
-  .catalogue-book-link:hover { transform: translateY(-2px); box-shadow: none; }
-  .book-card:hover .book-cover,
-  .catalogue-book-link:hover .book-cover { transform: translateY(-2px); box-shadow: 5px 8px 0 #2D2D2312, 10px 20px 28px #2D2D2317; }
+  .shelf-card:hover { box-shadow: var(--shadow); }
 }
 @media (max-width: 600px) {
-  .book-card, .catalogue-book-link { padding: 0 0 12px; border-radius: 8px; }
-  .catalogue-book-title-link:focus-visible::after { border-radius: 8px; }
-  .book-card .book-title, .catalogue-book-link .book-title { font-size: 1rem; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .book-card, .catalogue-book-link, .book-card .book-cover, .catalogue-book-link .book-cover { transition: none; transform: none; }
-  .book-card:hover, .catalogue-book-link:hover, .book-card:hover .book-cover, .catalogue-book-link:hover .book-cover { transform: none; }
+  .shelf-card { padding: 12px; }
+  .shelf-card .book-title { font-size: 1rem; }
 }

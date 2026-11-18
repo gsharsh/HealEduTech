@@ -15,15 +15,15 @@ const topics: Topic[] = ['nature', 'stories', 'science'];
 function DemoFeaturedCard({ book, language }: { book: DemoBook; language: HomeLanguage }) {
   return (
     <article className="home-demo-book">
-      <Link to={`/library?topic=${book.topic}`} className="home-demo-book__link">
-        <div className={`home-demo-cover ${book.color}`} aria-hidden="true">
+      <Link to={`/library?topic=${book.topic}`} className="shelf-card">
+        <div className={`book-cover home-demo-cover ${book.color}`} aria-hidden="true">
           <span>EVG · {language === 'vi' ? 'sách ví dụ' : 'example book'}</span>
           <strong>{book.title[language]}</strong>
           <b>{book.symbol}</b>
         </div>
-        <span className="home-book-meta">{homeCopy[language].topics[book.topic]} · {book.minutes} {language === 'vi' ? 'phút' : 'min'}</span>
-        <span className="home-book-title">{book.title[language]}</span>
-        <span className="home-text-link">{language === 'vi' ? 'Xem chủ đề' : 'Browse topic'} <span aria-hidden="true">↗</span></span>
+        <span className="book-meta">{homeCopy[language].topics[book.topic]} · {book.minutes} {language === 'vi' ? 'phút' : 'min'}</span>
+        <span className="book-title">{book.title[language]}</span>
+        <span className="text-link">{language === 'vi' ? 'Xem chủ đề' : 'Browse topic'} <span aria-hidden="true">↗</span></span>
       </Link>
     </article>
   );

@@ -21,7 +21,7 @@ export function BookCard({ book, onOpen }: {
   onOpen: (book: DemoBook) => void;
 }) {
   const { t, i18n } = useTranslation();
-  return <button type="button" className="book-card" aria-haspopup="dialog" onClick={() => onOpen(book)}>
+  return <button type="button" className="book-card shelf-card" aria-haspopup="dialog" onClick={() => onOpen(book)}>
     <BookCover book={book} />
     <span className="book-meta">{t(`topics.${book.topic}`)} · {t('minutes', { count: book.minutes })}</span>
     <span className="book-title">{book.title[i18n.language === 'vi' ? 'vi' : 'en']}</span>
@@ -62,7 +62,7 @@ export function CatalogueBookCard({ book, availabilityLabel, returnTo = '/librar
   const title = locale === 'vi' ? book.title_vi : book.title_en;
   const Heading = headingLevel === 3 ? 'h3' : 'h2';
   return <article className="catalogue-book catalogue-book-card">
-    <div className="catalogue-book-link">
+    <div className="catalogue-book-link shelf-card">
       <CatalogueBookCover book={book} title={title} />
       <span className="book-meta">{t(`topics.${book.topic}`)} · {t(`catalogue.${book.language}`)}</span>
       <Heading className="book-title"><Link className="catalogue-book-title-link" to={`/library/${encodeURIComponent(book.id)}?${new URLSearchParams({ returnTo }).toString()}`}>{title}</Link></Heading>

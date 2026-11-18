@@ -21,10 +21,9 @@
 .explore-content-view[hidden] { display: none; }
 .explore-content-view { min-width: 0; }
 .explore-book-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
-.explore-book-suggestion { min-width: 0; }
-.explore-book-suggestion .book-cover { max-width: 190px; }
-.explore-book-suggestion .book-card { width: 100%; }
-.explore-book-suggestion .catalogue-book-link { height: auto; }
+.explore-book-suggestion { min-width: 0; display: flex; flex-direction: column; }
+.explore-book-suggestion > .catalogue-book-card { flex: 1; }
+.explore-book-suggestion > button.shelf-card { height: auto; flex: 1; }
 .explore-reason { max-width: 29ch; margin: 12px 0 0; color: var(--muted); font-size: .8125rem; line-height: 1.6; }
 .explore-reason > small { display: block; margin-top: 4px; font-size: inherit; }
 .explore-browse-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 16px; color: var(--action); font-size: .9375rem; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
@@ -70,8 +69,6 @@
   .explore-tabs { gap: 18px; }
   .explore-tabs > button { min-width: 0; }
   .explore-book-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 18px; }
-  .explore-book-suggestion .book-cover { max-width: 100%; }
-  .explore-book-suggestion .book-title { font-size: 1rem; }
   .explore-reflection > a { display: flex; width: fit-content; margin-top: 6px; margin-right: 0; }
 }
 @media (max-width: 350px) { .explore-tabs { gap: 14px; } }
