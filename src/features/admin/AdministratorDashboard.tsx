@@ -43,9 +43,8 @@ export function AdministratorDashboard() {
 
   return <div className="administrator-workspace">
     <PublicCatalogueLink />
-    <header className="administrator-workspace__heading">
+    <header className="administrator-workspace__heading workspace-heading-surface">
       <div>
-        <span className="eyebrow">{t('workspaces.administration')}</span>
         <h1>{t('workspaces.adminTitle')}</h1>
         <p>{t('workspaces.adminBody')}</p>
       </div>

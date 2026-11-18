@@ -31,9 +31,31 @@ export function AppShell() {
   }
   const mobileNavOpen = mobileNavPath === pathname;
   const primaryNavRef = useRef<HTMLElement | null>(null);
+  const staffNavRef = useRef<HTMLElement | null>(null);
   const activePillRef = useRef<HTMLSpanElement | null>(null);
   const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
+
+  useLayoutEffect(() => {
+    const nav = staffNavRef.current;
+    const current = nav?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (!nav || !current) return;
+
+    const revealCurrentLink = () => {
+      if (nav.scrollWidth <= nav.clientWidth) return;
+      const bounds = nav.getBoundingClientRect();
+      const link = current.getBoundingClientRect();
+      if (link.left < bounds.left) nav.scrollLeft += link.left - bounds.left - 8;
+      else if (link.right > bounds.right) nav.scrollLeft += link.right - bounds.right + 8;
+    };
+
+    revealCurrentLink();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(revealCurrentLink);
+    observer.observe(nav);
+    observer.observe(current);
+    return () => observer.disconnect();
+  }, [pathname, followupActive, language, canOpenDesk, staffRole]);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -227,8 +249,7 @@ export function AppShell() {
       </header>
 
       {isStaffArea && user && accessStatus === 'ready' && staffRole && (
-        <nav className="evg-staff-nav" aria-label={t('access.navigation')}>
-          <span className="evg-staff-label">{t('access.staffArea')}</span>
+        <nav ref={staffNavRef} className="evg-staff-nav" aria-label={t('access.navigation')}>
           <NavLink end to="/staff">{t('access.openDesk')}</NavLink>
           <NavLink to="/staff/dashboard">{isVietnamese ? 'Thống kê' : 'Dashboard'}</NavLink>
           <NavLink to="/staff/students">{isVietnamese ? 'Học sinh' : 'Students'}</NavLink>

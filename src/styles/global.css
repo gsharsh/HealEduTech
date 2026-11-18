@@ -14,6 +14,7 @@
   --moss-gradient:linear-gradient(145deg,var(--moss-pale),var(--moss-soft));
   --surface-secondary:#F2EBE2;
   --surface-gradient:linear-gradient(135deg,var(--paper) 0%,var(--blanket) 100%);
+  --header-gradient:linear-gradient(115deg,var(--blanket),var(--paper) 42%,var(--moss-soft));
   --canvas-gradient:linear-gradient(145deg,var(--canvas) 12%,var(--surface-secondary) 64%,var(--blanket) 100%);
   --frame-border:var(--mushroom);
   --action:var(--autumn-fern);
@@ -186,6 +187,17 @@ main:focus {
   margin:0;
   font-size:1rem;
   max-width:680px;
+}
+.workspace-heading-surface {
+  min-width:0;
+  padding:clamp(18px,3vw,32px);
+  background:var(--moss-gradient);
+  border:1px solid var(--moss);
+  border-radius:var(--radius-lg);
+}
+.workspace-heading-surface > div {
+  min-width:0;
+  overflow-wrap:anywhere;
 }
 .eyebrow {
   font-size:.75rem;

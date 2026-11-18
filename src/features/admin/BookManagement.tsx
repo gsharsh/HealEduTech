@@ -146,7 +146,7 @@ function CatalogueManagement() {
 
   if (loading) return <p role="status">{t('auth.loading')}</p>;
   return <div className="admin-catalogue">
-    <div className="admin-catalogue__heading"><div><span className="eyebrow">{t('catalogue.deskEyebrow')}</span><h1>{t('catalogue.manageTitle')}</h1><p>{t('catalogue.manageBody')}</p></div>
+    <div className="admin-catalogue__heading workspace-heading-surface"><div><h1>{t('catalogue.manageTitle')}</h1><p>{t('catalogue.manageBody')}</p></div>
       {canManageBooks && <button className="primary" type="button" disabled={busy} onClick={beginAdd}>{t('catalogue.addAction')}</button>}
     </div>
     {!user ? <section className="staff-panel admin-access-state"><h2>{t('catalogue.signInTitle')}</h2><p>{t('catalogue.signInRequired')}</p><Link className="primary" to="/sign-in?next=/staff/catalogue">{t('auth.signIn')}</Link></section>

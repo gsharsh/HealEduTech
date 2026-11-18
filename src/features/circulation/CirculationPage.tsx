@@ -174,7 +174,7 @@ function CirculationDesk({ staffRole }: { staffRole: StaffRole | null }) {
       {error && <p role="alert" className="form-error">{error}</p>}
     </StaffActionDialog>}
     <PublicCatalogueLink />
-    <div className="page-heading"><div><span className="eyebrow">{t('staff')}</span><h1>{t('circulation.title')}</h1><p>{t('circulation.body')}</p></div></div>
+    <div className="page-heading workspace-heading-surface"><div><h1>{t('circulation.title')}</h1><p>{t('circulation.body')}</p></div></div>
     {error && !pendingResolution && <p role="alert" className="form-error">{error}</p>}
     {notice && <p className="circulation-notice" role="status">{text[notice]}</p>}
     {deskError && <div className="circulation-notice circulation-notice--error"><p role="alert">{text.stale}</p><button className="secondary" type="button" onClick={refreshDesk}>{text.refresh}</button></div>}

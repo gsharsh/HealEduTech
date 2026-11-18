@@ -42,9 +42,8 @@ export function StaffPage() {
   const isAdministrator = staffRole === 'administrator';
 
   return <div className="staff-page">
-    <header className="staff-page__hero">
+    <header className="staff-page__hero workspace-heading-surface">
       <div>
-        <span className="eyebrow">{t('access.staffArea')}</span>
         <h1>{t('access.openDesk')}</h1>
         <p>{vi ? 'Quản lý mượn trả, hỗ trợ việc đọc và duyệt những khám phá của học sinh.' : 'Manage loans, support reading, and review your students’ discoveries.'}</p>
       </div>

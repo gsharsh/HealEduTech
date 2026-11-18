@@ -8,7 +8,7 @@ import './community.css';
 export function StaffTrainingPage() {
   const { t } = useTranslation();
   return <>
-    <div className="page-heading">
+    <div className="page-heading workspace-heading-surface">
       <div>
         <span className="eyebrow">{t('staffTraining.kicker')}</span>
         <h1>{t('staffTraining.title')}</h1>

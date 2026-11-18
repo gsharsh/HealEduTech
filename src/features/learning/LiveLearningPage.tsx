@@ -107,9 +107,9 @@ function ReadingHistory({ userId }: { userId: string }) {
   }, [attempt, userId]);
   const bookById = useMemo(() => new Map(books.map(book => [book.id, book])), [books]);
   return <section className="reading-page">
-    <div className="page-heading"><div><h1>{copy.title}</h1><p>{copy.intro}</p></div><Link className="secondary" to="/library">{copy.start}</Link></div>
+    <div className="page-heading workspace-heading-surface"><div><h1>{copy.title}</h1><p>{copy.intro}</p></div><Link className="secondary" to="/library">{copy.start}</Link></div>
     <div className="reading-dashboard">
-      {loading ? <div className="reading-empty" role="status"><p>{copy.loading}</p></div> : failed ? <div className="reading-empty" role="alert"><p>{copy.loadError}</p><button className="secondary" onClick={() => { setFailed(false); setLoading(true); setAttempt(value => value + 1); }}>{copy.retry}</button></div> : records.length === 0 ? <div className="reading-empty"><h2>{copy.emptyTitle}</h2><p>{copy.empty}</p><Link className="secondary" to="/library">{copy.start}</Link></div> : records.map(record => {
+      {loading ? <div className="reading-empty" role="status"><p>{copy.loading}</p></div> : failed ? <div className="reading-empty" role="alert"><p>{copy.loadError}</p><button className="secondary" onClick={() => { setFailed(false); setLoading(true); setAttempt(value => value + 1); }}>{copy.retry}</button></div> : records.length === 0 ? <div className="reading-empty"><h2>{copy.emptyTitle}</h2><p>{copy.empty}</p></div> : records.map(record => {
         const book = bookById.get(record.book_id);
         const title = book ? (i18n.language === 'vi' ? book.title_vi : book.title_en) : copy.unavailableBook;
         return <article className="reading-card" key={record.book_id}>

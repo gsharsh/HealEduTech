@@ -53,7 +53,7 @@ export function StudentsPage() {
   }
 
   return <div className="staff-oversight">
-    <header className="staff-oversight__heading"><div><span className="eyebrow">{copy.staff}</span><h1>{copy.students}</h1><p>{copy.studentBody}</p></div><Link className="secondary" to="/staff/dashboard">{copy.dashboard}</Link></header>
+    <header className="staff-oversight__heading workspace-heading-surface"><div><h1>{copy.students}</h1><p>{copy.studentBody}</p></div><Link className="secondary" to="/staff/dashboard">{copy.dashboard}</Link></header>
     <section className="staff-oversight__panel">
       <form key={`${search}:${filter}`} className="staff-oversight__filters" onSubmit={applyFilters}>
         <label>{copy.search}<input type="search" name="search" defaultValue={search} maxLength={160} /></label>
@@ -115,7 +115,7 @@ export function StudentDetailPage() {
 
   return <div className="staff-oversight">
     <Link className="staff-oversight__text-link" to="/staff/students">← {copy.back}</Link>
-    <header className="staff-oversight__heading"><div><span className="eyebrow">{copy.students}</span><h1>{profile.display_name}</h1><p>{profile.email ?? copy.noEmail}</p></div><Link className="secondary" to={`/staff/circulation?student=${studentId}`}>{copy.viewCirculation}</Link></header>
+    <header className="staff-oversight__heading workspace-heading-surface"><div><span className="eyebrow">{copy.students}</span><h1>{profile.display_name}</h1><p>{profile.email ?? copy.noEmail}</p></div><Link className="secondary" to={`/staff/circulation?student=${studentId}`}>{copy.viewCirculation}</Link></header>
     <section className="staff-oversight__panel"><dl className="staff-oversight__identity">
       <div><dt>{copy.email}</dt><dd>{profile.email ?? copy.noEmail}</dd></div><div><dt>{copy.language}</dt><dd>{profile.preferred_language === 'vi' ? copy.vietnamese : copy.english}</dd></div>
       <div><dt>{copy.joined}</dt><dd>{staffDate(profile.created_at, language, false, timeZone)}</dd></div><div><dt>{copy.eligibility}</dt><dd>{eligibility(profile, copy)}</dd></div>
@@ -124,7 +124,7 @@ export function StudentDetailPage() {
       <div className="staff-metric"><strong>{profile.currently_reading_count}</strong><span>{copy.reading}</span></div>
       <div className="staff-metric"><strong>{profile.finished_count}</strong><span>{copy.finished}</span></div>
       <Link className="staff-metric" to={`/staff/circulation?student=${studentId}&status=active`}><strong>{profile.active_loan_count}</strong><span>{copy.activeLoans}</span></Link>
-      <Link className="staff-metric staff-metric--alert" to={`/staff/circulation?student=${studentId}&status=overdue`}><strong>{profile.overdue_loan_count}</strong><span>{copy.overdueLoans}</span></Link>
+      <Link className={profile.overdue_loan_count > 0 ? 'staff-metric staff-metric--alert' : 'staff-metric'} to={`/staff/circulation?student=${studentId}&status=overdue`}><strong>{profile.overdue_loan_count}</strong><span>{copy.overdueLoans}</span></Link>
     </section>
     <section className="staff-oversight__panel staff-teaching" aria-labelledby="teaching-title">
       <div><span className="eyebrow">{teaching.topics}</span><h2 id="teaching-title">{teaching.title}</h2><p>{teaching.discussion}</p></div>

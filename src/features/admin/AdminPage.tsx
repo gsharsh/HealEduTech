@@ -5,7 +5,7 @@ export function AdminPage() {
   const { t, i18n } = useTranslation();
   const { borrowed, toggleLoan } = useDemo();
   return <>
-    <div className="page-heading">
+    <div className="page-heading workspace-heading-surface">
       <div>
         <span className="eyebrow">{t('staff')}</span>
         <h1>{t('staffTitle')}</h1>

@@ -100,7 +100,7 @@
 .home-book-placeholder span { display:block; height:12px; margin:18px; border-radius:4px; background:var(--accent); }
 .home-book-placeholder span:first-child { height:auto; aspect-ratio:.83; margin:0 0 22px; border-radius:0; background:var(--sage); }
 .home-book-placeholder span:last-child { width:45%; }
-.home-guide { width:min(720px,100%); padding:clamp(28px,6vw,64px); margin:40px auto; border:1px solid var(--home-line); border-radius:var(--radius-xl); background:var(--home-surface); }
+.home-guide { width:min(720px,100%); padding:clamp(28px,6vw,64px); margin:40px auto; border:1px solid var(--moss); border-radius:var(--radius-xl); background:linear-gradient(150deg,var(--moss-pale),var(--paper) 72%); }
 .home-guide h1 { font-size:clamp(2rem,4.8vw,3.5rem); line-height:1.1; letter-spacing:-.05em; margin:13px 0 18px; }
 .home-guide > p { font-size:1.0625rem; }
 .home-guide-topics { display:flex; flex-wrap:wrap; gap:10px; margin:30px 0; }

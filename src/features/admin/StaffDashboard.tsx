@@ -66,8 +66,8 @@ export function StaffDashboard() {
   const inventoryTotal = stats ? Object.values(stats.inventory).reduce((sum, value) => sum + value, 0) : 0;
 
   return <div className="staff-oversight staff-dashboard">
-    <header className="staff-oversight__heading dashboard-heading">
-      <div><span className="eyebrow">{copy.staff}</span><h1>{copy.dashboard}</h1><p>{copy.dashboardBody}</p></div>
+    <header className="staff-oversight__heading dashboard-heading workspace-heading-surface">
+      <div><h1>{copy.dashboard}</h1><p>{copy.dashboardBody}</p></div>
       <div className="dashboard-heading__actions"><Link className="secondary" to="/staff/students">{copy.students}</Link><Link className="primary" to="/staff/circulation">{detail.operations}<span aria-hidden="true">→</span></Link></div>
     </header>
     <div className="dashboard-toolbar">

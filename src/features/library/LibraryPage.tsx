@@ -6,6 +6,7 @@ import { books, type DemoBook, type Topic } from '../../demo/catalogue';
 import { useDemo } from '../../demo/context';
 import { BookCard } from '../../components/ui/BookCard';
 import { BookDialog } from '../../components/ui/BookDialog';
+import './library.css';
 export function LibraryPage() {
   const { t, i18n } = useTranslation();
   const { borrowed } = useDemo();
