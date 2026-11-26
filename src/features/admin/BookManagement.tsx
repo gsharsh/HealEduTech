@@ -23,6 +23,8 @@ export function BookManagement() {
   const locale = i18n.language === 'vi' ? 'vi' : 'en';
   const { user, loading, canManageBooks } = useAccount();
   const [books, setBooks] = useState<CatalogueBook[]>([]);
+  const [page, setPage] = useState(0);
+  const [total, setTotal] = useState(0);
   const [catalogueState, setCatalogueState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [editor, setEditor] = useState<EditorState | null>(null);
   const [requestId, setRequestId] = useState(() => crypto.randomUUID());
@@ -32,35 +34,38 @@ export function BookManagement() {
   const refresh = useCallback(async (signal?: AbortSignal): Promise<CatalogueBook[] | null> => {
     if (!canManageBooks) return null;
     try {
-      const result = await listBooks(0, signal ?? new AbortController().signal);
-      setBooks(result.books); setCatalogueState('ready');
+      const result = await listBooks(page, signal ?? new AbortController().signal);
+      setBooks(result.books); setTotal(result.total); setCatalogueState('ready');
       return result.books;
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') return null;
       setCatalogueState('error');
       return null;
     }
-  }, [canManageBooks]);
+  }, [canManageBooks, page]);
 
   useEffect(() => {
     const controller = new AbortController();
     async function loadInitialCatalogue() {
       if (!canManageBooks) return;
       try {
-        const result = await listBooks(0, controller.signal);
+        const result = await listBooks(page, controller.signal);
+        if (controller.signal.aborted) return;
         setBooks(result.books);
+        setTotal(result.total);
         setCatalogueState('ready');
       } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') return;
+        if (controller.signal.aborted || (error instanceof DOMException && error.name === 'AbortError')) return;
         setCatalogueState('error');
       }
     }
     void loadInitialCatalogue();
     return () => controller.abort();
-  }, [canManageBooks]);
+  }, [canManageBooks, page]);
 
   function beginAdd() { setEditor({ mode: 'new', value: { ...emptyBook } }); setRequestId(crypto.randomUUID()); setStatus('idle'); }
   function reloadCatalogue() { setCatalogueState('loading'); void refresh(); }
+  function changePage(nextPage: number) { setCatalogueState('loading'); setPage(nextPage); }
   function beginEdit(book: CatalogueBook) {
     setEditor(editorFromBook(book)); setStatus('idle');
     window.requestAnimationFrame(() => document.getElementById('catalogue-editor')?.focus());
@@ -93,14 +98,14 @@ export function BookManagement() {
   if (loading) return <p role="status">{t('auth.loading')}</p>;
   return <div className="admin-catalogue">
     <div className="admin-catalogue__heading"><div><span className="eyebrow">{t('catalogue.deskEyebrow')}</span><h1>{t('catalogue.manageTitle')}</h1><p>{t('catalogue.manageBody')}</p></div>
-      {canManageBooks && <button className="primary" type="button" onClick={beginAdd}>{t('catalogue.addAction')}</button>}
+      {canManageBooks && <button className="primary" type="button" disabled={busy} onClick={beginAdd}>{t('catalogue.addAction')}</button>}
     </div>
     {!user ? <section className="staff-panel admin-access-state"><h2>{t('catalogue.signInTitle')}</h2><p>{t('catalogue.signInRequired')}</p><Link className="primary" to="/sign-in?next=/staff/catalogue">{t('auth.signIn')}</Link></section>
       : !canManageBooks ? <section className="staff-panel admin-access-state"><h2>{t('catalogue.noAccessTitle')}</h2><p>{t('catalogue.staffRequired')}</p><Link className="secondary" to="/library">{t('library')}</Link></section>
         : <>
           <PublicCatalogueLink />
           {editor && <section className="staff-panel admin-editor" aria-labelledby="catalogue-editor">
-            <div className="admin-editor__heading"><div><span className="eyebrow">{t(editor.mode === 'new' ? 'catalogue.newEyebrow' : 'catalogue.editEyebrow')}</span><h2 id="catalogue-editor" tabIndex={-1}>{t(editor.mode === 'new' ? 'catalogue.addTitle' : 'catalogue.editTitle')}</h2></div><button className="text-link" type="button" onClick={() => setEditor(null)}>{t('catalogue.cancel')}</button></div>
+            <div className="admin-editor__heading"><div><span className="eyebrow">{t(editor.mode === 'new' ? 'catalogue.newEyebrow' : 'catalogue.editEyebrow')}</span><h2 id="catalogue-editor" tabIndex={-1}>{t(editor.mode === 'new' ? 'catalogue.addTitle' : 'catalogue.editTitle')}</h2></div><button className="text-link" type="button" disabled={busy} onClick={() => setEditor(null)}>{t('catalogue.cancel')}</button></div>
             <form className="data-form" onSubmit={event => void submit(event)}><fieldset disabled={busy}>
               <div className="form-grid">{(['title_en', 'title_vi', 'author'] as const).map(field => <label key={field}>{t(`catalogue.${field}`)}<input value={editor.value[field]} onChange={event => setEditor(current => current ? ({ ...current, value: { ...current.value, [field]: event.target.value } } as EditorState) : current)} maxLength={200} required={field !== 'author'} /></label>)}
                 <label>{t('catalogue.language')}<select value={editor.value.language} onChange={event => setEditor(current => current ? ({ ...current, value: { ...current.value, language: event.target.value as NewBook['language'] } } as EditorState) : current)}>{(['vi', 'en', 'bilingual'] as const).map(language => <option key={language} value={language}>{t(`catalogue.${language}`)}</option>)}</select></label>
@@ -122,6 +127,11 @@ export function BookManagement() {
               const title = locale === 'vi' ? book.title_vi : book.title_en; const description = locale === 'vi' ? book.description_vi : book.description_en; const total = book.book_copies[0]?.count ?? 0;
               return <article className="admin-book-row" key={book.id}><div className="admin-book-row__cover" aria-hidden="true" style={book.cover_url ? { backgroundImage: `url(${book.cover_url})` } : undefined}>{!book.cover_url && title.slice(0, 1)}</div><div className="admin-book-row__body"><h3>{title}</h3><p className="admin-book-row__meta">{book.author || t('catalogue.unknownAuthor')} · {t(`topics.${book.topic}`)}</p>{description && <p className="admin-book-row__description">{description}</p>}<p className="admin-book-row__stock">{t('catalogue.stockSummary', { available: book.available_copies ?? total, total })}</p></div><button className="secondary" type="button" onClick={() => beginEdit(book)}>{t('catalogue.editAction')}</button></article>;
             })}</div>}
+            {total > 24 && <nav className="form-actions" aria-label={locale === 'vi' ? 'Trang danh mục' : 'Catalogue pages'}>
+              <button type="button" className="secondary" disabled={busy || catalogueState === 'loading' || page === 0} onClick={() => changePage(page - 1)}>{t('catalogue.previous')}</button>
+              <span role="status">{t('catalogue.page', { page: page + 1 })}</span>
+              <button type="button" className="secondary" disabled={busy || catalogueState === 'loading' || (page + 1) * 24 >= total} onClick={() => changePage(page + 1)}>{t('catalogue.next')}</button>
+            </nav>}
           </section>
         </>}
   </div>;
