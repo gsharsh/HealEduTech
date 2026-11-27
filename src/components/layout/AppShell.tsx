@@ -150,7 +150,7 @@ export function AppShell() {
       <a className="evg-skip-link" href="#main-content">{t('skip')}</a>
       <header className={`evg-header ${canOpenDesk ? 'has-staff-action' : ''}`}>
         <NavLink className="evg-brand" to={publicPath('/', language)} aria-label={isVietnamese ? 'EVG và HEAL · Trang chủ' : 'EVG and HEAL · Home'}>
-          <img className="evg-brand-logo" src="/images/brand/evg-heal.png" width="64" height="64" alt="Eco Vietnam Group × HEAL" />
+          <img className="evg-brand-logo" src="/images/brand/evg-heal-horizontal.png" width="800" height="240" alt="Eco Vietnam Group × HEAL" />
         </NavLink>
         <nav id="evg-primary-nav" ref={primaryNavRef} className={`evg-primary-nav ${mobileNavOpen ? 'is-mobile-open' : ''}`} aria-label={t('navigation')}>
           <span ref={activePillRef} className="evg-primary-nav__pill" aria-hidden="true" />

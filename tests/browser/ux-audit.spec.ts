@@ -3,7 +3,7 @@ import { test, expect, fixtureBookId } from './fixtures';
 test('shared logo loads, links home and fits narrow navigation', async ({ page }) => {
   await page.goto('/library');
   const brand = page.getByRole('link', { name: 'EVG and HEAL · Home', exact: true });
-  await expect(brand.locator('img')).toHaveJSProperty('naturalWidth', 1024);
+  await expect(brand.locator('img')).toHaveJSProperty('naturalWidth', 800);
   await brand.click();
   await expect(page).toHaveURL('/');
   await expect(page.getByRole('heading', { name: 'What will you discover today?' })).toBeVisible();
