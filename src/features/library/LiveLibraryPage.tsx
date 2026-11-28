@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { listBooks, type CatalogueBook } from './catalogue';
-import { MyLoans } from '../circulation/MyLoans';
 import { libraryTranslations } from './libraryTranslations';
 import { CatalogueBookCard } from '../../components/ui/BookCard';
 import { useAccount } from '../auth/context';
@@ -84,6 +83,5 @@ export function LiveLibraryPage() {
       </nav>}
     </>}
     </section>
-    <MyLoans />
   </>;
 }

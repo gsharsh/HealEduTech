@@ -48,11 +48,11 @@ export function StaffPage() {
       {staffRole && <span className="staff-page__role">{t(`staffAccess.roles.${staffRole}`)}</span>}
     </header>
 
-    <section className={`staff-page__attention${!alerts.error && !alerts.loading && alerts.count === 0 ? ' staff-page__attention--clear' : ''}`} aria-labelledby="staff-attention-title">
+    {alerts.count !== null && alerts.count > 0 && <section className="staff-page__attention" aria-labelledby="staff-attention-title">
       <div className="staff-page__attention-copy"><h2 id="staff-attention-title">{vi ? 'Sách cần theo dõi' : 'Books needing follow-up'}</h2>
-      <p role="status">{alerts.error ? (vi ? 'Chưa thể tải cảnh báo. Mở trang mượn và trả để thử lại.' : 'Alerts could not load. Open loans and returns to retry.') : alerts.loading ? (vi ? 'Đang kiểm tra cảnh báo…' : 'Checking alerts…') : alerts.count === 0 ? (vi ? 'Không có lượt mượn nào quá hạn từ 7 ngày.' : 'No loans are overdue by seven days or more.') : (vi ? `${alerts.count ?? '—'} lượt mượn quá hạn từ 7 ngày cần nhân viên theo dõi.` : `${alerts.count ?? '—'} loans are overdue by seven days or more and need staff follow-up.`)}</p></div>
+      <p role="status">{vi ? `${alerts.count} lượt mượn quá hạn từ 7 ngày cần nhân viên theo dõi.` : `${alerts.count} loans are overdue by seven days or more and need staff follow-up.`}</p></div>
       <Link className="secondary" to="/staff/circulation?status=followup">{vi ? 'Xem sách quá hạn' : 'View overdue follow-ups'}</Link>
-    </section>
+    </section>}
 
     <section className="staff-page__workspaces" aria-labelledby="staff-workspaces-title">
       <div className="staff-page__section-heading">

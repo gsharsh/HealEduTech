@@ -7,6 +7,7 @@ import { readingTranslations } from './readingTranslations';
 import { getCoverImageSources } from '../library/coverImages';
 import './reading.css';
 import { requestFailureMessage } from '../../lib/requestFeedback';
+import { MyLoans } from '../circulation/MyLoans';
 
 type ReadingActionProps = { initialRecord: ReadingRecord; userId: string; onSaved: (record: ReadingRecord) => void };
 // Verified public-domain cover for the seeded Peter Rabbit record:
@@ -87,7 +88,7 @@ export function LiveLearningPage() {
       </div>
     </div>
   </section>;
-  return <ReadingHistory key={user.id} userId={user.id} />;
+  return <><ReadingHistory key={user.id} userId={user.id} /><MyLoans /></>;
 }
 function ReadingHistory({ userId }: { userId: string }) {
   const { i18n } = useTranslation();
