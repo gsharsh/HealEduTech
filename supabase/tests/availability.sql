@@ -8,7 +8,8 @@ insert into auth.users(id, email) values
 insert into public.staff_members(user_id, role)
 values ('70000000-0000-4000-8000-000000000001', 'librarian');
 insert into public.circulation_borrowers(user_id, display_name, registered_by)
-values ('70000000-0000-4000-8000-000000000003', 'Other Borrower', '70000000-0000-4000-8000-000000000001');
+values ('70000000-0000-4000-8000-000000000003', 'Other Borrower', '70000000-0000-4000-8000-000000000001')
+on conflict (user_id) do update set display_name = excluded.display_name, registered_by = excluded.registered_by;
 
 insert into public.books(id, title_en, title_vi, language, topic) values
  ('71000000-0000-4000-8000-000000000001', 'Availability test', 'Sách tồn kho', 'bilingual', 'stories'),
@@ -143,8 +144,9 @@ do $$ begin
   if (select count(*) from public.loans) is distinct from 0 then
     raise exception 'Nonstaff can read another borrower loan';
   end if;
-  if (select count(*) from public.circulation_borrowers) is distinct from 0 then
-    raise exception 'Nonstaff can read borrower rows';
+  if (select count(*) from public.circulation_borrowers
+      where user_id <> '70000000-0000-4000-8000-000000000002') is distinct from 0 then
+    raise exception 'Nonstaff can read another borrower row';
   end if;
   if (select count(*) from circulation_private._book_availability()
       where book_id in (

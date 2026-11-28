@@ -1,14 +1,16 @@
-import { useCallback, type FormEvent } from 'react';
+import { useCallback, useState, type FormEvent } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getCirculationPolicy } from '../circulation/data';
-import { getStudent, listStaffLoans, listStudentReading, listStudents, type Page, type StaffLoan, type StudentSummary } from './staffData';
+import { getStudent, listStaffLoans, listStudentReading, listStudents, notifyStaffDataChanged, setBorrowerEligibility, type Page, type StaffLoan, type StudentSummary } from './staffData';
 import { staffDate, staffOversightCopy } from './staffOversightCopy';
 import { useStaffResource } from './useStaffResource';
+import { recordedReadingDays, teachingCopy } from './teachingCopy';
+import { useAccount } from '../auth/context';
 import './staff-oversight.css';
 
 type Copy = (typeof staffOversightCopy)[keyof typeof staffOversightCopy];
-const STUDENT_FILTERS = ['all', 'reading', 'finished', 'borrowers', 'overdue'];
+const STUDENT_FILTERS = ['all', 'eligible', 'removed', 'reading', 'finished', 'borrowers', 'overdue'];
 const READING_FILTERS = ['all', 'currently_reading', 'finished'];
 function pageNumber(value: string | null) { return value && /^\d+$/.test(value) ? Math.max(1, Math.min(1000000, Number(value))) : 1; }
 function eligibility(student: StudentSummary, copy: Copy) { return student.registered ? (student.eligible ? copy.eligible : copy.ineligible) : copy.notRegistered; }
@@ -17,11 +19,12 @@ function LoadingState({ error, retry, copy }: { error: boolean; retry: () => voi
   return <section className="staff-oversight__panel">{error ? <><p role="alert">{copy.failed}</p><button className="secondary" type="button" onClick={retry}>{copy.retry}</button></> : <p role="status">{copy.loading}</p>}</section>;
 }
 
-function Pagination({ data, disabled, onPage, copy }: { data: Page<unknown>; disabled: boolean; onPage: (page: number) => void; copy: Copy }) {
+function Pagination({ data, disabled, onPage, copy, label }: { data: Page<unknown>; disabled: boolean; onPage: (page: number) => void; copy: Copy; label: string }) {
   const pages = Math.max(1, Math.ceil(data.total / data.page_size));
-  return <nav className="staff-oversight__pagination" aria-label={`${copy.page} ${data.page} ${copy.of} ${pages}`}>
+  return <nav className="staff-oversight__pagination" aria-label={`${label}: ${copy.page} ${data.page} ${copy.of} ${pages}`}>
     <p aria-live="polite">{data.total.toLocaleString()} {copy.records} · {copy.page} {data.page} {copy.of} {pages}</p>
     <div className="staff-oversight__pagination-actions">
+      {data.page > pages && <button className="secondary" type="button" disabled={disabled} onClick={() => onPage(1)}>{copy.firstPage}</button>}
       <button className="secondary" type="button" disabled={disabled || data.page <= 1} onClick={() => onPage(data.page - 1)}>{copy.previous}</button>
       <button className="secondary" type="button" disabled={disabled || data.page >= pages} onClick={() => onPage(data.page + 1)}>{copy.next}</button>
     </div>
@@ -30,11 +33,15 @@ function Pagination({ data, disabled, onPage, copy }: { data: Page<unknown>; dis
 
 export function StudentsPage() {
   const { i18n } = useTranslation();
+  const { staffRole } = useAccount();
   const copy = staffOversightCopy[i18n.language === 'vi' ? 'vi' : 'en'];
+  const [eligibilityBusy, setEligibilityBusy] = useState<string | null>(null);
+  const [eligibilityError, setEligibilityError] = useState(false);
+  const [eligibilitySaved, setEligibilitySaved] = useState(false);
   const [params, setParams] = useSearchParams();
   const search = params.get('search') ?? '';
-  const requestedFilter = params.get('filter') ?? 'all';
-  const filter = STUDENT_FILTERS.includes(requestedFilter) ? requestedFilter : 'all';
+  const requestedFilter = params.get('filter') ?? 'eligible';
+  const filter = STUDENT_FILTERS.includes(requestedFilter) ? requestedFilter : 'eligible';
   const page = pageNumber(params.get('page'));
   const load = useCallback((signal: AbortSignal) => listStudents({ search, filter, page, signal }), [search, filter, page]);
   const students = useStaffResource(`students:${search}:${filter}:${page}`, load);
@@ -45,31 +52,50 @@ export function StudentsPage() {
     const next = new URLSearchParams();
     const query = String(values.get('search') ?? '').trim();
     if (query) next.set('search', query);
-    const nextFilter = String(values.get('filter') ?? 'all');
-    if (nextFilter !== 'all') next.set('filter', nextFilter);
+    const nextFilter = String(values.get('filter') ?? 'eligible');
+    if (nextFilter !== 'eligible') next.set('filter', nextFilter);
     setParams(next);
   }
 
+  async function changeEligibility(student: StudentSummary) {
+    if (staffRole !== 'administrator' || eligibilityBusy) return;
+    setEligibilityBusy(student.user_id);
+    setEligibilityError(false);
+    setEligibilitySaved(false);
+    try {
+      await setBorrowerEligibility(student.user_id, !student.eligible);
+      setEligibilitySaved(true);
+      notifyStaffDataChanged();
+    } catch {
+      setEligibilityError(true);
+    } finally {
+      setEligibilityBusy(null);
+    }
+  }
+
   return <div className="staff-oversight">
-    <header className="staff-oversight__heading"><div><span className="eyebrow">{copy.staff}</span><h1>{copy.students}</h1><p>{copy.studentBody}</p></div><Link className="secondary" to="/staff/dashboard">{copy.dashboard}</Link></header>
+    <header className="staff-oversight__heading workspace-heading-surface"><div><h1>{copy.students}</h1><p>{copy.studentBody}</p></div><Link className="secondary" to="/staff/dashboard">{copy.dashboard}</Link></header>
     <section className="staff-oversight__panel">
       <form key={`${search}:${filter}`} className="staff-oversight__filters" onSubmit={applyFilters}>
         <label>{copy.search}<input type="search" name="search" defaultValue={search} maxLength={160} /></label>
-        <label>{copy.status}<select name="filter" defaultValue={filter}><option value="all">{copy.allStudents}</option><option value="reading">{copy.readingStudents}</option><option value="finished">{copy.finishedStudents}</option><option value="borrowers">{copy.borrowers}</option><option value="overdue">{copy.overdueStudents}</option></select></label>
+        <label>{copy.status}<select name="filter" defaultValue={filter}><option value="eligible">{copy.eligibleStudents}</option><option value="all">{copy.allAccounts}</option><option value="removed">{copy.removedAccounts}</option><option value="reading">{copy.readingStudents}</option><option value="finished">{copy.finishedStudents}</option><option value="borrowers">{copy.borrowers}</option><option value="overdue">{copy.overdueStudents}</option></select></label>
         <button className="primary" type="submit">{copy.apply}</button>
       </form>
     </section>
+    {eligibilityError && <p role="alert" className="form-error">{copy.eligibilityFailed}</p>}
+    {eligibilitySaved && <p role="status" className="circulation-notice">{copy.eligibilityUpdated}</p>}
     {!students.data ? <LoadingState error={students.error} retry={students.reload} copy={copy} /> : <section className="staff-oversight__panel" aria-busy={students.loading}>
       {students.data.items.length === 0 ? <p className="staff-oversight__empty">{copy.noStudents}</p> : <div className="staff-oversight__table-wrap" tabIndex={0} role="region" aria-label={copy.students}><table className="staff-oversight__table">
-        <thead><tr><th scope="col">{copy.name}</th><th scope="col">{copy.eligibility}</th><th scope="col">{copy.reading}</th><th scope="col">{copy.finished}</th><th scope="col">{copy.activeLoans}</th><th scope="col">{copy.overdueLoans}</th></tr></thead>
+        <thead><tr><th scope="col">{copy.name}</th><th scope="col">{copy.eligibility}</th><th scope="col">{copy.reading}</th><th scope="col">{copy.finished}</th><th scope="col">{copy.activeLoans}</th><th scope="col">{copy.overdueLoans}</th>{staffRole === 'administrator' && <th scope="col">{copy.accountManagement}</th>}</tr></thead>
         <tbody>{students.data.items.map(student => <tr key={student.user_id}>
           <td><Link to={`/staff/students/${student.user_id}`}>{student.display_name}</Link><small>{student.email ?? copy.noEmail}</small></td>
           <td>{eligibility(student, copy)}</td><td>{student.currently_reading_count}</td><td>{student.finished_count}</td>
           <td><Link to={`/staff/circulation?student=${student.user_id}&status=active`}>{student.active_loan_count}</Link></td>
           <td><Link to={`/staff/circulation?student=${student.user_id}&status=overdue`}>{student.overdue_loan_count}</Link></td>
+          {staffRole === 'administrator' && <td><button type="button" className="secondary staff-oversight__account-action" disabled={eligibilityBusy !== null || !student.registered} onClick={() => void changeEligibility(student)}>{eligibilityBusy === student.user_id ? copy.saving : student.eligible ? copy.removeAccount : copy.restoreAccount}</button></td>}
         </tr>)}</tbody>
       </table></div>}
-      <Pagination data={students.data} disabled={students.loading} onPage={next => { const values = new URLSearchParams(params); values.set('page', String(next)); setParams(values); }} copy={copy} />
+      <Pagination label={copy.students} data={students.data} disabled={students.loading} onPage={next => { const values = new URLSearchParams(params); values.set('page', String(next)); setParams(values); }} copy={copy} />
     </section>}
     <p className="staff-oversight__note">{copy.privacy}</p>
   </div>;
@@ -85,6 +111,7 @@ export function StudentDetailPage() {
   const { i18n } = useTranslation();
   const language = i18n.language === 'vi' ? 'vi' : 'en';
   const copy = staffOversightCopy[language];
+  const teaching = teachingCopy[language];
   const [params, setParams] = useSearchParams();
   const validId = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentId);
   const readingPage = pageNumber(params.get('readingPage'));
@@ -93,7 +120,7 @@ export function StudentDetailPage() {
   const readingStatus = READING_FILTERS.includes(requestedStatus) ? requestedStatus : 'all';
   const loadStudent = useCallback((signal: AbortSignal) => validId ? getStudent(studentId, signal) : Promise.resolve(null), [validId, studentId]);
   const student = useStaffResource(`student:${studentId}`, loadStudent);
-  const loadPolicy = useCallback(() => getCirculationPolicy(), []);
+  const loadPolicy = useCallback((signal: AbortSignal) => getCirculationPolicy(signal), []);
   const policy = useStaffResource('student-centre-policy', loadPolicy);
   const loadReading = useCallback((signal: AbortSignal) => validId ? listStudentReading(studentId, { page: readingPage, status: readingStatus, signal }) : Promise.resolve({ items: [], total: 0, page: 1, page_size: 25 }), [validId, studentId, readingPage, readingStatus]);
   const reading = useStaffResource(`student-reading:${studentId}:${readingPage}:${readingStatus}`, loadReading);
@@ -112,7 +139,7 @@ export function StudentDetailPage() {
 
   return <div className="staff-oversight">
     <Link className="staff-oversight__text-link" to="/staff/students">← {copy.back}</Link>
-    <header className="staff-oversight__heading"><div><span className="eyebrow">{copy.students}</span><h1>{profile.display_name}</h1><p>{profile.email ?? copy.noEmail}</p></div><Link className="secondary" to={`/staff/circulation?student=${studentId}`}>{copy.viewCirculation}</Link></header>
+    <header className="staff-oversight__heading workspace-heading-surface"><div><span className="eyebrow">{copy.students}</span><h1>{profile.display_name}</h1><p>{profile.email ?? copy.noEmail}</p></div><Link className="secondary" to={`/staff/circulation?student=${studentId}`}>{copy.viewCirculation}</Link></header>
     <section className="staff-oversight__panel"><dl className="staff-oversight__identity">
       <div><dt>{copy.email}</dt><dd>{profile.email ?? copy.noEmail}</dd></div><div><dt>{copy.language}</dt><dd>{profile.preferred_language === 'vi' ? copy.vietnamese : copy.english}</dd></div>
       <div><dt>{copy.joined}</dt><dd>{staffDate(profile.created_at, language, false, timeZone)}</dd></div><div><dt>{copy.eligibility}</dt><dd>{eligibility(profile, copy)}</dd></div>
@@ -121,14 +148,20 @@ export function StudentDetailPage() {
       <div className="staff-metric"><strong>{profile.currently_reading_count}</strong><span>{copy.reading}</span></div>
       <div className="staff-metric"><strong>{profile.finished_count}</strong><span>{copy.finished}</span></div>
       <Link className="staff-metric" to={`/staff/circulation?student=${studentId}&status=active`}><strong>{profile.active_loan_count}</strong><span>{copy.activeLoans}</span></Link>
-      <Link className="staff-metric staff-metric--alert" to={`/staff/circulation?student=${studentId}&status=overdue`}><strong>{profile.overdue_loan_count}</strong><span>{copy.overdueLoans}</span></Link>
+      <Link className={profile.overdue_loan_count > 0 ? 'staff-metric staff-metric--alert' : 'staff-metric'} to={`/staff/circulation?student=${studentId}&status=overdue`}><strong>{profile.overdue_loan_count}</strong><span>{copy.overdueLoans}</span></Link>
+    </section>
+    <section className="staff-oversight__panel staff-teaching" aria-labelledby="teaching-title">
+      <div><span className="eyebrow">{teaching.topics}</span><h2 id="teaching-title">{teaching.title}</h2><p>{teaching.discussion}</p></div>
+      {profile.reading_topics ? <ul className="staff-topic-summary">{profile.reading_topics.map(topic => <li key={topic.topic}><strong>{({ en: { nature: 'Nature', stories: 'Stories', science: 'Science' }, vi: { nature: 'Thiên nhiên', stories: 'Câu chuyện', science: 'Khoa học' } })[language][topic.topic]}</strong><span>{topic.reading} {copy.reading.toLowerCase()} · {topic.finished} {copy.finished.toLowerCase()}</span></li>)}</ul> : <p className="muted">{teaching.noTopics}</p>}
+      <div className="staff-teaching__actions"><Link className="secondary" to="/explore">{teaching.resources}</Link></div>
     </section>
     <section className="staff-oversight__panel" id="reading-record" aria-busy={reading.loading}>
       <div className="staff-oversight__panel-heading"><div><h2>{copy.readingRecord}</h2><p>{copy.selfReported}</p></div></div>
+      <p className="staff-oversight__note">{teaching.timing}</p>
       <div className="staff-oversight__filters"><label>{copy.status}<select value={readingStatus} onChange={event => { const next = new URLSearchParams(params); next.set('reading', event.target.value); next.delete('readingPage'); setParams(next); }}><option value="all">{copy.allReading}</option><option value="currently_reading">{copy.reading}</option><option value="finished">{copy.finished}</option></select></label></div>
       {!reading.data ? <LoadingState error={reading.error} retry={reading.reload} copy={copy} /> : <>
-        {reading.data.items.length === 0 ? <p className="staff-oversight__empty">{copy.noReading}</p> : <div className="staff-oversight__table-wrap" style={{ marginTop: 18 }} tabIndex={0} role="region" aria-label={copy.readingRecord}><table className="staff-oversight__table"><thead><tr><th scope="col">{copy.book}</th><th scope="col">{copy.status}</th></tr></thead><tbody>{reading.data.items.map(book => <tr key={book.book_id}><td><Link to={`/library/${book.book_id}`}>{language === 'vi' ? book.title_vi || book.title_en : book.title_en || book.title_vi}</Link></td><td>{book.status === 'finished' ? copy.finished : copy.reading}</td></tr>)}</tbody></table></div>}
-        <Pagination data={reading.data} disabled={reading.loading} onPage={page => updatePage('readingPage', page)} copy={copy} />
+        {reading.data.items.length === 0 ? <p className="staff-oversight__empty">{copy.noReading}</p> : <div className="staff-oversight__table-wrap" style={{ marginTop: 18 }} tabIndex={0} role="region" aria-label={copy.readingRecord}><table className="staff-oversight__table"><thead><tr><th scope="col">{copy.book}</th><th scope="col">{teaching.topic}</th><th scope="col">{copy.status}</th><th scope="col">{teaching.started}</th><th scope="col">{teaching.finished}</th><th scope="col">{teaching.elapsed}</th></tr></thead><tbody>{reading.data.items.map(book => <tr key={book.book_id}><td><Link to={`/library/${book.book_id}`}>{language === 'vi' ? book.title_vi || book.title_en : book.title_en || book.title_vi}</Link></td><td>{book.topic ? ({ en: { nature: 'Nature', stories: 'Stories', science: 'Science' }, vi: { nature: 'Thiên nhiên', stories: 'Câu chuyện', science: 'Khoa học' } })[language][book.topic] : teaching.unknown}</td><td>{book.status === 'finished' ? copy.finished : copy.reading}</td><td>{book.reading_started_at ? staffDate(book.reading_started_at, language, false, timeZone) : teaching.unknown}</td><td>{book.reading_finished_at ? staffDate(book.reading_finished_at, language, false, timeZone) : teaching.unknown}</td><td>{recordedReadingDays(book.reading_started_at, book.reading_finished_at) ?? teaching.unknown}</td></tr>)}</tbody></table></div>}
+        <Pagination label={copy.readingRecord} data={reading.data} disabled={reading.loading} onPage={page => updatePage('readingPage', page)} copy={copy} />
       </>}
     </section>
     <section className="staff-oversight__panel" aria-busy={loans.loading}>
@@ -139,7 +172,7 @@ export function StudentDetailPage() {
           <td>{staffDate(loan.checked_out_at, language, false, timeZone)}</td><td>{staffDate(loan.due_date, language, false, timeZone)}</td><td><span className={`staff-oversight__status${!loan.resolved_at && loan.days_overdue > 0 ? ' staff-oversight__status--overdue' : ''}`}>{loanStatus(loan, copy)}</span></td>
           <td>{loan.latest_contact_at ? <>{staffDate(loan.latest_contact_at, language, true, timeZone)}<small>{loan.latest_contact_by}</small></> : copy.noContact}</td>
         </tr>)}</tbody></table></div>}
-        <Pagination data={loans.data} disabled={loans.loading} onPage={page => updatePage('loanPage', page)} copy={copy} />
+        <Pagination label={copy.borrowingHistory} data={loans.data} disabled={loans.loading} onPage={page => updatePage('loanPage', page)} copy={copy} />
       </>}
     </section>
     <p className="staff-oversight__note">{copy.privacy}</p>

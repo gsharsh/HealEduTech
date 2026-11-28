@@ -1,0 +1,29 @@
+sequenceDiagram
+    actor Learner
+    participant UI as Together notebook
+    participant API as Checked RPCs
+    participant DB as learning_private
+    actor Staff as Teaching staff
+    actor Visitor
+    Learner->>UI: Write outline
+    UI->>API: save(id, fields, expected_updated_at)
+    API->>DB: Authenticate owner; serialize cap; lock/version check
+    DB-->>UI: Private draft + new version
+    Learner->>UI: Consent and submit saved outline
+    UI->>API: submit(id, expected version)
+    API->>DB: Verify owner, completeness, current version
+    DB-->>UI: submitted
+    Staff->>API: List submitted work (optional learner filter)
+    API-->>Staff: Staff-only author context and review content
+    Staff->>API: Publish reviewed version or request changes
+    API->>DB: Check staff, lock row, compare version
+    Visitor->>API: List published discoveries
+    API-->>Visitor: Explicit identity-free public fields
+    Learner->>API: Submit supportive comment (stable UUID)
+    API->>DB: Lock published parent; enforce caps; pending comment
+    Staff->>API: Approve current comment version
+    Visitor->>API: Read approved comments and encouragement count
+    Learner->>API: Withdraw own project
+    API->>DB: Make private; remove encouragement; requeue approved comments
+    Note over API,DB: Atomic transactions and expected versions prevent stale approval and lost edits.
+    Note over Learner,Visitor: Private reading reflections are never part of this publication flow.

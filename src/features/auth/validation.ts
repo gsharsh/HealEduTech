@@ -7,7 +7,7 @@ export function validPassword(value: string): boolean {
   return value.length >= 12 && value.length <= 128;
 }
 
-const appPaths = new Set(['/account', '/learning', '/library', '/explore', '/community', '/staff', '/staff/dashboard', '/staff/students', '/staff/catalogue', '/staff/circulation', '/staff/training', '/admin', '/admin/circulation', '/admin/settings']);
+const appPaths = new Set(['/account', '/learning', '/library', '/explore', '/staff', '/staff/dashboard', '/staff/students', '/staff/catalogue', '/staff/circulation', '/admin', '/admin/circulation', '/admin/settings']);
 export function safeNextPath(value: string | null): string {
   if (!value || !value.startsWith('/') || value.startsWith('//')) return '/learning';
   const hasUnsafeCharacter = value.split('').some(character => {

@@ -12,7 +12,9 @@
     "test:browser": "playwright test",
     "test:db": "python3 supabase/tests/run-local.py",
     "check:release": "node scripts/check-release.ts",
-    "preview:release": "node scripts/preview-release.ts"
+    "preview:release": "node scripts/preview-release.ts",
+    "dev:review": "vite --host 127.0.0.1 --port 4177 --strictPort",
+    "test:accessibility": "playwright test tests/browser/accessibility.spec.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.115.0",
@@ -23,6 +25,7 @@
     "react-router-dom": "^7.18.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "1.64.1",
     "@types/node": "24.19.2",
@@ -39,5 +42,8 @@
   },
   "overrides": {
     "minimatch": "^11.0.1"
+  },
+  "engines": {
+    "node": ">=24 <27"
   }
 }

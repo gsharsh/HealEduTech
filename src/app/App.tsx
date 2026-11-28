@@ -26,8 +26,6 @@ const BookManagement = lazy(() => import("../features/admin/BookManagement").the
 const StaffPage = lazy(() => import("../features/admin/StaffPage").then(module => ({ default: module.StaffPage })));
 const AccountPage = lazy(() => import("../features/account/AccountPage").then(module => ({ default: module.AccountPage })));
 const CirculationPage = lazy(() => import("../features/circulation/CirculationPage").then(module => ({ default: module.CirculationPage })));
-const CommunityPage = lazy(() => import("../features/community/CommunityPage").then(module => ({ default: module.CommunityPage })));
-const StaffTrainingPage = lazy(() => import("../features/community/StaffTrainingPage").then(module => ({ default: module.StaffTrainingPage })));
 const StudentsPage = lazy(() => import("../features/admin/StudentsPage").then(module => ({ default: module.StudentsPage })));
 const StudentDetailPage = lazy(() => import("../features/admin/StudentsPage").then(module => ({ default: module.StudentDetailPage })));
 const StaffDashboard = lazy(() => import("../features/admin/StaffDashboard").then(module => ({ default: module.StaffDashboard })));
@@ -79,8 +77,8 @@ export function App() {
         <Route path="/library" element={supabase ? <LiveLibraryPage /> : <LibraryPage />} />
         {supabase && <Route path="/library/:bookId" element={<BookDetailPage />} />}
         <Route path="/explore" element={supabase ? <LiveExplorePage /> : <ExplorePage />} />
-        <Route path="/community" element={<LazyPage><CommunityPage /></LazyPage>} />
-        <Route path="/staff/training" element={<RequireStaff><LazyPage><StaffTrainingPage /></LazyPage></RequireStaff>} />
+        <Route path="/community" element={<Navigate to="/explore" replace />} />
+        <Route path="/staff/training" element={<RequireStaff><Navigate to="/staff" replace /></RequireStaff>} />
         <Route path="/staff" element={<RequireStaff allowDemo={false}><LazyPage><StaffPage /></LazyPage></RequireStaff>} />
         <Route path="/staff/dashboard" element={<StaffOversightRoute page="dashboard" />} />
         <Route path="/staff/students" element={<StaffOversightRoute page="students" />} />

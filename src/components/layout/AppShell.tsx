@@ -31,13 +31,59 @@ export function AppShell() {
   }
   const mobileNavOpen = mobileNavPath === pathname;
   const primaryNavRef = useRef<HTMLElement | null>(null);
+  const staffNavRef = useRef<HTMLElement | null>(null);
   const activePillRef = useRef<HTMLSpanElement | null>(null);
   const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
+
+  useLayoutEffect(() => {
+    const nav = staffNavRef.current;
+    const current = nav?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (!nav || !current) return;
+
+    const revealCurrentLink = () => {
+      if (nav.scrollWidth <= nav.clientWidth) return;
+      const bounds = nav.getBoundingClientRect();
+      const link = current.getBoundingClientRect();
+      if (link.left < bounds.left) nav.scrollLeft += link.left - bounds.left - 8;
+      else if (link.right > bounds.right) nav.scrollLeft += link.right - bounds.right + 8;
+    };
+
+    revealCurrentLink();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(revealCurrentLink);
+    observer.observe(nav);
+    observer.observe(current);
+    return () => observer.disconnect();
+  }, [pathname, followupActive, language, canOpenDesk, staffRole]);
 
   useEffect(() => {
-    document.getElementById('main-content')?.focus({ preventScroll: true });
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    const frame = window.requestAnimationFrame(() => {
+      let target: HTMLElement | null = null;
+      try {
+        if (hash) target = document.getElementById(decodeURIComponent(hash.slice(1)));
+      } catch {
+        // A malformed fragment still opens the requested page normally.
+      }
+      (target ?? document.getElementById('main-content'))?.focus({ preventScroll: true });
+      if (target) target.scrollIntoView({ block: 'start' });
+      else window.scrollTo(0, 0);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname, hash]);
+
+  useLayoutEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const updateOffset = () => document.documentElement.style.setProperty('--evg-header-height', `${Math.ceil(header.getBoundingClientRect().height)}px`);
+    updateOffset();
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateOffset);
+    observer?.observe(header);
+    return () => {
+      observer?.disconnect();
+      document.documentElement.style.removeProperty('--evg-header-height');
+    };
+  }, []);
 
   useLayoutEffect(() => {
     const nav = primaryNavRef.current;
@@ -148,7 +194,7 @@ export function AppShell() {
   return (
     <div className="evg-shell">
       <a className="evg-skip-link" href="#main-content">{t('skip')}</a>
-      <header className={`evg-header ${canOpenDesk ? 'has-staff-action' : ''}`}>
+      <header ref={headerRef} className={`evg-header ${canOpenDesk ? 'has-staff-action' : ''}`}>
         <NavLink className="evg-brand" to={publicPath('/', language)} aria-label={isVietnamese ? 'EVG và HEAL · Trang chủ' : 'EVG and HEAL · Home'}>
           <img className="evg-brand-logo" src="/images/brand/evg-heal-horizontal.png" width="800" height="240" alt="Eco Vietnam Group × HEAL" />
         </NavLink>
@@ -158,7 +204,6 @@ export function AppShell() {
           <NavLink to="/library" onClick={closeMobileNavFromLink}>{t('library')}</NavLink>
           <NavLink to="/learning" onClick={closeMobileNavFromLink}>{isVietnamese ? 'Sách của em' : 'My reading'}</NavLink>
           <NavLink to="/explore" onClick={closeMobileNavFromLink}>{t('explore')}</NavLink>
-          <NavLink to="/community" onClick={closeMobileNavFromLink}>{t('community')}</NavLink>
         </nav>
         <div className="evg-header-actions">
           {canOpenDesk && <NavLink className="evg-desk-link" to="/staff">{t('access.openDesk')}{alerts.count !== null && alerts.count > 0 && <span className="staff-alert-badge" aria-label={`${alerts.count} ${isVietnamese ? 'lượt mượn quá hạn từ 7 ngày' : 'loans overdue by 7+ days'}`}>{alerts.count}</span>}</NavLink>}
@@ -202,15 +247,13 @@ export function AppShell() {
       </header>
 
       {isStaffArea && user && accessStatus === 'ready' && staffRole && (
-        <nav className="evg-staff-nav" aria-label={t('access.navigation')}>
-          <span className="evg-staff-label">{t('access.staffArea')}</span>
+        <nav ref={staffNavRef} className="evg-staff-nav" aria-label={t('access.navigation')}>
           <NavLink end to="/staff">{t('access.openDesk')}</NavLink>
           <NavLink to="/staff/dashboard">{isVietnamese ? 'Thống kê' : 'Dashboard'}</NavLink>
           <NavLink to="/staff/students">{isVietnamese ? 'Học sinh' : 'Students'}</NavLink>
           <NavLink to="/staff/catalogue">{t('access.catalogue')}</NavLink>
           <NavLink to="/staff/circulation" aria-current={followupActive ? false : 'page'} className={({ isActive }) => isActive && !followupActive ? 'active' : ''}>{t('access.circulation')}</NavLink>
           <Link to="/staff/circulation?status=followup" className={followupActive ? 'active' : undefined} aria-current={followupActive ? 'page' : undefined}>{isVietnamese ? 'Cần theo dõi' : 'Needs attention'}{alerts.count !== null && alerts.count > 0 && <span className="staff-alert-badge">{alerts.count}</span>}</Link>
-          <NavLink to="/staff/training">{t('staffTraining.nav')}</NavLink>
           {staffRole === 'administrator' && <NavLink to="/admin/settings">{t('access.administration')}</NavLink>}
         </nav>
       )}
@@ -225,16 +268,18 @@ export function AppShell() {
       </main>
 
       <footer className="evg-footer">
-        <span lang="en">EVG · Learn &amp; grow</span>
-        {(pathname === '/' || pathname === '/vi') && <a href="https://storyset.com/people" lang="en">People illustrations by Storyset</a>}
+        <div className="evg-footer-intro">
+          <Link className="evg-footer-brand" to={publicPath('/', language)} lang="en">EVG <span>Learn &amp; grow</span></Link>
+          <p>{t('footer')}</p>
+        </div>
         <nav aria-label={isVietnamese ? 'Liên kết bổ sung' : 'More links'}>
+          <NavLink to="/library">{t('library')}</NavLink>
           <NavLink to={publicPath('/start', language)}>{isVietnamese ? 'Hướng dẫn nhanh' : 'Quick guide'}</NavLink>
           <NavLink to={publicPath('/help', language)}>{isVietnamese ? 'Trợ giúp' : 'Help'}</NavLink>
           <NavLink to={publicPath('/privacy', language)}>{isVietnamese ? 'Quyền riêng tư' : 'Privacy'}</NavLink>
           <NavLink to="/explore">{t('explore')}</NavLink>
-          <NavLink to="/community">{t('community')}</NavLink>
         </nav>
-        <span>{t('footer')}</span>
+        {(pathname === '/' || pathname === '/vi') && <a className="evg-footer-credit" href="https://storyset.com/people" lang="en">People illustrations by Storyset</a>}
       </footer>
     </div>
   );

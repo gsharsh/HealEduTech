@@ -22,7 +22,9 @@ const information = {
       sections: [
         ['Account information', 'If you create an account, the service stores your email address, display name, account dates, and language preference. Authentication is provided by Supabase. The website is hosted on Vercel.'],
         ['Reading and interests', 'Signed-in reading status, optional written reflections, and chosen interests are saved to your account. Guests can browse books without creating these records.'],
-        ['What staff can see', 'Authorised librarians and administrators can see student names, email addresses, reading titles and status, and borrowing records needed to operate the library. Written reflections and selected interests are not included in the staff reading screens.'],
+        ['What staff can see', 'Authorised librarians and administrators can see student names, email addresses, reading titles, status, topic totals and borrowing records. When enabled, recorded start and finish dates support teaching; these are not measured reading time. Written reflections and selected interests are not included in the staff reading screens.'],
+        ['Explore suggestions', 'Book suggestions use your saved topic interests and recent reading titles and topics. They do not read your private reflections or use an AI service. Educational links open other websites, which have their own privacy practices. No video player loads here automatically.'],
+        ['Classroom sharing', 'When classroom notebooks are enabled, drafts start private. Submitting work gives authorised staff access to review it. Approved work and comments can be read publicly without displaying your account name. Avoid personal details in your writing. You can withdraw your work or comments; withdrawal cannot remove copies someone else already saved. Encouragement records are tied to your account, while the public sees only a count.'],
         ['Library records', 'Staff record physical copies, loans, due dates, returns, and any recorded follow-up. A contact-history entry records a staff action; it does not prove an email was delivered or read.'],
         ['Storage on this device', 'The site remembers your language in browser storage. Sign-in is stored for the current browser tab, with a temporary memory fallback if browser storage is unavailable. Signing out of one tab does not sign out every device or independently signed-in tab.'],
         ['Service errors', 'The site can send a small error code and general page category to its own hosting service to help maintain reliability. Reports exclude entered text, book or student identifiers, email addresses, passwords, tokens, and URL query strings. Hosting and database providers also maintain their own service logs.'],
@@ -50,7 +52,9 @@ const information = {
       sections: [
         ['Thông tin tài khoản', 'Nếu tạo tài khoản, dịch vụ lưu email, tên hiển thị, ngày tạo tài khoản và ngôn ngữ đã chọn. Supabase cung cấp xác thực tài khoản. Trang web được lưu trữ trên Vercel.'],
         ['Việc đọc và sở thích', 'Trạng thái đọc, ghi chú tự nguyện và sở thích được lưu vào tài khoản khi em đăng nhập. Khách có thể xem sách mà không tạo những bản ghi này.'],
-        ['Nhân viên có thể xem gì', 'Thủ thư và quản trị viên có quyền có thể xem tên, email, tên sách và trạng thái đọc, cùng hồ sơ mượn sách cần cho việc vận hành thư viện. Ghi chú riêng và sở thích đã chọn không có trong màn hình đọc sách của nhân viên.'],
+        ['Nhân viên có thể xem gì', 'Thủ thư và quản trị viên có quyền có thể xem tên, email, tên sách, trạng thái đọc, tổng hợp chủ đề và hồ sơ mượn. Khi được bật, ngày bắt đầu và hoàn thành đã ghi nhận hỗ trợ giảng dạy; đây không phải thời gian thực sự đọc. Ghi chú riêng và sở thích đã chọn không có trong màn hình đọc sách của nhân viên.'],
+        ['Gợi ý khám phá', 'Gợi ý sách dùng sở thích chủ đề đã lưu và tên, chủ đề của sách em đọc gần đây. Gợi ý không đọc ghi chú riêng và không dùng dịch vụ AI. Liên kết học tập mở trang web khác với cách bảo vệ thông tin riêng của họ. Trình phát video không tự tải trên trang này.'],
+        ['Chia sẻ trong lớp', 'Khi tính năng sổ tay được bật, bản nháp ban đầu là riêng tư. Gửi bài cho phép nhân viên có quyền đọc và duyệt. Bài và bình luận đã duyệt có thể được xem công khai mà không hiện tên tài khoản. Đừng viết thông tin cá nhân. Em có thể rút bài hoặc bình luận; việc rút không xóa bản sao người khác đã lưu. Lời động viên được gắn với tài khoản, còn người xem chỉ thấy tổng số.'],
         ['Hồ sơ thư viện', 'Nhân viên ghi nhận bản sách giấy, lượt mượn, hạn trả, trả sách và việc liên hệ đã ghi nhận. Lịch sử liên hệ ghi nhận hành động của nhân viên, không chứng minh email đã được gửi đến hoặc đọc.'],
         ['Lưu trữ trên thiết bị này', 'Trang web nhớ ngôn ngữ trong bộ nhớ trình duyệt. Phiên đăng nhập được lưu cho tab hiện tại; nếu không thể dùng bộ nhớ trình duyệt, phiên chỉ nằm tạm trong bộ nhớ trang. Đăng xuất một tab không đăng xuất mọi thiết bị hoặc tab đăng nhập riêng.'],
         ['Lỗi dịch vụ', 'Trang web có thể gửi mã lỗi ngắn và nhóm trang đến dịch vụ lưu trữ của chính trang để hỗ trợ bảo trì. Báo cáo không chứa nội dung đã nhập, mã sách hoặc học sinh, email, mật khẩu, mã truy cập hay tham số URL. Nhà cung cấp lưu trữ và cơ sở dữ liệu cũng có nhật ký dịch vụ riêng.'],
@@ -68,7 +72,13 @@ export function InformationPage({ kind }: { kind: 'help' | 'privacy' }) {
   const copy = information[language][kind];
   return <article className="information-page">
     <header className="page-heading"><div><span className="eyebrow">{copy.kicker}</span><h1>{copy.title}</h1><p>{copy.intro}</p></div></header>
-    <div className="information-sections">{copy.sections.map(([title, body]) => <section className="information-card" key={title}><h2>{title}</h2><p>{body}</p></section>)}</div>
+    <div className="information-layout">
+      <nav className="information-index" aria-label={language === 'vi' ? 'Nội dung trang này' : 'On this page'}>
+        <p>{language === 'vi' ? 'Nội dung trang này' : 'On this page'}</p>
+        <ul>{copy.sections.map(([title], index) => <li key={title}><Link to={`${publicPath(`/${kind}`, language)}#${kind}-${index + 1}`}>{title}</Link></li>)}</ul>
+      </nav>
+      <div className="information-sections">{copy.sections.map(([title, body], index) => <section className="information-card" key={title} aria-labelledby={`${kind}-${index + 1}`}><h2 id={`${kind}-${index + 1}`} tabIndex={-1}>{title}</h2><p>{body}</p></section>)}</div>
+    </div>
     <nav className="information-actions" aria-label={language === 'vi' ? 'Bước tiếp theo' : 'Next steps'}>
       <Link className="primary" to={kind === 'privacy' ? publicPath('/help', language) : '/library'}>{copy.action}</Link>
       <Link className="secondary" to={kind === 'help' ? publicPath('/privacy', language) : '/library'}>{copy.secondary}</Link>

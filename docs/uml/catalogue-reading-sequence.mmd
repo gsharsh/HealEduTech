@@ -2,9 +2,16 @@ sequenceDiagram
     actor Visitor as Guest or learner
     participant UI as Library and My reading
     participant Client as Supabase JS
+    participant Cache as Bounded public catalogue cache
     participant API as PostgREST
     participant DB as PostgreSQL
     Visitor->>UI: Browse, search or filter topic
+    UI->>Cache: Request normalized page/query/topic
+    alt Fresh public snapshot
+        Cache-->>UI: Reuse public data (15-second TTL)
+    else Shared read already pending
+        Cache-->>UI: Join in-flight read with independent cancellation
+    else Cache miss
     UI->>Client: listBooks with bounded page and abort signal
     alt Nonempty query
         Client->>API: search_books with literal query
@@ -17,6 +24,9 @@ sequenceDiagram
     Client->>API: Select book_availability for visible book IDs
     API->>DB: Read aggregate availability view
     DB-->>UI: Total and available counts without borrower identities
+    Client-->>Cache: Cache complete successful public response
+    end
+    Note over Cache,API: Catalogue/circulation changes invalidate snapshots; private records are never cached here
     Note over Client,UI: Availability error yields unknown availability, never an invented count
     alt Authenticated learner saves reading
         Visitor->>UI: Mark reading/finished; optional finished-book review
@@ -28,7 +38,7 @@ sequenceDiagram
     else Guest
         UI-->>Visitor: Sign-in path; no private write
     end
-    Visitor->>UI: Replace own interest choices
+    Visitor->>UI: Replace own interest choices only when changed
     Client->>API: replace_my_interests
     API->>DB: Own-user transaction and topic constraints
     DB-->>UI: Complete saved selection or error
