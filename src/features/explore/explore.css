@@ -2,12 +2,9 @@
 .explore-intro { margin: 8px 0 32px; }
 .explore-intro h1 { margin-bottom: 12px; font-family: var(--font-ui); font-size: clamp(1.9rem, 4vw, 2.5rem); font-weight: 700; letter-spacing: -.035em; }
 .explore-intro p { max-width: 650px; margin: 0; color: var(--muted); font-size: 1rem; }
-.explore-coming-soon { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 28px; align-items: start; margin: 24px 0 30px; padding: 20px 24px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--accent); }
+.explore-coming-soon { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-items: start; margin: 24px 0 30px; padding: 20px 24px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--accent); }
 .explore-coming-soon h2 { margin: 0 0 6px; font-size: 1.15rem; }
 .explore-coming-soon p { max-width: 640px; margin: 0; color: var(--muted); }
-.explore-coming-soon h3 { grid-column: 2; grid-row: 1; margin: 0; font-size: .9rem; }
-.explore-coming-soon ul { grid-column: 2; grid-row: 2; display: grid; gap: 6px; margin: 0; padding-left: 18px; }
-.explore-coming-soon a { color: var(--green); font-weight: 650; text-underline-offset: 3px; }
 .explore-toolbar {
   margin-bottom: 30px;
   padding: 22px 24px 6px;
