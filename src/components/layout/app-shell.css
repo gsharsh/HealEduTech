@@ -24,7 +24,7 @@
 .evg-skip-link:focus { top: 16px; }
 .evg-header { position: sticky; top: 0; z-index: 8; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; width: 100%; min-height: 60px; gap: 24px; padding: 4px max(24px, calc((100% - 1160px) / 2)); background: var(--header-gradient); border: 0; border-bottom: 1px solid var(--mushroom); border-radius: 0; box-shadow: 0 3px 16px #8546280a; -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)); backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)); }
 .evg-brand { display: inline-flex; justify-self: start; align-items: center; gap: 9px; min-height: 44px; padding: 10px 0; }
-.evg-brand-icon { width: 26px; height: 26px; flex: none; color: var(--evg-text); }
+.evg-brand-logo { display: block; width: 160px; max-width: none; height: 48px; object-fit: contain; }
 .evg-brand-name { font-size: 18px; font-weight: 700; letter-spacing: .08em; }
 .evg-brand-sub { color: var(--evg-muted); font-size: 10px; letter-spacing: .09em; }
 .evg-primary-nav { position: relative; display: flex; flex: 1 1 auto; min-width: 0; align-items: center; justify-content: center; gap: clamp(4px, 1.1vw, 16px); }
@@ -118,8 +118,7 @@
 
 @media (max-width: 380px) {
   .evg-brand { gap: 5px; }
-  .evg-brand-icon { width: 22px; height: 22px; }
-  .evg-brand-name { font-size: 16px; }
+  .evg-brand-logo { width: 100px; height: 30px; }
   .evg-header-actions { column-gap: 4px; }
   .evg-footer nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
