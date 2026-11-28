@@ -16,7 +16,9 @@ export function LiveLibraryPage() {
   const location = useLocation();
   const { page, query, topic } = readLibraryRouteState(searchParams);
   const [attempt, setAttempt] = useState(0);
-  const [result, setResult] = useState<{ books: CatalogueBook[]; total: number; loading: boolean; failed: boolean }>({ books: [], total: 0, loading: true, failed: false });
+  const requestKey = JSON.stringify([page, query, topic, attempt]);
+  const [result, setResult] = useState<{ key: string; books: CatalogueBook[]; total: number; loading: boolean; failed: boolean }>({ key: '', books: [], total: 0, loading: true, failed: false });
+  const loading = result.loading || result.key !== requestKey;
   useEffect(() => {
     const controller = new AbortController();
     void listBooks(page, controller.signal, query, topic).then(data => {
@@ -25,12 +27,12 @@ export function LiveLibraryPage() {
         setSearchParams(writeLibraryRouteState({ page: Math.floor((data.total - 1) / 24), query, topic }), { replace: true });
         return;
       }
-      setResult({ ...data, loading: false, failed: false });
+      setResult({ ...data, key: requestKey, loading: false, failed: false });
     }).catch(() => {
-      if (!controller.signal.aborted) setResult({ books: [], total: 0, loading: false, failed: true });
+      if (!controller.signal.aborted) setResult({ key: requestKey, books: [], total: 0, loading: false, failed: true });
     });
     return () => controller.abort();
-  }, [page, attempt, query, topic, setSearchParams]);
+  }, [page, requestKey, query, topic, setSearchParams]);
   function updateRoute(next: { page?: number; query?: string; topic?: typeof topic }) {
     const nextParams = writeLibraryRouteState({
       page: next.page ?? page,
@@ -52,7 +54,7 @@ export function LiveLibraryPage() {
       <label>{t('topic')}<select value={topic} onChange={event => changeTopic(event.target.value as typeof topic)}>{(['all', 'nature', 'stories', 'science'] as const).map(value => <option key={value} value={value}>{t(`topics.${value}`)}</option>)}</select></label>
       {(query || topic !== 'all') && <button type="button" className="secondary" onClick={() => updateRoute({ query: '', topic: 'all', page: 0 })}>{copy.clear}</button>}
     </form>
-    {result.loading ? <p role="status">{t('catalogue.loading')}</p> : result.failed ? <div role="alert" className="empty-state">
+    {loading ? <p role="status">{t('catalogue.loading')}</p> : result.failed ? <div role="alert" className="empty-state">
       <p>{t('catalogue.loadError')}</p><button className="secondary" onClick={() => { setResult(value => ({ ...value, loading: true })); setAttempt(value => value + 1); }}>{t('catalogue.retry')}</button>
     </div> : <>
       {result.books.length > 0 && <p role="status">{t('results', { count: result.total })}</p>}

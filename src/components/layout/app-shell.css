@@ -19,7 +19,8 @@
 .evg-skip-link { position: fixed; z-index: 20; left: 16px; top: -100px; padding: 12px 16px; color: var(--evg-text); background: var(--evg-surface); border: 1px solid var(--evg-line); border-radius: 10px; }
 .evg-skip-link:focus { top: 16px; }
 .evg-header { position: sticky; top: 0; z-index: 8; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; width: 100%; min-height: 60px; gap: 24px; padding: 4px max(24px, calc((100% - 1160px) / 2)); background: var(--evg-glass); border: 1px solid var(--glass-edge); border-top-color: var(--glass-highlight); border-radius: 0 0 var(--radius-lg) var(--radius-lg); box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight); -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)); backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)); }
-.evg-brand { display: inline-flex; justify-self: start; align-items: baseline; gap: 7px; min-height: 44px; padding: 10px 0; }
+.evg-brand { display: inline-flex; justify-self: start; align-items: center; min-height: 60px; padding: 2px 0; }
+.evg-brand-logo { display: block; width: 160px; height: 48px; max-width: none; object-fit: contain; }
 .evg-brand-name { font-size: 18px; font-weight: 700; letter-spacing: .08em; }
 .evg-brand-sub { color: var(--evg-muted); font-size: 10px; letter-spacing: .09em; }
 .evg-primary-nav { position: relative; display: flex; flex: 1 1 auto; min-width: 0; align-items: center; justify-content: center; gap: clamp(12px, 2vw, 24px); }
@@ -89,6 +90,7 @@
 @media (prefers-reduced-motion: reduce) { .evg-primary-nav__pill { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .evg-mobile-menu-icon, .evg-mobile-menu-icon::before, .evg-mobile-menu-icon::after { transition: none; } }
 @media (max-width: 760px) {
+  .evg-brand-logo { width: 112px; height: 33.6px; }
   .evg-header { grid-template-columns: auto minmax(0, 1fr); gap: 0 8px; }
   .evg-header-actions { gap: 4px 8px; max-width: 100%; }
   .evg-account-link, .evg-desk-link { padding-inline: 8px; }
@@ -105,3 +107,11 @@
   .evg-header.has-staff-action .evg-language-toggle { width: 64px; }
 }
 .staff-alert-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; min-height: 24px; padding: 2px 6px; margin-inline-start: 6px; border-radius: 999px; background: #843c20; color: #fff; font: 700 .75rem/1.2 var(--font-ui); }
+@media (max-width: 760px) {
+  .evg-header-actions { column-gap: 4px; }
+  .evg-language-toggle { width: 64px; }
+  .evg-account-link { padding-inline: 4px; font-size: .8125rem; }
+}
+@media (max-width: 360px) {
+  .evg-brand-logo { width: 100px; height: 30px; }
+}

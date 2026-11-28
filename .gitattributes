@@ -1,0 +1,2 @@
+# The provider CA is verified by its exact file checksum on every platform.
+supabase/certificates/*.crt text eol=lf
