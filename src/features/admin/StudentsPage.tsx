@@ -88,7 +88,7 @@ export function StudentsPage() {
       {students.data.items.length === 0 ? <p className="staff-oversight__empty">{copy.noStudents}</p> : <div className="staff-oversight__table-wrap" tabIndex={0} role="region" aria-label={copy.students}><table className="staff-oversight__table">
         <thead><tr><th scope="col">{copy.name}</th><th scope="col">{copy.eligibility}</th><th scope="col">{copy.reading}</th><th scope="col">{copy.finished}</th><th scope="col">{copy.activeLoans}</th><th scope="col">{copy.overdueLoans}</th>{staffRole === 'administrator' && <th scope="col">{copy.accountManagement}</th>}</tr></thead>
         <tbody>{students.data.items.map(student => <tr key={student.user_id}>
-          <td><Link to={`/staff/students/${student.user_id}`}>{student.display_name}</Link><small>{student.email ?? copy.noEmail}</small></td>
+          <td><Link to={`/staff/students/${student.user_id}`}>{student.display_name}</Link></td>
           <td>{eligibility(student, copy)}</td><td>{student.currently_reading_count}</td><td>{student.finished_count}</td>
           <td><Link to={`/staff/circulation?student=${student.user_id}&status=active`}>{student.active_loan_count}</Link></td>
           <td><Link to={`/staff/circulation?student=${student.user_id}&status=overdue`}>{student.overdue_loan_count}</Link></td>
