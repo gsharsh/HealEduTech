@@ -21,7 +21,7 @@ export function BookCard({ book, onOpen }: {
   onOpen: (book: DemoBook) => void;
 }) {
   const { t, i18n } = useTranslation();
-  return <button type="button" className="book-card shelf-card" aria-haspopup="dialog" onClick={() => onOpen(book)}>
+  return <button type="button" className="book-card" onClick={() => onOpen(book)}>
     <BookCover book={book} />
     <span className="book-meta">{t(`topics.${book.topic}`)} · {t('minutes', { count: book.minutes })}</span>
     <span className="book-title">{book.title[i18n.language === 'vi' ? 'vi' : 'en']}</span>
@@ -42,7 +42,7 @@ export function CatalogueBookCover({ book, title, size = 'card' }: { book: Catal
         className="book-cover-image"
         src={imageSources.src}
         srcSet={imageSources.srcSet}
-        sizes={size === 'detail' ? '(max-width: 760px) min(70vw, 230px), min(330px, 32vw)' : '220px'}
+        sizes={size === 'detail' ? '(max-width: 760px) min(70vw, 230px), min(330px, 32vw)' : '(max-width: 430px) calc(100vw - 32px), (max-width: 760px) calc((100vw - 56px) / 2), 25vw'}
         loading="lazy"
         decoding="async"
         alt=""
@@ -62,13 +62,13 @@ export function CatalogueBookCard({ book, availabilityLabel, returnTo = '/librar
   const title = locale === 'vi' ? book.title_vi : book.title_en;
   const Heading = headingLevel === 3 ? 'h3' : 'h2';
   return <article className="catalogue-book catalogue-book-card">
-    <div className="catalogue-book-link shelf-card">
+    <Link className="catalogue-book-link" to={`/library/${encodeURIComponent(book.id)}?${new URLSearchParams({ returnTo }).toString()}`}>
       <CatalogueBookCover book={book} title={title} />
       <span className="book-meta">{t(`topics.${book.topic}`)} · {t(`catalogue.${book.language}`)}</span>
-      <Heading className="book-title"><Link className="catalogue-book-title-link" to={`/library/${encodeURIComponent(book.id)}?${new URLSearchParams({ returnTo }).toString()}`}>{title}</Link></Heading>
+      <Heading className="book-title">{title}</Heading>
       {book.author && <span className="catalogue-author">{book.author}</span>}
       <span className="availability">{availabilityLabel}</span>
-      <span className="text-link" aria-hidden="true">{t('viewBook')} →</span>
-    </div>
+      <span className="text-link">{t('viewBook')} <span aria-hidden="true">→</span></span>
+    </Link>
   </article>;
 }

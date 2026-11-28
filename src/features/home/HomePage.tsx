@@ -7,6 +7,7 @@ import { listBooks, type CatalogueBook } from '../library/catalogue';
 import { libraryTranslations } from '../library/libraryTranslations';
 import { supabase } from '../../lib/supabase';
 import { homeCopy, type HomeLanguage } from './homeCopy';
+import { useScrollStack } from '../../components/ui/ScrollStack';
 import './home.css';
 import { publicPath } from '../../content/publicPages';
 
@@ -15,43 +16,52 @@ const topics: Topic[] = ['nature', 'stories', 'science'];
 function DemoFeaturedCard({ book, language }: { book: DemoBook; language: HomeLanguage }) {
   return (
     <article className="home-demo-book">
-      <Link to={`/library?topic=${book.topic}`} className="shelf-card">
-        <div className={`book-cover home-demo-cover ${book.color}`} aria-hidden="true">
+      <Link to={`/library?topic=${book.topic}`} className="home-demo-book__link">
+        <div className={`home-demo-cover ${book.color}`} aria-hidden="true">
           <span>EVG · {language === 'vi' ? 'sách ví dụ' : 'example book'}</span>
           <strong>{book.title[language]}</strong>
           <b>{book.symbol}</b>
         </div>
-        <span className="book-meta">{homeCopy[language].topics[book.topic]} · {book.minutes} {language === 'vi' ? 'phút' : 'min'}</span>
-        <span className="book-title">{book.title[language]}</span>
-        <span className="text-link">{language === 'vi' ? 'Xem chủ đề' : 'Browse topic'} <span aria-hidden="true">↗</span></span>
+        <span className="home-book-meta">{homeCopy[language].topics[book.topic]} · {book.minutes} {language === 'vi' ? 'phút' : 'min'}</span>
+        <span className="home-book-title">{book.title[language]}</span>
+        <span className="home-text-link">{language === 'vi' ? 'Xem chủ đề' : 'Browse topic'} <span aria-hidden="true">↗</span></span>
       </Link>
     </article>
   );
 }
 
 function TopicStory({ copy }: { copy: typeof homeCopy[HomeLanguage] }) {
+  const { stackRef, itemRefs: chapterRefs } = useScrollStack<HTMLElement>();
+
   return (
-    <div className="home-topic-grid">
-      {topics.map(topic => (
-        <article
+    <div className="home-stack" ref={stackRef} aria-label={copy.topicsTitle}>
+      {topics.map((topic, index) => (
+        <section
           key={topic}
-          className={`home-topic home-topic--${topic}`}
-          aria-labelledby={`home-topic-${topic}-title`}
+          ref={element => { chapterRefs.current[index] = element; }}
+          className={`home-stack__chapter home-stack__chapter--${topic}`}
+          aria-labelledby={`home-stack-${topic}-title`}
         >
-          <Link className="home-topic__link" to={`/library?topic=${topic}`}>
-            <div className="home-topic__media" aria-hidden="true">
+          <div data-scroll-stack-card className={`home-stack__card home-stack__card--${topic}`}>
+            <div className="home-stack__content">
+              <div className="home-stack__eyebrow">
+                <span>{String(index + 1).padStart(2, '0')} / 03</span>
+                <span>{copy.kicker}</span>
+              </div>
+              <h3 id={`home-stack-${topic}-title`}>{copy.topics[topic]}</h3>
+              <p>{copy.topicDescription[topic]}</p>
+              <Link to={`/library?topic=${topic}`} className="home-stack__link">
+                {copy.topicAction} <span aria-hidden="true">↗</span>
+              </Link>
+            </div>
+            <div className="home-stack__media" aria-hidden="true">
               <picture>
-                <source srcSet={`/images/home/${topic}-800.webp 800w, /images/home/${topic}-1600.webp 1600w`} sizes="(max-width: 680px) calc(100vw - 32px), (max-width: 1208px) calc((100vw - 88px) / 3), 374px" type="image/webp" />
-                <img src={`/images/home/${topic}-800.webp`} width="800" height={topic === 'science' ? '800' : '534'} alt="" loading="lazy" decoding="async" />
+                <source srcSet={`/images/home/${topic}-800.webp 800w, /images/home/${topic}-1600.webp 1600w, /images/home/${topic}-2400.webp 2400w`} sizes="(max-width: 560px) calc(100vw - 32px), (max-width: 1208px) calc(100vw - 48px), 1160px" type="image/webp" />
+                <img src={`/images/home/${topic}-1600.webp`} width="1600" height={topic === 'science' ? '1600' : '1067'} alt="" loading="lazy" decoding="async" />
               </picture>
             </div>
-            <div className="home-topic__copy">
-              <h3 id={`home-topic-${topic}-title`}>{copy.topics[topic]}</h3>
-              <p>{copy.topicDescription[topic]}</p>
-              <span className="home-topic__action" id={`home-topic-${topic}-action`}>{copy.topicAction}<span className="home-topic__arrow" aria-hidden="true">↗</span></span>
-            </div>
-          </Link>
-        </article>
+          </div>
+        </section>
       ))}
     </div>
   );
@@ -103,18 +113,16 @@ export function HomePage() {
           </div>
         </div>
         <div className="home-hero__art" aria-hidden="true">
-          <span className="home-hero__art-label">{copy.heroArtLabel}</span>
           <img src="/images/home/library-bro-storyset.svg" width="750" height="500" alt="" fetchPriority="high" decoding="async" />
-          <span className="home-hero__art-note">{copy.heroArtMeta}</span>
         </div>
       </section>
 
       <section className="home-section home-shelf" aria-labelledby="home-featured-title">
         <div className="home-section-heading"><div><span className="home-eyebrow">{supabase ? copy.featuredKicker : copy.demoLabel}</span><h2 id="home-featured-title">{copy.featuredTitle}</h2>{!supabase && <p className="home-section-note">{copy.demoBody}</p>}</div><Link to="/library">{copy.featuredAll} <span aria-hidden="true">→</span></Link></div>
-        {supabase && result.loading && <div className="home-shelf-loading" role="status"><span className="evg-sr-only">{copy.loading}</span><div className="home-book-grid" aria-hidden="true">{[0, 1, 2, 3].map(item => <div key={item} className="home-book-placeholder"><span /><span /><span /></div>)}</div></div>}
+        {supabase && result.loading && <p className="home-status" role="status">{copy.loading}</p>}
         {supabase && result.failed && <div className="home-status home-status--error" role="alert"><p>{copy.loadError}</p><button type="button" className="home-button home-button--secondary" onClick={() => { setResult({ books: [], loading: true, failed: false }); setAttempt(value => value + 1); }}>{copy.retry}</button></div>}
         {supabase && !result.loading && !result.failed && result.books.length === 0 && <div className="home-status"><h3>{copy.emptyTitle}</h3><p>{copy.emptyBody}</p><Link className="home-button home-button--secondary" to="/library">{copy.openLibrary}</Link></div>}
-        {supabase && result.books.length > 0 && <div className="home-book-grid">{result.books.map(book => <CatalogueBookCard headingLevel={3} key={book.id} book={book} availabilityLabel={book.available_copies === undefined ? availability.availabilityUnknown : availability.availableLabel(book.available_copies)} />)}</div>}
+        {supabase && result.books.length > 0 && <div className="home-book-grid">{result.books.map(book => <CatalogueBookCard key={book.id} book={book} availabilityLabel={book.available_copies === undefined ? availability.availabilityUnknown : availability.availableLabel(book.available_copies)} />)}</div>}
         {!supabase && <div className="home-book-grid">{demoBooks.slice(0, 4).map(book => <DemoFeaturedCard key={book.id} book={book} language={language} />)}</div>}
       </section>
 

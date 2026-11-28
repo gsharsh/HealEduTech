@@ -1,5 +1,5 @@
-.app-recovery { min-height: 100dvh; color: var(--ink); background: var(--canvas-gradient); }
-.app-recovery__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px max(16px, calc((100% - 1160px) / 2)); border-bottom: 1px solid var(--line); background: var(--header-gradient); }
+.app-recovery { min-height: 100dvh; color: var(--ink); background: var(--canvas); }
+.app-recovery__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px max(16px, calc((100% - 1160px) / 2)); border-bottom: 1px solid var(--line); background: var(--paper); }
 .app-recovery__header > a { min-height: 44px; display: inline-flex; align-items: center; color: var(--ink); font-weight: 700; letter-spacing: .08em; text-decoration: none; }
 .app-recovery__main { width: min(44rem, calc(100% - 32px)); margin: 0 auto; padding-block: clamp(32px, 8vh, 80px); }
 .app-recovery__panel { text-align: start; padding: clamp(24px, 4vw, 40px); }
