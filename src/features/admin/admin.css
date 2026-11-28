@@ -28,6 +28,11 @@
 .admin-editor small { color: #65766f; font-weight: 400; }
 .admin-notice { margin: 0; padding: 12px 16px; border-radius: 8px; background: #eef5ef; color: #235f4d; }
 .admin-inventory { display: grid; gap: 16px; }
+.admin-inventory__search { display: grid; gap: 8px; }
+.admin-inventory__search > label { font-weight: 650; }
+.admin-inventory__search > div { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.admin-inventory__search input { flex: 1 1 auto; min-width: 0; min-height: var(--control-height); padding: 12px 14px; border: 1px solid var(--control-border); border-radius: var(--radius-md); background: var(--control-fill); color: var(--ink); font: inherit; }
+.admin-inventory__search button { flex: 0 0 auto; min-height: var(--control-height); }
 .admin-inventory__heading { padding-bottom: 12px; border-bottom: 1px solid #dce5dd; }
 .admin-inventory__empty { padding: 34px; text-align: center; border: 1px dashed #bac8bd; border-radius: var(--radius-md); }
 .admin-book-list { display: grid; gap: 10px; }
@@ -56,6 +61,8 @@
 .staff-table-wrap { min-width: 0; max-width: 100%; overflow-x: auto; }
 
 @media (max-width: 700px) {
+  .admin-inventory__search > div { flex-wrap: wrap; }
+  .admin-inventory__search input { flex-basis: 100%; }
   .admin-catalogue__heading, .admin-inventory__heading, .admin-editor__heading { align-items: stretch; flex-direction: column; gap: 12px; }
   .admin-catalogue__heading > .primary { width: 100%; }
   .admin-book-row { grid-template-columns: 48px minmax(0, 1fr); align-items: start; }
