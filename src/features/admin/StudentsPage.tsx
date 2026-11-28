@@ -33,11 +33,7 @@ function Pagination({ data, disabled, onPage, copy, label }: { data: Page<unknow
 
 export function StudentsPage() {
   const { i18n } = useTranslation();
-  const { staffRole } = useAccount();
   const copy = staffOversightCopy[i18n.language === 'vi' ? 'vi' : 'en'];
-  const [eligibilityBusy, setEligibilityBusy] = useState<string | null>(null);
-  const [eligibilityError, setEligibilityError] = useState(false);
-  const [eligibilitySaved, setEligibilitySaved] = useState(false);
   const [params, setParams] = useSearchParams();
   const search = params.get('search') ?? '';
   const requestedFilter = params.get('filter') ?? 'eligible';
@@ -57,22 +53,6 @@ export function StudentsPage() {
     setParams(next);
   }
 
-  async function changeEligibility(student: StudentSummary) {
-    if (staffRole !== 'administrator' || eligibilityBusy) return;
-    setEligibilityBusy(student.user_id);
-    setEligibilityError(false);
-    setEligibilitySaved(false);
-    try {
-      await setBorrowerEligibility(student.user_id, !student.eligible);
-      setEligibilitySaved(true);
-      notifyStaffDataChanged();
-    } catch {
-      setEligibilityError(true);
-    } finally {
-      setEligibilityBusy(null);
-    }
-  }
-
   return <div className="staff-oversight">
     <header className="staff-oversight__heading workspace-heading-surface"><div><h1>{copy.students}</h1><p>{copy.studentBody}</p></div><Link className="secondary" to="/staff/dashboard">{copy.dashboard}</Link></header>
     <section className="staff-oversight__panel">
@@ -82,17 +62,14 @@ export function StudentsPage() {
         <button className="primary" type="submit">{copy.apply}</button>
       </form>
     </section>
-    {eligibilityError && <p role="alert" className="form-error">{copy.eligibilityFailed}</p>}
-    {eligibilitySaved && <p role="status" className="circulation-notice">{copy.eligibilityUpdated}</p>}
     {!students.data ? <LoadingState error={students.error} retry={students.reload} copy={copy} /> : <section className="staff-oversight__panel" aria-busy={students.loading}>
       {students.data.items.length === 0 ? <p className="staff-oversight__empty">{copy.noStudents}</p> : <div className="staff-oversight__table-wrap" tabIndex={0} role="region" aria-label={copy.students}><table className="staff-oversight__table">
-        <thead><tr><th scope="col">{copy.name}</th><th scope="col">{copy.eligibility}</th><th scope="col">{copy.reading}</th><th scope="col">{copy.finished}</th><th scope="col">{copy.activeLoans}</th><th scope="col">{copy.overdueLoans}</th>{staffRole === 'administrator' && <th scope="col">{copy.accountManagement}</th>}</tr></thead>
+        <thead><tr><th scope="col">{copy.name}</th><th scope="col">{copy.eligibility}</th><th scope="col">{copy.reading}</th><th scope="col">{copy.finished}</th><th scope="col">{copy.activeLoans}</th><th scope="col">{copy.overdueLoans}</th></tr></thead>
         <tbody>{students.data.items.map(student => <tr key={student.user_id}>
           <td><Link to={`/staff/students/${student.user_id}`}>{student.display_name}</Link></td>
           <td>{eligibility(student, copy)}</td><td>{student.currently_reading_count}</td><td>{student.finished_count}</td>
           <td><Link to={`/staff/circulation?student=${student.user_id}&status=active`}>{student.active_loan_count}</Link></td>
           <td><Link to={`/staff/circulation?student=${student.user_id}&status=overdue`}>{student.overdue_loan_count}</Link></td>
-          {staffRole === 'administrator' && <td><button type="button" className="secondary staff-oversight__account-action" disabled={eligibilityBusy !== null || !student.registered} onClick={() => void changeEligibility(student)}>{eligibilityBusy === student.user_id ? copy.saving : student.eligible ? copy.removeAccount : copy.restoreAccount}</button></td>}
         </tr>)}</tbody>
       </table></div>}
       <Pagination label={copy.students} data={students.data} disabled={students.loading} onPage={next => { const values = new URLSearchParams(params); values.set('page', String(next)); setParams(values); }} copy={copy} />
@@ -109,9 +86,13 @@ function loanStatus(loan: StaffLoan, copy: Copy) {
 export function StudentDetailPage() {
   const { studentId = '' } = useParams();
   const { i18n } = useTranslation();
+  const { staffRole } = useAccount();
   const language = i18n.language === 'vi' ? 'vi' : 'en';
   const copy = staffOversightCopy[language];
   const teaching = teachingCopy[language];
+  const [eligibilityBusy, setEligibilityBusy] = useState(false);
+  const [eligibilityError, setEligibilityError] = useState(false);
+  const [eligibilitySaved, setEligibilitySaved] = useState(false);
   const [params, setParams] = useSearchParams();
   const validId = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentId);
   const readingPage = pageNumber(params.get('readingPage'));
@@ -137,9 +118,27 @@ export function StudentDetailPage() {
   const profile = student.data;
   const timeZone = policy.data?.timezone ?? 'Asia/Ho_Chi_Minh';
 
+  async function changeEligibility() {
+    if (staffRole !== 'administrator' || eligibilityBusy || !profile.registered) return;
+    setEligibilityBusy(true);
+    setEligibilityError(false);
+    setEligibilitySaved(false);
+    try {
+      await setBorrowerEligibility(profile.user_id, !profile.eligible);
+      setEligibilitySaved(true);
+      notifyStaffDataChanged();
+    } catch {
+      setEligibilityError(true);
+    } finally {
+      setEligibilityBusy(false);
+    }
+  }
+
   return <div className="staff-oversight">
     <Link className="staff-oversight__text-link" to="/staff/students">← {copy.back}</Link>
-    <header className="staff-oversight__heading workspace-heading-surface"><div><span className="eyebrow">{copy.students}</span><h1>{profile.display_name}</h1><p>{profile.email ?? copy.noEmail}</p></div><Link className="secondary" to={`/staff/circulation?student=${studentId}`}>{copy.viewCirculation}</Link></header>
+    <header className="staff-oversight__heading workspace-heading-surface"><div><span className="eyebrow">{copy.students}</span><h1>{profile.display_name}</h1><p>{profile.email ?? copy.noEmail}</p></div><div className="staff-profile-actions">{staffRole === 'administrator' && profile.registered && <button type="button" className="secondary" disabled={eligibilityBusy} onClick={() => void changeEligibility()}>{eligibilityBusy ? copy.saving : profile.eligible ? copy.removeAccount : copy.restoreAccount}</button>}<Link className="secondary" to={`/staff/circulation?student=${studentId}`}>{copy.viewCirculation}</Link></div></header>
+    {eligibilityError && <p role="alert" className="form-error">{copy.eligibilityFailed}</p>}
+    {eligibilitySaved && <p role="status" className="circulation-notice">{copy.eligibilityUpdated}</p>}
     <section className="staff-oversight__panel"><dl className="staff-oversight__identity">
       <div><dt>{copy.email}</dt><dd>{profile.email ?? copy.noEmail}</dd></div><div><dt>{copy.language}</dt><dd>{profile.preferred_language === 'vi' ? copy.vietnamese : copy.english}</dd></div>
       <div><dt>{copy.joined}</dt><dd>{staffDate(profile.created_at, language, false, timeZone)}</dd></div><div><dt>{copy.eligibility}</dt><dd>{eligibility(profile, copy)}</dd></div>
