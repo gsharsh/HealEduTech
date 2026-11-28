@@ -3,6 +3,7 @@
 .staff-oversight__heading { display: flex; align-items: start; justify-content: space-between; gap: 20px; }
 .staff-oversight__heading h1 { margin: 4px 0 10px; }
 .staff-oversight__heading p { max-width: 690px; margin: 0; }
+.staff-profile-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
 .staff-oversight__panel { padding: clamp(18px, 3vw, 28px); border: 1px solid var(--line); border-radius: 20px; background: var(--paper); }
 .staff-oversight__panel > :last-child { margin-bottom: 0; }
 .staff-oversight__panel-heading { display: flex; align-items: start; justify-content: space-between; gap: 18px; margin-bottom: 16px; }
@@ -67,6 +68,7 @@ a.staff-metric:hover { background: #e4eddf; }
 @media (max-width: 760px) {
   .staff-overview-grid { grid-template-columns: 1fr; }
   .staff-oversight__heading { flex-direction: column; }
+  .staff-profile-actions { justify-content: flex-start; }
   .staff-oversight__identity { grid-template-columns: 1fr; gap: 16px; }
   .staff-oversight__attention-item { grid-template-columns: 1fr; }
   .staff-oversight__attention-item .secondary { justify-self: start; }
@@ -78,4 +80,3 @@ a.staff-metric:hover { background: #e4eddf; }
   .staff-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .staff-metric { padding: 12px; }
 }
-.staff-oversight__account-action { min-height: 44px; white-space: nowrap; }
