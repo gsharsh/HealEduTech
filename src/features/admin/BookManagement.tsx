@@ -109,6 +109,10 @@ function CatalogueManagement() {
     if (saving.current || book.book_copies[0]?.count === undefined) return;
     setEditor(editorFromBook(book)); setStatus('idle'); focusEditor();
   }
+  function beginRemove(book: CatalogueBook) {
+    if (saving.current || book.book_copies[0]?.count === undefined) return;
+    setRemoving(book); setRemovalError(''); setRemovalConflict(false); setRemoved(false);
+  }
   function applySearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const value = String(new FormData(event.currentTarget).get('q') ?? '').trim();
@@ -117,6 +121,7 @@ function CatalogueManagement() {
   function changePage(value: number) {
     const next = new URLSearchParams(params); next.set('page', String(value + 1)); setParams(next);
   }
+  const editingBook = editor?.mode === 'edit' ? books.find(book => book.id === editor.id) : undefined;
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -167,7 +172,7 @@ function CatalogueManagement() {
               </div>
               {(['description_en', 'description_vi'] as const).map(field => <label key={field}>{t(`catalogue.${field}`)}<textarea value={editor.value[field]} onChange={event => setEditor(current => current ? ({ ...current, value: { ...current.value, [field]: event.target.value } } as EditorState) : current)} maxLength={2000} rows={4} /></label>)}
               {editor.mode === 'edit' && <p className="admin-editor__note">{t('catalogue.copySafety')}</p>}
-              <div className="form-actions"><button type="submit" className="primary">{t(busy ? 'auth.working' : editor.mode === 'new' ? 'catalogue.save' : 'catalogue.saveChanges')}</button><button type="button" className="secondary" onClick={() => setEditor(null)}>{t('catalogue.cancel')}</button></div>
+              <div className="form-actions"><button type="submit" className="primary">{t(busy ? 'auth.working' : editor.mode === 'new' ? 'catalogue.save' : 'catalogue.saveChanges')}</button><button type="button" className="secondary" onClick={() => setEditor(null)}>{t('catalogue.cancel')}</button>{editingBook && <button type="button" className="secondary admin-editor__remove" disabled={busy || editingBook.book_copies[0]?.count === undefined} onClick={() => beginRemove(editingBook)}>{teaching.remove}</button>}</div>
             </fieldset></form>
           </section>}
           {status === 'saved' && <p className="admin-notice" role="status">{t('catalogue.saved')}</p>}
@@ -180,7 +185,7 @@ function CatalogueManagement() {
             </form>
             {viewState === 'loading' ? <p role="status">{t('catalogue.loading')}</p> : viewState === 'error' ? <div role="alert"><p>{t('catalogue.loadError')}</p><button className="secondary" type="button" disabled={busy} onClick={reloadCatalogue}>{t('catalogue.retry')}</button></div> : books.length === 0 ? <div className="admin-inventory__empty"><p>{query ? copy.noMatches : t('catalogue.empty')}</p><button className="primary" type="button" disabled={busy} onClick={beginAdd}>{t('catalogue.addAction')}</button></div> : <div className="admin-book-list">{books.map(book => {
               const title = locale === 'vi' ? book.title_vi : book.title_en; const description = locale === 'vi' ? book.description_vi : book.description_en; const registered = book.book_copies[0]?.count;
-              return <article className="admin-book-row" key={book.id}><div className="admin-book-row__cover" aria-hidden="true" style={book.cover_url ? { backgroundImage: `url(${book.cover_url})` } : undefined}>{!book.cover_url && title.slice(0, 1)}</div><div className="admin-book-row__body"><h3>{title}</h3><p className="admin-book-row__meta">{book.author || t('catalogue.unknownAuthor')} · {t(`topics.${book.topic}`)}</p>{description && <p className="admin-book-row__description">{description}</p>}<p className="admin-book-row__stock">{registered === undefined ? copy.stockUnavailable : book.available_copies === undefined ? `${registered} ${copy.stockTotal} · ${copy.stockUnknown}` : t('catalogue.stockSummary', { available: book.available_copies, total: registered })}</p></div><div className="admin-book-row__actions"><button className="secondary" type="button" disabled={busy || registered === undefined} onClick={() => beginEdit(book)}>{t('catalogue.editAction')}</button><button className="text-link" type="button" disabled={busy || registered === undefined} onClick={() => { setRemoving(book); setRemovalError(''); setRemovalConflict(false); setRemoved(false); }}>{teaching.remove}</button></div></article>;
+              return <article className="admin-book-row" key={book.id}><div className="admin-book-row__cover" aria-hidden="true" style={book.cover_url ? { backgroundImage: `url(${book.cover_url})` } : undefined}>{!book.cover_url && title.slice(0, 1)}</div><div className="admin-book-row__body"><h3>{title}</h3><p className="admin-book-row__meta">{book.author || t('catalogue.unknownAuthor')} · {t(`topics.${book.topic}`)}</p>{description && <p className="admin-book-row__description">{description}</p>}<p className="admin-book-row__stock">{registered === undefined ? copy.stockUnavailable : book.available_copies === undefined ? `${registered} ${copy.stockTotal} · ${copy.stockUnknown}` : t('catalogue.stockSummary', { available: book.available_copies, total: registered })}</p></div><div className="admin-book-row__actions"><button className="secondary" type="button" disabled={busy || registered === undefined} onClick={() => beginEdit(book)}>{t('catalogue.editAction')}</button></div></article>;
             })}</div>}
             {viewState === 'ready' && <nav className="admin-inventory__pagination" aria-label={copy.inventory}>
               <span role="status">{total.toLocaleString(locale)} {copy.titles(total)} · {copy.page} {page + 1} {copy.of} {Math.max(1, Math.ceil(total / 24))}</span>
