@@ -74,7 +74,6 @@ export function StudentsPage() {
       </table></div>}
       <Pagination label={copy.students} data={students.data} disabled={students.loading} onPage={next => { const values = new URLSearchParams(params); values.set('page', String(next)); setParams(values); }} copy={copy} />
     </section>}
-    <p className="staff-oversight__note">{copy.privacy}</p>
   </div>;
 }
 
@@ -174,6 +173,5 @@ export function StudentDetailPage() {
         <Pagination label={copy.borrowingHistory} data={loans.data} disabled={loans.loading} onPage={page => updatePage('loanPage', page)} copy={copy} />
       </>}
     </section>
-    <p className="staff-oversight__note">{copy.privacy}</p>
   </div>;
 }
