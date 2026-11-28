@@ -60,8 +60,6 @@ export function LearningJourney({ topic, onTopic, books, preferences, preference
     <header className="explore-intro"><h1>{copy.title}</h1><p>{copy.intro}</p></header>
     <section className="explore-coming-soon" aria-labelledby="explore-coming-soon-title">
       <div><h2 id="explore-coming-soon-title">{copy.comingSoonTitle}</h2><p>{copy.comingSoonBody}</p></div>
-      <h3>{copy.availableActivities}</h3>
-      <ul>{exploreTopics.map(item => <li key={item}><Link to={`/explore?topic=${item}&view=activity`}>{t(`activities.${item}.title`)}</Link></li>)}</ul>
     </section>
     {demo && <p className="explore-demo">{copy.demoBody}</p>}
     <div className="explore-toolbar">
