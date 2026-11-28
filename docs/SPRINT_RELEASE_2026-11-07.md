@@ -30,7 +30,7 @@ Existing authenticated account, reading, catalogue and circulation actions from 
 
 Design sources are legitimate public author material and design-system guidance, not unauthorised copies of books. See the [design/flow map](SPRINT_DESIGN_AND_FLOWS_2026-11-07.md) and [dashboard design](DASHBOARD_DESIGN_2026-11-07.md).
 
-Saved visual examples: [desktop homepage](review/2026-11-07/home-desktop.png), [phone homepage](review/2026-11-07/home-phone.png), [Explore](review/2026-11-07/explore-desktop.png), [Together](review/2026-11-07/together-desktop.png), and [staff dashboard](review/2026-11-07/dashboard-desktop.png). These browser-test captures use synthetic catalogue and dashboard records, not real student activity.
+The original browser captures used synthetic catalogue and dashboard records and have been removed from the repository. Review the current layouts in the running application.
 
 ### Explore: individual learning
 

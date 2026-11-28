@@ -12,7 +12,8 @@ insert into public.book_copies(id,book_id,inventory_code,condition) values
  ('83000000-0000-4000-8000-000000000001','82000000-0000-4000-8000-000000000002','REMOVE-UNUSED','usable'),
  ('83000000-0000-4000-8000-000000000004','82000000-0000-4000-8000-000000000004','KEEP-LOAN-HISTORY','usable');
 insert into public.circulation_borrowers(user_id,display_name,registered_by) values
- ('81000000-0000-4000-8000-000000000002','Synthetic learner','81000000-0000-4000-8000-000000000001');
+ ('81000000-0000-4000-8000-000000000002','Synthetic learner','81000000-0000-4000-8000-000000000001')
+on conflict (user_id) do update set display_name = excluded.display_name, registered_by = excluded.registered_by;
 insert into public.loans(id,request_id,borrower_user_id,copy_id,due_date,checked_out_by) values
  ('84000000-0000-4000-8000-000000000004','85000000-0000-4000-8000-000000000004','81000000-0000-4000-8000-000000000002','83000000-0000-4000-8000-000000000004',current_date+7,'81000000-0000-4000-8000-000000000001');
 create temporary table confirmed_book_snapshots on commit drop as

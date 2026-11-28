@@ -58,6 +58,11 @@ export function LearningJourney({ topic, onTopic, books, preferences, preference
 
   return <div className="explore-page">
     <header className="explore-intro"><h1>{copy.title}</h1><p>{copy.intro}</p></header>
+    <section className="explore-coming-soon" aria-labelledby="explore-coming-soon-title">
+      <div><h2 id="explore-coming-soon-title">{copy.comingSoonTitle}</h2><p>{copy.comingSoonBody}</p></div>
+      <h3>{copy.availableActivities}</h3>
+      <ul>{exploreTopics.map(item => <li key={item}><Link to={`/explore?topic=${item}&view=activity`}>{t(`activities.${item}.title`)}</Link></li>)}</ul>
+    </section>
     {demo && <p className="explore-demo">{copy.demoBody}</p>}
     <div className="explore-toolbar">
       <label className="explore-topic-field" htmlFor="explore-topic"><span>{copy.topicLabel}</span><select id="explore-topic" value={topic} onChange={event => onTopic(event.target.value as Topic)}>{exploreTopics.map(item => <option key={item} value={item}>{t(`topics.${item}`)}</option>)}</select></label>
@@ -83,7 +88,7 @@ export function LearningJourney({ topic, onTopic, books, preferences, preference
     </section>
     <section className="explore-content-view" role="tabpanel" id="explore-panel-activity" aria-labelledby="explore-tab-activity" hidden={view !== 'activity'}>
       <ActivityCard key={topic} topic={topic} />
-      <div className="explore-reflection"><p>{copy.reflectBody}</p><Link className="explore-browse-link" to="/learning">{copy.readingLink} <span aria-hidden="true">→</span></Link><Link className="explore-browse-link" to="/community">{copy.togetherLink} <span aria-hidden="true">→</span></Link></div>
+      <div className="explore-reflection"><p>{copy.reflectBody}</p><Link className="explore-browse-link" to="/learning">{copy.readingLink} <span aria-hidden="true">→</span></Link></div>
     </section>
     {preferencesLabel ? <details className="explore-preferences" ref={preferencesRef}><summary>{preferencesLabel}</summary>{preferences}</details> : preferences}
   </div>;

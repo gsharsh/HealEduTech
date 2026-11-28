@@ -109,12 +109,6 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="home-section home-topics" aria-labelledby="home-topics-title">
-        <div className="home-section-heading"><div><span className="home-eyebrow">{copy.topicsKicker}</span><h2 id="home-topics-title">{copy.topicsTitle}</h2></div><Link to="/library">{copy.allTopics} <span aria-hidden="true">→</span></Link></div>
-        <p className="home-story-intro">{copy.storyIntro}</p>
-        <TopicStory copy={copy} />
-      </section>
-
       <section className="home-section home-shelf" aria-labelledby="home-featured-title">
         <div className="home-section-heading"><div><span className="home-eyebrow">{supabase ? copy.featuredKicker : copy.demoLabel}</span><h2 id="home-featured-title">{copy.featuredTitle}</h2>{!supabase && <p className="home-section-note">{copy.demoBody}</p>}</div><Link to="/library">{copy.featuredAll} <span aria-hidden="true">→</span></Link></div>
         {supabase && result.loading && <div className="home-shelf-loading" role="status"><span className="evg-sr-only">{copy.loading}</span><div className="home-book-grid" aria-hidden="true">{[0, 1, 2, 3].map(item => <div key={item} className="home-book-placeholder"><span /><span /><span /></div>)}</div></div>}
@@ -122,6 +116,12 @@ export function HomePage() {
         {supabase && !result.loading && !result.failed && result.books.length === 0 && <div className="home-status"><h3>{copy.emptyTitle}</h3><p>{copy.emptyBody}</p><Link className="home-button home-button--secondary" to="/library">{copy.openLibrary}</Link></div>}
         {supabase && result.books.length > 0 && <div className="home-book-grid">{result.books.map(book => <CatalogueBookCard headingLevel={3} key={book.id} book={book} availabilityLabel={book.available_copies === undefined ? availability.availabilityUnknown : availability.availableLabel(book.available_copies)} />)}</div>}
         {!supabase && <div className="home-book-grid">{demoBooks.slice(0, 4).map(book => <DemoFeaturedCard key={book.id} book={book} language={language} />)}</div>}
+      </section>
+
+      <section className="home-section home-topics" aria-labelledby="home-topics-title">
+        <div className="home-section-heading"><div><span className="home-eyebrow">{copy.topicsKicker}</span><h2 id="home-topics-title">{copy.topicsTitle}</h2></div><Link to="/library">{copy.allTopics} <span aria-hidden="true">→</span></Link></div>
+        <p className="home-story-intro">{copy.storyIntro}</p>
+        <TopicStory copy={copy} />
       </section>
     </div>
   );

@@ -5,7 +5,7 @@ import { useStaffAlerts } from './useStaffAlerts';
 import './staff-page.css';
 
 type WorkspaceCardProps = {
-  icon: 'dashboard' | 'students' | 'catalogue' | 'circulation' | 'together' | 'training' | 'access';
+  icon: 'dashboard' | 'students' | 'catalogue' | 'circulation' | 'access';
   wide?: boolean;
   title: string;
   body: string;
@@ -18,8 +18,6 @@ const workspaceIcons = {
   students: 'M16 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M19 8a3 3 0 0 1 0 6M21 20v-2a4 4 0 0 0-2-3.5M13 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z',
   catalogue: 'M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Zm0 0v15',
   circulation: 'M4 7h15m-4-4 4 4-4 4M20 17H5m4-4-4 4 4 4',
-  together: 'M20 11a8 8 0 0 1-8 8H5l-4 3V11a8 8 0 0 1 8-8h3a8 8 0 0 1 8 8ZM6 9h9M6 13h6',
-  training: 'm3 8 9-5 9 5-9 5-9-5Zm4 3v6l5 3 5-3v-6M21 8v8',
   access: 'M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6l-8-3Zm-4 9 3 3 5-6',
 };
 
@@ -45,7 +43,7 @@ export function StaffPage() {
     <header className="staff-page__hero workspace-heading-surface">
       <div>
         <h1>{t('access.openDesk')}</h1>
-        <p>{vi ? 'Quản lý mượn trả, hỗ trợ việc đọc và duyệt những khám phá của học sinh.' : 'Manage loans, support reading, and review your students’ discoveries.'}</p>
+        <p>{vi ? 'Quản lý sách, mượn trả và hỗ trợ học sinh đọc sách.' : 'Manage the collection, loans, and returns, and support students’ reading.'}</p>
       </div>
       {staffRole && <span className="staff-page__role">{t(`staffAccess.roles.${staffRole}`)}</span>}
     </header>
@@ -80,14 +78,6 @@ export function StaffPage() {
           body={t('workspaces.circulationBody')}
           action={t('workspaces.openCirculation')}
           to="/staff/circulation"
-        />
-        <WorkspaceCard icon="together" title={vi ? 'Khám phá của học sinh' : 'Student discoveries'} body={vi ? 'Duyệt bài đọc, bài trình bày và trò chuyện trước khi chia sẻ với lớp.' : 'Review reading projects, presentations, and conversations before they are shared with the class.'} action={vi ? 'Mở bàn duyệt' : 'Open review desk'} to="/community#review-desk-title" />
-        <WorkspaceCard
-          icon="training"
-          title={t('staffTraining.title')}
-          body={t('staffTraining.body')}
-          action={t('staffTraining.nav')}
-          to="/staff/training"
         />
         {isAdministrator && <WorkspaceCard
           icon="access"

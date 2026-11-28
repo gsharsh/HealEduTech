@@ -23,7 +23,8 @@ insert into public.reading_records(user_id,book_id,status)
 select md5('oversight-student-'||i)::uuid,'72000000-0000-4000-8000-000000000001','finished' from generate_series(1,1101) i;
 insert into public.circulation_borrowers(user_id,display_name,registered_by) values
  ('71000000-0000-4000-8000-000000000003','Old student name','71000000-0000-4000-8000-000000000002'),
- ('71000000-0000-4000-8000-000000000004','Student Two','71000000-0000-4000-8000-000000000002');
+ ('71000000-0000-4000-8000-000000000004','Student Two','71000000-0000-4000-8000-000000000002')
+on conflict (user_id) do update set display_name = excluded.display_name, registered_by = excluded.registered_by;
 insert into public.book_copies(id,book_id,inventory_code,condition)
 select md5('oversight-copy-'||i)::uuid,'72000000-0000-4000-8000-000000000001','OVERSIGHT-'||i,
   case i when 9 then 'damaged' when 10 then 'lost' else 'usable' end from generate_series(1,10) i;
@@ -67,6 +68,8 @@ select set_config('request.jwt.claims','{"sub":"71000000-0000-4000-8000-00000000
 do $$ declare result jsonb; stats jsonb; begin
   result := public.staff_list_students();
   if (result->>'total')::int <> 1103 or jsonb_array_length(result->'items') <> 25 then raise exception 'Student count/page truncated or includes staff'; end if;
+  if (public.staff_list_students('',1,25,'eligible')->>'total')::int <> 1103
+    or (public.staff_list_students('',1,25,'removed')->>'total')::int <> 0 then raise exception 'New accounts were not eligible by default'; end if;
   result := public.staff_list_students('',12,100);
   if jsonb_array_length(result->'items') <> 3 or (result->>'total')::int <> 1103 then raise exception 'Stable final page failed'; end if;
   result := public.staff_list_students('Student One');
@@ -87,6 +90,7 @@ do $$ declare result jsonb; stats jsonb; begin
   begin perform count(*) from staff_oversight_private.students(); raise exception 'Private student projection directly callable'; exception when insufficient_privilege then null; end;
   result := public.staff_list_loans('', 'all');
   if (result->>'total')::int <> 1111 or jsonb_array_length(result->'items') <>25 then raise exception 'Loan totals truncated'; end if;
+  if (result->'items'->0->>'checked_out_at')::timestamptz > (result->'items'->24->>'checked_out_at')::timestamptz then raise exception 'Loans are not ordered earliest to latest'; end if;
   result := public.staff_list_loans('OVERSIGHT-4','followup');
   if (result->>'total')::int <> 1 or (result->'items'->0->>'days_overdue')::int <> 7 then raise exception 'Seven-day alert boundary failed'; end if;
   if (public.staff_list_loans('','followup')->>'total')::int <>4 or public.staff_alert_count() <> 4 then raise exception 'Staff alert count wrong'; end if;
@@ -108,6 +112,21 @@ do $$ declare result jsonb; stats jsonb; begin
   if (stats->'popular'->0->>'checkouts')::int <>1101 then raise exception 'Popular book totals truncated'; end if;
   begin perform public.staff_list_students('',0); raise exception 'Invalid pagination accepted'; exception when invalid_parameter_value then null; end;
   begin perform public.staff_dashboard_stats(8); raise exception 'Invalid dashboard range accepted'; exception when invalid_parameter_value then null; end;
+end $$;
+
+select set_config('request.jwt.claims','{"sub":"71000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
+select public.set_circulation_borrower_eligibility('71000000-0000-4000-8000-000000000004', false);
+do $$ begin
+  if (public.staff_list_students('',1,25,'eligible')->>'total')::int <> 1102
+    or (public.staff_list_students('',1,25,'removed')->>'total')::int <> 1 then raise exception 'Administrator eligibility removal did not filter the student'; end if;
+end $$;
+select public.set_circulation_borrower_eligibility('71000000-0000-4000-8000-000000000004', true);
+select set_config('request.jwt.claims','{"sub":"71000000-0000-4000-8000-000000000002","role":"authenticated"}',true);
+do $$ begin
+  begin
+    perform public.set_circulation_borrower_eligibility('71000000-0000-4000-8000-000000000004', false);
+    raise exception 'Librarian removed a student account';
+  exception when insufficient_privilege then null; end;
 end $$;
 
 select public.staff_record_loan_contact('73000000-0000-4000-8000-000000000001',md5('oversight-loan-4')::uuid);

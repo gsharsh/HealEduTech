@@ -1,4 +1,5 @@
 .circulation-grid { display: grid; gap: 1rem; }
+.circulation-grid > .circulation-wide { order: -1; }
 .circulation-card { padding: 1.25rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--paper); }
 .circulation-card h2 { margin-top: 0; }
 .circulation-form { display: grid; gap: .75rem; }
@@ -30,6 +31,7 @@
 .circulation-filters label { display: grid; gap: 8px; font-size: .875rem; font-weight: 650; }
 .circulation-search { display: flex; gap: 8px; margin-top: 8px; }
 .circulation-search input { min-width: 0; width: 100%; }
+.circulation-search__button { flex: 0 0 auto; min-width: 108px; min-height: var(--control-height); }
 .circulation-filters input, .circulation-filters select, .loan-followup input, .loan-followup textarea { min-height: var(--control-height); padding: 12px 14px; border: 1px solid var(--control-border); border-radius: var(--radius-md); background: var(--control-fill); color: var(--ink); font: inherit; font-size: 1rem; }
 .circulation-filters select { width: 100%; }
 .circulation-meta { display: block; margin-top: 5px; overflow-wrap: anywhere; font-size: .8125rem; }

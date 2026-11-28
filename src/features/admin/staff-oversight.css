@@ -20,6 +20,7 @@
 .staff-oversight__table tbody tr:hover { background: var(--surface-secondary); }
 .staff-oversight__table small { display: block; color: var(--muted); margin-top: 4px; overflow-wrap: anywhere; }
 .staff-oversight__table a, .staff-oversight__text-link { color: var(--green-strong); text-decoration: underline; text-underline-offset: 3px; font-weight: 650; }
+.staff-oversight__account-action { min-height: 44px; white-space: nowrap; }
 .staff-oversight__identity { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 28px; margin: 0; }
 .staff-oversight__identity dt { color: var(--muted); font-size: .8125rem; margin-bottom: 5px; }
 .staff-oversight__identity dd { margin: 0; font-weight: 650; overflow-wrap: anywhere; }

@@ -205,7 +205,6 @@ export function AppShell() {
           <NavLink to="/library" onClick={closeMobileNavFromLink}>{t('library')}</NavLink>
           <NavLink to="/learning" onClick={closeMobileNavFromLink}>{isVietnamese ? 'Sách của em' : 'My reading'}</NavLink>
           <NavLink to="/explore" onClick={closeMobileNavFromLink}>{t('explore')}</NavLink>
-          <NavLink to="/community" onClick={closeMobileNavFromLink}>{t('community')}</NavLink>
         </nav>
         <div className="evg-header-actions">
           {canOpenDesk && <NavLink className="evg-desk-link" to="/staff">{t('access.openDesk')}{alerts.count !== null && alerts.count > 0 && <span className="staff-alert-badge" aria-label={`${alerts.count} ${isVietnamese ? 'lượt mượn quá hạn từ 7 ngày' : 'loans overdue by 7+ days'}`}>{alerts.count}</span>}</NavLink>}
@@ -256,7 +255,6 @@ export function AppShell() {
           <NavLink to="/staff/catalogue">{t('access.catalogue')}</NavLink>
           <NavLink to="/staff/circulation" aria-current={followupActive ? false : 'page'} className={({ isActive }) => isActive && !followupActive ? 'active' : ''}>{t('access.circulation')}</NavLink>
           <Link to="/staff/circulation?status=followup" className={followupActive ? 'active' : undefined} aria-current={followupActive ? 'page' : undefined}>{isVietnamese ? 'Cần theo dõi' : 'Needs attention'}{alerts.count !== null && alerts.count > 0 && <span className="staff-alert-badge">{alerts.count}</span>}</Link>
-          <NavLink to="/staff/training">{t('staffTraining.nav')}</NavLink>
           {staffRole === 'administrator' && <NavLink to="/admin/settings">{t('access.administration')}</NavLink>}
         </nav>
       )}
@@ -281,7 +279,6 @@ export function AppShell() {
           <NavLink to={publicPath('/help', language)}>{isVietnamese ? 'Trợ giúp' : 'Help'}</NavLink>
           <NavLink to={publicPath('/privacy', language)}>{isVietnamese ? 'Quyền riêng tư' : 'Privacy'}</NavLink>
           <NavLink to="/explore">{t('explore')}</NavLink>
-          <NavLink to="/community">{t('community')}</NavLink>
         </nav>
         {(pathname === '/' || pathname === '/vi') && <a className="evg-footer-credit" href="https://storyset.com/people" lang="en">People illustrations by Storyset</a>}
       </footer>

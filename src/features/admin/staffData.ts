@@ -39,6 +39,9 @@ async function rpc<T>(name: string, args: Record<string, unknown> = {}, signal?:
 export function listStudents(options: { search?: string; page?: number; pageSize?: number; filter?: string; signal?: AbortSignal } = {}) {
   return rpc<Page<StudentSummary>>('staff_list_students', { p_search: options.search ?? '', p_page: options.page ?? 1, p_page_size: options.pageSize ?? 25, p_filter: options.filter ?? 'all' }, options.signal);
 }
+export function setBorrowerEligibility(userId: string, eligible: boolean) {
+  return rpc<{ user_id: string; eligible: boolean }>('set_circulation_borrower_eligibility', { p_user_id: userId, p_eligible: eligible });
+}
 export function getStudent(userId: string, signal?: AbortSignal) {
   return rpc<StudentSummary | null>('staff_get_student', { p_user_id: userId }, signal);
 }

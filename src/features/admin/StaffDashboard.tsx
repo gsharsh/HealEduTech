@@ -10,7 +10,7 @@ const dashboardCopy = {
   en: {
     overview: 'Today at the library', operations: 'Open loan desk', support: 'Support your students',
     supportBody: 'See what each student is reading, explore their topics, and review the discoveries they choose to share.',
-    review: 'Review Together submissions', snapshotHint: 'Live records, shown in the centre’s timezone.',
+    snapshotHint: 'Live records, shown in the centre’s timezone.',
     periodHint: 'Period applies to lending trends and most-borrowed books.',
     zeroTrends: 'No checkouts or returns in this period.', zeroTrendsBody: 'Weekly activity will appear here as loans are recorded.',
     totalCopies: 'Registered copies', checkoutsTotal: 'Checkouts in period', returnsTotal: 'Returns in period',
@@ -21,7 +21,7 @@ const dashboardCopy = {
   vi: {
     overview: 'Thư viện hôm nay', operations: 'Mở bàn mượn trả', support: 'Hỗ trợ học sinh',
     supportBody: 'Xem sách từng em đang đọc, tìm hiểu chủ đề các em yêu thích và duyệt những khám phá các em muốn chia sẻ.',
-    review: 'Duyệt bài gửi Cùng nhau', snapshotHint: 'Hồ sơ hiện tại, hiển thị theo múi giờ trung tâm.',
+    snapshotHint: 'Hồ sơ hiện tại, hiển thị theo múi giờ trung tâm.',
     periodHint: 'Khoảng thời gian áp dụng cho biểu đồ mượn trả và sách được mượn nhiều nhất.',
     zeroTrends: 'Chưa có lượt mượn hoặc trả trong khoảng này.', zeroTrendsBody: 'Hoạt động theo tuần sẽ xuất hiện khi có hồ sơ mượn sách.',
     totalCopies: 'Bản sách đã đăng ký', checkoutsTotal: 'Lượt mượn trong kỳ', returnsTotal: 'Lượt trả trong kỳ',
@@ -135,7 +135,7 @@ export function StaffDashboard() {
           {stats.popular.length === 0 ? <p className="staff-oversight__empty">{copy.noPopular}</p> : <><div className="dashboard-ranking-label" aria-hidden="true"><span>{copy.book}</span><span>{detail.loanCount}</span></div><ol className="dashboard-ranking">{stats.popular.map((book, index) => <li key={book.book_id}><span className="dashboard-ranking__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span><Link to={`/staff/circulation?book=${book.book_id}`}>{language === 'vi' ? book.title_vi || book.title_en : book.title_en || book.title_vi}<small>{copy.viewBorrowingHistory}</small></Link><strong aria-label={`${number(book.checkouts)} ${copy.checkouts}`}>{number(book.checkouts)}</strong></li>)}</ol></>}
         </Panel>
         <Panel title={detail.support} body={detail.supportBody} className="dashboard-teaching">
-          <div className="dashboard-teaching__links"><Link to="/staff/students">{copy.students}<span aria-hidden="true">→</span></Link><Link to="/community#review-desk-title">{detail.review}<span aria-hidden="true">→</span></Link></div>
+          <div className="dashboard-teaching__links"><Link to="/staff/students">{copy.students}<span aria-hidden="true">→</span></Link></div>
           <p className="dashboard-panel__note">{copy.privacy}</p>
         </Panel>
       </div>

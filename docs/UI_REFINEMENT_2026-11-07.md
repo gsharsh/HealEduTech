@@ -58,14 +58,7 @@ After adding the green surfaces, lint/build and 56 focused accessibility, palett
 
 ## Screenshots
 
-These browser-test captures use synthetic catalogue fixtures. The Together captures show the offline classroom fallback, matching the current hosted service boundary. The local site uses the configured real catalogue.
-
-| View | Desktop | Phone |
-| --- | --- | --- |
-| Home | [Warm homepage](review/2026-11-07-autumn/autumn-home-en-desktop.png) | [Mobile homepage](review/2026-11-07-autumn/autumn-home-en-phone.png) |
-| Explore | [Books view](review/2026-11-07-autumn/autumn-explore-en-desktop.png) | [Mobile books view](review/2026-11-07-autumn/autumn-explore-en-phone.png) |
-| Explore in Vietnamese | [Vietnamese desktop](review/2026-11-07-autumn/autumn-explore-vi-desktop.png) | [Vietnamese phone](review/2026-11-07-autumn/autumn-explore-vi-phone.png) |
-| Together | [Classroom activity](review/2026-11-07-autumn/together-classroom-plan-desktop.png) | [Mobile classroom activity](review/2026-11-07-autumn/together-classroom-plan-phone.png) |
+The original local browser captures were generated from synthetic catalogue fixtures and have been removed from the repository. Current layouts should be reviewed in the running application.
 
 ## Design references
 
