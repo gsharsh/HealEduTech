@@ -1,5 +1,5 @@
 .circulation-grid { display: grid; gap: 1rem; }
-.circulation-grid > .circulation-wide { order: -1; }
+.circulation-grid > .circulation-checkout, .circulation-grid > .circulation-wide { grid-column: 1 / -1; }
 .circulation-card { padding: 1.25rem; border: 1px solid var(--line, #d8d3c6); border-radius: 1rem; background: var(--paper, #fffdf7); }
 .circulation-card h2 { margin-top: 0; }
 .circulation-form { display: grid; gap: .75rem; }
@@ -23,6 +23,9 @@
 .circulation-table th, .circulation-table td { padding: 14px 10px; }
 .loan-status { padding: 5px 9px; border-radius: 8px; }
 @media (min-width: 760px) { .circulation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .circulation-wide { grid-column: 1 / -1; } }
+.circulation-form fieldset { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: 16px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.circulation-form fieldset > .circulation-muted, .circulation-form fieldset > .form-error { grid-column: 1 / -1; margin: 0; }
+@media (max-width: 759px) { .circulation-form fieldset { grid-template-columns: 1fr; } }
 
 .circulation-section-heading, .circulation-pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 .circulation-section-heading h2 { margin-bottom: 0; }
